@@ -16,6 +16,7 @@ import javax.swing.Box;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.JSeparator;
+import javax.swing.ImageIcon;
 
 
 
@@ -67,7 +68,7 @@ public class LoginFrame extends JFrame {
 		lblTitle.setBounds(400, 100, 200, 40);
 		lblTitle.setVerticalAlignment(SwingConstants.TOP);
 		lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
-		lblTitle.setFont(new Font("CookieRun Regular", Font.BOLD, 28));
+		lblTitle.setFont(new Font("CookieRun Bold", Font.BOLD, 28));
 		LoginPanel.add(lblTitle);
 		
 		
@@ -100,14 +101,17 @@ public class LoginFrame extends JFrame {
 		LoginPanel.add(tfInputPW);
 		
 		// 로그인 버튼
-		JButton btnLogin = new JButton("로그인");
-		btnLogin.setBackground(new Color(185, 215, 234));
+		JButton btnLogin = new JButton("");
+		btnLogin.setIcon(new ImageIcon("C:\\자바팀프로젝트\\git\\lol_quiz\\JavaProject\\src\\client\\ICON\\로그인버튼.png"));
+		btnLogin.setFont(new Font("굴림", Font.PLAIN, 14));
+		btnLogin.setBackground(new Color(255, 255, 255));
 		btnLogin.setBounds(350, 380, 100, 40);
 		LoginPanel.add(btnLogin);
 		
 		// 회원가입 버튼
-		JButton btnSignUp = new JButton("회원가입");
-		btnSignUp.setBackground(new Color(156, 163, 175));
+		JButton btnSignUp = new JButton("");
+		btnSignUp.setIcon(new ImageIcon("C:\\자바팀프로젝트\\git\\lol_quiz\\JavaProject\\src\\client\\ICON\\회원가입버튼.png"));
+		btnSignUp.setBackground(new Color(255, 255, 255));
 		btnSignUp.setBounds(550, 380, 100, 40);
 		LoginPanel.add(btnSignUp);
 		
