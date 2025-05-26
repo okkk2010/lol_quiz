@@ -61,7 +61,7 @@ public class MainFrame extends JFrame {
 					return;
 				}
 				
-				String name = dbm.getUserIdForName(id);
+				String name = dbm.GetUserIdForName(id);
 				
 				if(name.length() == 0) {
 					System.out.println("해당 아이디는 존재하지 않습니다.");
