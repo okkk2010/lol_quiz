@@ -46,14 +46,18 @@ public class DatabaseManager {
 		}
 		
 	}
-	
+	/**
+	 * 
+	 * @param id
+	 * @return
+	 */
 	public String GetUserIdForName(int id) {
 		try {
 			String selectSQL = "SELECT name FROM testTable where id = (?)";
 			ResultSet rs = SelectSQLMapping(selectSQL, id);
 			
 			if(rs.next()) {
-				System.out.println(rs.getString("name") + "을 찾았습 `니다.");
+				System.out.println(rs.getString("name") + "을 찾았습니다.");
 				return rs.getString("name");
 			} else {
 				return "";
