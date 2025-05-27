@@ -1,13 +1,23 @@
 package client.ui;
 
 import java.awt.EventQueue;
-
+import javax.swing.*;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.border.EmptyBorder;
+
+import client.Round_TF_BTN.RoundButton;
+import client.Round_TF_BTN.RoundJTextField;
+
 import java.awt.BorderLayout;
 import javax.swing.JLabel;
 import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.Shape;
+import java.awt.geom.RoundRectangle2D;
 import java.awt.Color;
 import javax.swing.SwingConstants;
 import java.awt.FlowLayout;
@@ -19,13 +29,41 @@ import javax.swing.JSeparator;
 import javax.swing.ImageIcon;
 
 
+class RoundJPasswordField extends JPasswordField {
+    private Shape shape;
+    private int arcWidth = 20;
+    private int arcHeight = 20;
 
+    public RoundJPasswordField(int size) {
+        super(size);
+        setOpaque(false);
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        Graphics2D g2 = (Graphics2D) g.create();
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2.setColor(getBackground());
+        g2.fill(new RoundRectangle2D.Double(0, 0, getWidth() - 1, getHeight() - 1, arcWidth, arcHeight));
+        super.paintComponent(g2);
+        g2.dispose();
+    }
+
+    @Override
+    protected void paintBorder(Graphics g) {
+        Graphics2D g2 = (Graphics2D) g.create();
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2.setColor(getForeground());
+        g2.draw(new RoundRectangle2D.Double(0, 0, getWidth() - 1, getHeight() - 1, arcWidth, arcHeight));
+        g2.dispose();
+    }
+}
 public class LoginFrame extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JTextField tfInputID;
-	private JTextField tfInputPW;
+	private RoundJPasswordField tfInputPW;
 
 	/**
 	 * Launch the application.
@@ -49,96 +87,89 @@ public class LoginFrame extends JFrame {
 	public LoginFrame() {
 		setTitle("롤 퀴즈");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 1280, 720);
+		setBounds(100, 100, 840, 660);
 		contentPane = new JPanel();
 		contentPane.setBackground(new Color(235, 240, 250));
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-		
+
 		JPanel LoginPanel = new JPanel();
 		LoginPanel.setBackground(new Color(255, 255, 255));
-		LoginPanel.setBounds(140, 40, 1000, 600);
+		LoginPanel.setBounds(10, 10, 800, 600);
 		contentPane.add(LoginPanel);
 		LoginPanel.setLayout(null);
-		
+
 		// 타이틀
 		JLabel lblTitle = new JLabel("롤 챔피언 퀴즈");
-		lblTitle.setBounds(400, 100, 200, 40);
+		lblTitle.setBounds(300, 100, 200, 40);
 		lblTitle.setVerticalAlignment(SwingConstants.TOP);
 		lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
 		lblTitle.setFont(new Font("CookieRun Bold", Font.BOLD, 28));
 		LoginPanel.add(lblTitle);
-		
-		
+
 		JLabel lblID = new JLabel("아이디");
 		lblID.setHorizontalAlignment(SwingConstants.LEFT);
 		lblID.setFont(new Font("CookieRun Regular", Font.PLAIN, 16));
-		lblID.setBounds(350, 200, 70, 20);
+		lblID.setBounds(250, 200, 70, 20);
 		LoginPanel.add(lblID);
-		
+
 		JLabel lblPW = new JLabel("비밀번호");
 		lblPW.setHorizontalAlignment(SwingConstants.LEFT);
 		lblPW.setFont(new Font("CookieRun Regular", Font.PLAIN, 16));
-		lblPW.setBounds(350, 280, 70, 20);
+		lblPW.setBounds(250, 280, 70, 20);
 		LoginPanel.add(lblPW);
-		
-		// 아이디 입력
-		tfInputID = new JTextField();
+
+		// 아이디 입력 (RoundJTextField)
+		tfInputID = new RoundJTextField(10); // RoundJTextField 생성
 		tfInputID.setBackground(new Color(202, 206, 213));
 		tfInputID.setFont(new Font("CookieRun Regular", Font.PLAIN, 20));
-		tfInputID.setBounds(350, 230, 300, 40);
+		tfInputID.setBounds(250, 230, 300, 40);
+		tfInputID.setForeground(Color.DARK_GRAY); // 텍스트와 테두리 색상
 		LoginPanel.add(tfInputID);
-		tfInputID.setColumns(10);
-		
-		// 비밀번호 입력
-		tfInputPW = new JTextField();
+
+		// 비밀번호 입력 (RoundJPasswordField)
+		tfInputPW = new RoundJPasswordField(10); // RoundJPasswordField 생성
 		tfInputPW.setBackground(new Color(202, 206, 213));
-		tfInputPW.setFont(new Font("CookieRun Regular", Font.PLAIN, 20));
-		tfInputPW.setColumns(10);
-		tfInputPW.setBounds(350, 310, 300, 40);
+		tfInputPW.setFont(new Font("맑은 고딕", Font.PLAIN, 20));
+		tfInputPW.setBounds(250, 310, 300, 40);
+		tfInputPW.setForeground(Color.DARK_GRAY);
+
+		tfInputPW.setEchoChar('*');
 		LoginPanel.add(tfInputPW);
-		
-		// 로그인 버튼
-		JButton btnLogin = new JButton("");
-		btnLogin.setIcon(new ImageIcon("C:\\자바팀프로젝트\\git\\lol_quiz\\JavaProject\\src\\client\\ICON\\로그인버튼.png"));
-		btnLogin.setFont(new Font("굴림", Font.PLAIN, 14));
-		btnLogin.setBackground(new Color(255, 255, 255));
-		btnLogin.setBounds(350, 380, 100, 40);
+
+		// 로그인 버튼 (RoundButton)
+		JButton btnLogin = new RoundButton();
+		btnLogin.setText("로그인");
+		btnLogin.setFont(new Font("CookieRun Regular", Font.PLAIN, 18));
+		btnLogin.setBackground(new Color(185, 215, 234));
+		btnLogin.setBounds(250, 380, 100, 40);
+		btnLogin.setForeground(Color.BLACK); // 테두리 색상
 		LoginPanel.add(btnLogin);
-		
-		// 회원가입 버튼
-		JButton btnSignUp = new JButton("");
-		btnSignUp.setIcon(new ImageIcon("C:\\자바팀프로젝트\\git\\lol_quiz\\JavaProject\\src\\client\\ICON\\회원가입버튼.png"));
-		btnSignUp.setBackground(new Color(255, 255, 255));
-		btnSignUp.setBounds(550, 380, 100, 40);
+
+		// 회원가입 버튼 (RoundButton)
+		JButton btnSignUp = new RoundButton();
+		btnSignUp.setText("회원가입");
+		btnSignUp.setFont(new Font("CookieRun Regular", Font.PLAIN, 18));
+		btnSignUp.setBackground(new Color(176, 180, 186));
+		btnSignUp.setBounds(450, 380, 100, 40);
+		btnSignUp.setForeground(new Color(0, 0, 0)); // 테두리 색상
 		LoginPanel.add(btnSignUp);
-		
+
+
 		JPanel outLine1 = new JPanel();
-		outLine1.setBackground(new Color(214, 230, 242));
-		outLine1.setBounds(130, 30, 1020, 10);
+		outLine1.setBounds(15, 605, 800, 11);
 		contentPane.add(outLine1);
-		outLine1.setLayout(null);
-		
+		outLine1.setBackground(new Color(100, 100, 100));
+		outLine1.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+
 		JPanel outLine2 = new JPanel();
-		outLine2.setBackground(new Color(214, 230, 242));
-		outLine2.setBounds(130, 640, 1020, 10);
+		outLine2.setBounds(805, 15, 11, 600);
 		contentPane.add(outLine2);
+		outLine2.setBackground(new Color(100, 100, 100));
 		outLine2.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-		
-		JPanel outLine3 = new JPanel();
-		outLine3.setBackground(new Color(214, 230, 242));
-		outLine3.setBounds(130, 40, 10, 600);
-		contentPane.add(outLine3);
-		outLine3.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-		
-		JPanel outLine4 = new JPanel();
-		outLine4.setBackground(new Color(214, 230, 242));
-		outLine4.setBounds(1140, 40, 10, 600);
-		contentPane.add(outLine4);
-		outLine4.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		setLocationRelativeTo(null);
-		
+
 	}
 }
