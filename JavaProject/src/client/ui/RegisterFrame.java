@@ -115,7 +115,7 @@ public class RegisterFrame extends JFrame {
 				String nickName = tfInputNickname.getText();
 				String password = tfInputPW.getText();
 				
-				DatabaseManager.SignUpState suState =  dbm.SignUp(id, password, nickName);
+				DatabaseManager.SignUpState suState =  dbm.SignUp(id, nickName, password);
 				switch(suState) {
 					case DatabaseManager.SignUpState.SUCCESS:
 						JOptionPane.showMessageDialog(SignUpPanel, "회원가입에 성공했습니다!");
