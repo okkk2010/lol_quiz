@@ -154,24 +154,29 @@ public class LoginFrame extends JFrame {
 				DatabaseManager.SignInState siState = dbm.SignIn(id, password);
 				switch(siState) {
 					case DatabaseManager.SignInState.SUCCESS:
-						System.out.println("로그인에 성공했습니다!");
+						JOptionPane.showMessageDialog(LoginPanel, "로그인에 성공했습니다."); // 로그인 성공 메세지 화면
+						// 메인 프레임 전환
+						MainFrame frame = new MainFrame();
+						frame.setResizable(false);
+						frame.setVisible(true);
+						setVisible(false);
 						break;
 					case DatabaseManager.SignInState.ID_INCORRECT:
-						System.out.println("해당 아이디로 가입된 계정이 없습니다.");
+						JOptionPane.showMessageDialog(LoginPanel, "해당 아이디로 가입된 계정이 없습니다.");
 						break;
 					case DatabaseManager.SignInState.PASSWORD_INCORRECT:
-						System.out.println("비밀번호가 틀립니다!");
+						JOptionPane.showMessageDialog(LoginPanel, "비밀번호가 틀립니다!");
 						break;
 					case DatabaseManager.SignInState.FAIL:
 					case DatabaseManager.SignInState.UNKOWN_ERROR:
-						System.out.println("로그인에 실패했습니다.");
+						JOptionPane.showMessageDialog(LoginPanel, "로그인에 실패했습니다.");
 						break;
 				}
 			}
 		});
 		
 		btnLogin.setText("로그인");
-		btnLogin.setFont(new Font("Dialog", Font.PLAIN, 16));
+		btnLogin.setFont(new Font("CookieRun Regular", Font.PLAIN, 16));
 		btnLogin.setBackground(new Color(185, 215, 234));
 		btnLogin.setBounds(250, 380, 100, 40);
 		btnLogin.setForeground(Color.BLACK); // 테두리 색상
@@ -179,8 +184,17 @@ public class LoginFrame extends JFrame {
 
 		// 회원가입 버튼 (RoundButton)
 		JButton btnSignUp = new RoundButton();
+		btnSignUp.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// 회원가입 버튼 누를 때 로그인 프레임에 있는 dbm을 넘김 (DB 계속 연결)
+				RegisterFrame Reframe = new RegisterFrame(dbm);
+				Reframe.setResizable(false);
+				Reframe.setVisible(true);
+				setVisible(false);
+			}
+		});
 		btnSignUp.setText("회원가입");
-		btnSignUp.setFont(new Font("Dialog", Font.PLAIN, 16));
+		btnSignUp.setFont(new Font("CookieRun Regular", Font.PLAIN, 16));
 		btnSignUp.setBackground(new Color(176, 180, 186));
 		btnSignUp.setBounds(450, 380, 100, 40);
 		btnSignUp.setForeground(new Color(0, 0, 0)); // 테두리 색상

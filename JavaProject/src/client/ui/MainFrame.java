@@ -52,27 +52,27 @@ public class MainFrame extends JFrame {
 		contentPane.add(MainPanel);
 		MainPanel.setLayout(null);
 		
-		RoundButton btnLogin = new RoundButton();
-		btnLogin.setBounds(700, 15, 200, 40);
-		btnLogin.setText("닉네임(내 정보)");
-		btnLogin.setForeground(Color.BLACK);
-		btnLogin.setFont(new Font("Dialog", Font.PLAIN, 16));
-		btnLogin.setBackground(new Color(185, 215, 234));
-		MainPanel.add(btnLogin);
+		RoundButton btnMyInfo = new RoundButton();
+		btnMyInfo.setBounds(700, 15, 200, 40);
+		btnMyInfo.setText("닉네임(내 정보)");
+		btnMyInfo.setForeground(Color.BLACK);
+		btnMyInfo.setFont(new Font("CookieRun Regular", Font.PLAIN, 16));
+		btnMyInfo.setBackground(new Color(185, 215, 234));
+		MainPanel.add(btnMyInfo);
 		
-		RoundButton btnSignUp = new RoundButton();
-		btnSignUp.setBounds(932, 15, 120, 40);
-		btnSignUp.setText("로그 아웃");
-		btnSignUp.setForeground(Color.BLACK);
-		btnSignUp.setFont(new Font("Dialog", Font.PLAIN, 16));
-		btnSignUp.setBackground(new Color(176, 180, 186));
-		MainPanel.add(btnSignUp);
+		RoundButton btnLogOut = new RoundButton();
+		btnLogOut.setBounds(932, 15, 120, 40);
+		btnLogOut.setText("로그 아웃");
+		btnLogOut.setForeground(Color.BLACK);
+		btnLogOut.setFont(new Font("CookieRun Regular", Font.PLAIN, 16));
+		btnLogOut.setBackground(new Color(176, 180, 186));
+		MainPanel.add(btnLogOut);
 		
-		JPanel panel_1 = new JPanel();
-		panel_1.setBackground(new Color(244, 244, 244));
-		panel_1.setBounds(140, 90, 800, 460);
-		MainPanel.add(panel_1);
-		panel_1.setLayout(null);
+		JPanel ThemaPanel = new JPanel();
+		ThemaPanel.setBackground(new Color(244, 244, 244));
+		ThemaPanel.setBounds(140, 90, 800, 460);
+		MainPanel.add(ThemaPanel);
+		ThemaPanel.setLayout(null);
 		
 		JPanel outLine1 = new JPanel();
 		outLine1.setBackground(new Color(100, 100, 100));
