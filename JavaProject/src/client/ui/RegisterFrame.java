@@ -5,6 +5,10 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import client.uiTool.RoundButton;
+import client.uiTool.RoundJTextField;
+
 import java.awt.Color;
 import java.awt.FlowLayout;
 import javax.swing.JLabel;
@@ -12,8 +16,6 @@ import java.awt.Font;
 import javax.swing.SwingConstants;
 import javax.swing.JTextField;
 import javax.swing.JPasswordField;
-import client.Round_TF_BTN.RoundJTextField;
-import client.Round_TF_BTN.RoundButton;
 import javax.swing.UIManager;
 
 public class RegisterFrame extends JFrame {
@@ -29,6 +31,7 @@ public class RegisterFrame extends JFrame {
 			public void run() {
 				try {
 					RegisterFrame frame = new RegisterFrame();
+					frame.setResizable(false);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();

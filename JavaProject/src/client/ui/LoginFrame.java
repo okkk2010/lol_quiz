@@ -7,8 +7,9 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.border.EmptyBorder;
 
-import client.Round_TF_BTN.RoundButton;
-import client.Round_TF_BTN.RoundJTextField;
+import client.uiTool.RoundButton;
+import client.uiTool.RoundJTextField;
+import database.DatabaseManager;
 
 import java.awt.BorderLayout;
 import javax.swing.JLabel;
@@ -27,6 +28,8 @@ import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.JSeparator;
 import javax.swing.ImageIcon;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 
 class RoundJPasswordField extends JPasswordField {
@@ -64,6 +67,7 @@ public class LoginFrame extends JFrame {
 	private JPanel contentPane;
 	private JTextField tfInputID;
 	private RoundJPasswordField tfInputPW;
+	private static DatabaseManager dbm;
 
 	/**
 	 * Launch the application.
@@ -72,7 +76,9 @@ public class LoginFrame extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
+					dbm = new DatabaseManager();
 					LoginFrame frame = new LoginFrame();
+					frame.setResizable(false); // 화면 고정
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -91,7 +97,6 @@ public class LoginFrame extends JFrame {
 		contentPane = new JPanel();
 		contentPane.setBackground(new Color(235, 240, 250));
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 
@@ -141,8 +146,32 @@ public class LoginFrame extends JFrame {
 
 		// 로그인 버튼 (RoundButton)
 		JButton btnLogin = new RoundButton();
+		btnLogin.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String id = tfInputID.getText();
+				String password = tfInputPW.getText();
+				
+				DatabaseManager.SignInState siState = dbm.SignIn(id, password);
+				switch(siState) {
+					case DatabaseManager.SignInState.SUCCESS:
+						System.out.println("로그인에 성공했습니다!");
+						break;
+					case DatabaseManager.SignInState.ID_INCORRECT:
+						System.out.println("해당 아이디로 가입된 계정이 없습니다.");
+						break;
+					case DatabaseManager.SignInState.PASSWORD_INCORRECT:
+						System.out.println("비밀번호가 틀립니다!");
+						break;
+					case DatabaseManager.SignInState.FAIL:
+					case DatabaseManager.SignInState.UNKOWN_ERROR:
+						System.out.println("로그인에 실패했습니다.");
+						break;
+				}
+			}
+		});
+		
 		btnLogin.setText("로그인");
-		btnLogin.setFont(new Font("CookieRun Regular", Font.PLAIN, 18));
+		btnLogin.setFont(new Font("Dialog", Font.PLAIN, 16));
 		btnLogin.setBackground(new Color(185, 215, 234));
 		btnLogin.setBounds(250, 380, 100, 40);
 		btnLogin.setForeground(Color.BLACK); // 테두리 색상
@@ -151,7 +180,7 @@ public class LoginFrame extends JFrame {
 		// 회원가입 버튼 (RoundButton)
 		JButton btnSignUp = new RoundButton();
 		btnSignUp.setText("회원가입");
-		btnSignUp.setFont(new Font("CookieRun Regular", Font.PLAIN, 18));
+		btnSignUp.setFont(new Font("Dialog", Font.PLAIN, 16));
 		btnSignUp.setBackground(new Color(176, 180, 186));
 		btnSignUp.setBounds(450, 380, 100, 40);
 		btnSignUp.setForeground(new Color(0, 0, 0)); // 테두리 색상
