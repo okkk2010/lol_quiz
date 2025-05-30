@@ -104,14 +104,14 @@ public class HomeFrame extends JFrame {
 		MainPanel.add(ThemaPanel);
 		ThemaPanel.setLayout(new BorderLayout(0, 0));
 		
-		JPanel SPnel = new JPanel();
-		SPnel.setLayout(null);
+		JPanel SPanel = new JPanel();
+		SPanel.setLayout(null);
 		
 		RoundJPanel LOLPanel = new RoundJPanel(5);
 		LOLPanel.setLayout(null);
 		LOLPanel.setBackground(new Color(185, 215, 234));
 		LOLPanel.setBounds(30, 25, 180, 200);
-		SPnel.add(LOLPanel);
+		SPanel.add(LOLPanel);
 		
 		JButton btnLOLQuiz = new JButton("");
 		btnLOLQuiz.addActionListener(new ActionListener() {
@@ -141,9 +141,9 @@ public class HomeFrame extends JFrame {
 		lblLOLQuiz.setBounds(15, 160, 150, 40);
 		LOLPanel.add(lblLOLQuiz);
 		
-		SPnel.setPreferredSize(new java.awt.Dimension(780, 600));
+		SPanel.setPreferredSize(new java.awt.Dimension(780, 600));
 		
-		JScrollPane scrollPane = new JScrollPane(SPnel); // 스크롤할 컴포넌트를 JScrollPane 생성자에 전달
+		JScrollPane scrollPane = new JScrollPane(SPanel); // 스크롤할 컴포넌트를 JScrollPane 생성자에 전달
 		ThemaPanel.add(scrollPane, BorderLayout.CENTER);
 		
 		
