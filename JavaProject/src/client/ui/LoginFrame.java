@@ -156,7 +156,7 @@ public class LoginFrame extends JFrame {
 					case DatabaseManager.SignInState.SUCCESS:
 						JOptionPane.showMessageDialog(LoginPanel, "로그인에 성공했습니다."); // 로그인 성공 메세지 화면
 						// 메인 프레임 전환
-						MainFrame frame = new MainFrame();
+						HomeFrame frame = new HomeFrame(dbm);
 						frame.setResizable(false);
 						frame.setVisible(true);
 						setVisible(false);
