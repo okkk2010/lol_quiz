@@ -5,10 +5,23 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import dataSet.user.User;
+
 import javax.swing.JTextField;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.lang.reflect.Method;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.ArrayList;
 import java.awt.event.ActionEvent;
+import javax.swing.JLabel;
 
 public class DBTestFrame extends JFrame {
 
@@ -44,7 +57,7 @@ public class DBTestFrame extends JFrame {
 	 */
 	public DBTestFrame() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 701, 300);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -83,20 +96,11 @@ public class DBTestFrame extends JFrame {
 				String nickName = tFSignUpNickName.getText();
 				String password = tFSignUpPassword.getText();
 				
-				DatabaseManager.SignUpState suState =  dbm.SignUp(id, nickName, password);
-				switch(suState) {
-					case DatabaseManager.SignUpState.SUCCESS:
-						System.out.println("회원가입에 성공했습니다!");
-						break;
-					case DatabaseManager.SignUpState.ID_DUPLICATION:
-						System.out.println("아이디가 중복 되었습니다.");
-						break;
-					case DatabaseManager.SignUpState.UNKOWN_ERROR:
-						System.out.println("회원가입에 실패했습니다.");
-						break;
-				}
+				String rs = HttpConnecter.instance.signUpUser(id, nickName, password);
+				System.out.println(rs);
 			}
 		});
+		
 		btnSignUp.setBounds(37, 197, 116, 23);
 		contentPane.add(btnSignUp);
 		
@@ -126,5 +130,20 @@ public class DBTestFrame extends JFrame {
 		});
 		btnSignIn.setBounds(264, 197, 116, 23);
 		contentPane.add(btnSignIn);
+		
+		
+		JLabel lblNewLabel = new JLabel("New label");
+		lblNewLabel.setBounds(443, 87, 209, 145);
+		
+		try {
+			URI uri = new URI("https://lol-quiz.s3.us-east-2.amazonaws.com/%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7+2025-05-25+235312.png");
+			ImageIcon icon = new ImageIcon(uri.toURL());
+			lblNewLabel.setIcon(icon);
+		} catch (URISyntaxException | MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		contentPane.add(lblNewLabel);
 	}
 }
