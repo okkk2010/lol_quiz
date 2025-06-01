@@ -13,7 +13,7 @@ import dataSet.user.User;
 public class JSONManager {
 	public final static ObjectMapper mapper = new ObjectMapper();
 	
-	public static <T>T getUserJsonData(String json, JavaType inputClass) {
+	public static <T>T getJsonData(String json, Class<T> inputClass) {
 		
 		try {
 			return mapper.readValue(json, inputClass);
@@ -28,7 +28,7 @@ public class JSONManager {
 		}
 	}
 	
-	public static <T> ArrayList<T> getUsersJsonData(String json, JavaType inputClass) {
+	public static <T> ArrayList<T> getJsonDataList(String json, Class<T> inputClass) {
 		
 		try {
 			return mapper.readValue(json, mapper.getTypeFactory().constructCollectionType(ArrayList.class, inputClass)); 
