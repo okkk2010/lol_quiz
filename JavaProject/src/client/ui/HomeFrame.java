@@ -8,7 +8,7 @@ import javax.swing.border.EmptyBorder;
 import java.awt.Color;
 import javax.swing.UIManager;
 import java.awt.FlowLayout;
-import client.uiTool.RoundButton;
+import client.uiTool.RoundJButton;
 import client.uiTool.RoundJPanel;
 import database.DatabaseManager;
 
@@ -35,6 +35,9 @@ public class HomeFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private static DatabaseManager dbm;
+	private InGameFrame ingameframe;
+	private LoginFrame loginframe;
+	private MyInfoFrame myinfoFrame;
 	/**
 	 * Launch the application.
 	 */
@@ -66,13 +69,25 @@ public class HomeFrame extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		JPanel MainPanel = new JPanel();
+		RoundJPanel MainPanel = new RoundJPanel(5);
 		MainPanel.setBackground(new Color(255, 255, 255));
 		MainPanel.setBounds(80, 40, 1080, 600);
 		contentPane.add(MainPanel);
 		MainPanel.setLayout(null);
 		
-		RoundButton btnMyInfo = new RoundButton();
+		RoundJButton btnMyInfo = new RoundJButton();
+		btnMyInfo.addActionListener(new ActionListener() {
+
+			public void actionPerformed(ActionEvent e) {
+				if(myinfoFrame == null) {
+					myinfoFrame = new MyInfoFrame(dbm);
+					myinfoFrame.setVisible(true);
+				} else {
+					myinfoFrame.setVisible(true);
+				}
+				setVisible(false);
+			}
+		});
 		btnMyInfo.setBounds(700, 15, 200, 40);
 		btnMyInfo.setText("닉네임(내 정보)");
 		btnMyInfo.setForeground(Color.BLACK);
@@ -80,16 +95,21 @@ public class HomeFrame extends JFrame {
 		btnMyInfo.setBackground(new Color(185, 215, 234));
 		MainPanel.add(btnMyInfo);
 		
-		RoundButton btnLogOut = new RoundButton();
+		RoundJButton btnLogOut = new RoundJButton();
 		btnLogOut.addActionListener(new ActionListener() {
+
 			public void actionPerformed(ActionEvent e) {
-				LoginFrame frame = new LoginFrame();
-				frame.setResizable(false);
-				frame.setVisible(true);
+				if(loginframe == null) {
+					loginframe = new LoginFrame();
+					loginframe.setResizable(false);
+					loginframe.setVisible(true);
+				} else {
+					loginframe.setVisible(true);
+				}
 				setVisible(false);
 			}
 		});
-		btnLogOut.setBounds(932, 15, 120, 40);
+		btnLogOut.setBounds(930, 15, 120, 40);
 		btnLogOut.setText("로그 아웃");
 		btnLogOut.setForeground(Color.BLACK);
 		btnLogOut.setFont(new Font("CookieRun Regular", Font.PLAIN, 16));
@@ -115,10 +135,14 @@ public class HomeFrame extends JFrame {
 		
 		JButton btnLOLQuiz = new JButton("");
 		btnLOLQuiz.addActionListener(new ActionListener() {
+
 			public void actionPerformed(ActionEvent e) {
-				InGameFrame frame = new InGameFrame(dbm);
-				frame.setResizable(false);
-				frame.setVisible(true);
+				if(ingameframe == null) {
+					ingameframe = new InGameFrame(dbm);
+					ingameframe.setVisible(true);
+				} else {
+					ingameframe.setVisible(true);
+				}
 				setVisible(false);
 			}
 		});
@@ -130,9 +154,12 @@ public class HomeFrame extends JFrame {
 		lblLOLQuiz.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				InGameFrame frame = new InGameFrame(dbm);
-				frame.setResizable(false);
-				frame.setVisible(true);
+				if(ingameframe == null) {
+					ingameframe = new InGameFrame(dbm);
+					ingameframe.setVisible(true);
+				} else {
+					ingameframe.setVisible(true);
+				}
 				setVisible(false);
 			}
 		});
@@ -147,13 +174,13 @@ public class HomeFrame extends JFrame {
 		ThemaPanel.add(scrollPane, BorderLayout.CENTER);
 		
 		
-		JPanel outLine1 = new JPanel();
+		RoundJPanel outLine1 = new RoundJPanel(5);
 		outLine1.setBackground(new Color(100, 100, 100));
 		outLine1.setBounds(85, 635, 1080, 11);
 		contentPane.add(outLine1);
 		outLine1.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		
-		JPanel outLine2 = new JPanel();
+		RoundJPanel outLine2 = new RoundJPanel(5);
 		outLine2.setBackground(new Color(100, 100, 100));
 		outLine2.setBounds(1155, 45, 11, 600);
 		contentPane.add(outLine2);

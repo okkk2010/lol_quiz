@@ -10,13 +10,13 @@ import java.awt.geom.RoundRectangle2D;
 
 import javax.swing.JButton;
 
-public class RoundButton extends JButton {
+public class RoundJButton extends JButton {
     private Shape shape;
     private int arcWidth = 20;
     private int arcHeight = 20;
     private int borderWidth = 2; // 테두리 두께 추가
 
-    public RoundButton(String label) {
+    public RoundJButton(String label) {
         super(label);
         setOpaque(false);
         setContentAreaFilled(false);
@@ -28,7 +28,7 @@ public class RoundButton extends JButton {
         // 따라서 그리기 시 오프셋을 주는 것이 더 좋습니다.
     }
 
-    public RoundButton() {
+    public RoundJButton() {
         this("");
     }
 

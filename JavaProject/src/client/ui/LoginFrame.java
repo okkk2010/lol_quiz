@@ -7,7 +7,8 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.border.EmptyBorder;
 
-import client.uiTool.RoundButton;
+import client.uiTool.RoundJButton;
+import client.uiTool.RoundJPanel;
 import client.uiTool.RoundJTextField;
 import database.DatabaseManager;
 
@@ -32,35 +33,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 
-class RoundJPasswordField extends JPasswordField {
-    private Shape shape;
-    private int arcWidth = 20;
-    private int arcHeight = 20;
 
-    public RoundJPasswordField(int size) {
-        super(size);
-        setOpaque(false);
-    }
-
-    @Override
-    protected void paintComponent(Graphics g) {
-        Graphics2D g2 = (Graphics2D) g.create();
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g2.setColor(getBackground());
-        g2.fill(new RoundRectangle2D.Double(0, 0, getWidth() - 1, getHeight() - 1, arcWidth, arcHeight));
-        super.paintComponent(g2);
-        g2.dispose();
-    }
-
-    @Override
-    protected void paintBorder(Graphics g) {
-        Graphics2D g2 = (Graphics2D) g.create();
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g2.setColor(getForeground());
-        g2.draw(new RoundRectangle2D.Double(0, 0, getWidth() - 1, getHeight() - 1, arcWidth, arcHeight));
-        g2.dispose();
-    }
-}
 public class LoginFrame extends JFrame {
 
 	private static final long serialVersionUID = 1L;
@@ -100,7 +73,7 @@ public class LoginFrame extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 
-		JPanel LoginPanel = new JPanel();
+		RoundJPanel LoginPanel = new RoundJPanel(5);
 		LoginPanel.setBackground(new Color(255, 255, 255));
 		LoginPanel.setBounds(10, 10, 800, 600);
 		contentPane.add(LoginPanel);
@@ -145,7 +118,7 @@ public class LoginFrame extends JFrame {
 		LoginPanel.add(tfInputPW);
 
 		// 로그인 버튼 (RoundButton)
-		JButton btnLogin = new RoundButton();
+		JButton btnLogin = new RoundJButton();
 		btnLogin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String id = tfInputID.getText();
@@ -183,7 +156,7 @@ public class LoginFrame extends JFrame {
 		LoginPanel.add(btnLogin);
 
 		// 회원가입 버튼 (RoundButton)
-		JButton btnSignUp = new RoundButton();
+		JButton btnSignUp = new RoundJButton();
 		btnSignUp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// 회원가입 버튼 누를 때 로그인 프레임에 있는 dbm을 넘김 (DB 계속 연결)
@@ -201,13 +174,13 @@ public class LoginFrame extends JFrame {
 		LoginPanel.add(btnSignUp);
 
 
-		JPanel outLine1 = new JPanel();
+		RoundJPanel outLine1 = new RoundJPanel(5);
 		outLine1.setBounds(15, 605, 800, 11);
 		contentPane.add(outLine1);
 		outLine1.setBackground(new Color(100, 100, 100));
 		outLine1.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 
-		JPanel outLine2 = new JPanel();
+		RoundJPanel outLine2 = new RoundJPanel(5);
 		outLine2.setBounds(805, 15, 11, 600);
 		contentPane.add(outLine2);
 		outLine2.setBackground(new Color(100, 100, 100));
@@ -215,4 +188,33 @@ public class LoginFrame extends JFrame {
 		setLocationRelativeTo(null);
 
 	}
+}
+class RoundJPasswordField extends JPasswordField {
+    private Shape shape;
+    private int arcWidth = 20;
+    private int arcHeight = 20;
+
+    public RoundJPasswordField(int size) {
+        super(size);
+        setOpaque(false);
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        Graphics2D g2 = (Graphics2D) g.create();
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2.setColor(getBackground());
+        g2.fill(new RoundRectangle2D.Double(0, 0, getWidth() - 1, getHeight() - 1, arcWidth, arcHeight));
+        super.paintComponent(g2);
+        g2.dispose();
+    }
+
+    @Override
+    protected void paintBorder(Graphics g) {
+        Graphics2D g2 = (Graphics2D) g.create();
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2.setColor(getForeground());
+        g2.draw(new RoundRectangle2D.Double(0, 0, getWidth() - 1, getHeight() - 1, arcWidth, arcHeight));
+        g2.dispose();
+    }
 }

@@ -7,7 +7,8 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import client.ui.LoginFrame;
-import client.uiTool.RoundButton;
+import client.uiTool.RoundJButton;
+import client.uiTool.RoundJPanel;
 import client.uiTool.RoundJTextField;
 import database.DatabaseManager;
 import lombok.Getter;
@@ -68,7 +69,7 @@ public class RegisterFrame extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		JPanel SignUpPanel = new JPanel();
+		RoundJPanel SignUpPanel = new RoundJPanel(5);
 		SignUpPanel.setLayout(null);
 		SignUpPanel.setBackground(Color.WHITE);
 		SignUpPanel.setBounds(10, 10, 800, 600);
@@ -108,7 +109,7 @@ public class RegisterFrame extends JFrame {
 		tfInputPW.setBounds(250, 310, 300, 40);
 		SignUpPanel.add(tfInputPW);
 		
-		RoundButton btnSignUp = new RoundButton();
+		RoundJButton btnSignUp = new RoundJButton();
 		btnSignUp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String id = tfInputID.getText();
@@ -170,13 +171,13 @@ public class RegisterFrame extends JFrame {
 		btnSignUp.setBounds(250, 470, 300, 40);
 		SignUpPanel.add(btnSignUp);
 		
-		JPanel outLine1 = new JPanel();
+		RoundJPanel outLine1 = new RoundJPanel(5);
 		outLine1.setBackground(new Color(100, 100, 100));
 		outLine1.setBounds(15, 605, 800, 11);
 		contentPane.add(outLine1);
 		outLine1.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		
-		JPanel outLine2 = new JPanel();
+		RoundJPanel outLine2 = new RoundJPanel(5);
 		outLine2.setBackground(new Color(100, 100, 100));
 		outLine2.setBounds(805, 15, 11, 600);
 		contentPane.add(outLine2);
