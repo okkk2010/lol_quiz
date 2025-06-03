@@ -70,7 +70,7 @@ public class InGameFrame extends JFrame {
 		
 		// 1. 시작 화면 패널 생성 및 컴포넌트 추가
 		StartPanel = new JPanel();
-		StartPanel.setBackground(new Color(235, 240, 250)); // 배경색 유지
+		StartPanel.setBackground(new Color(228, 235, 250)); // 배경색 유지
 		StartPanel.setLayout(null); // startPanel은 여전히 null 레이아웃 사용 가능
 
 		JButton btnStart = new RoundJButton("START !!");
@@ -88,7 +88,7 @@ public class InGameFrame extends JFrame {
 		// 2. 게임 진행 화면 패널 생성 및 컴포넌트 추가
 		InGamePanel = new JPanel();
 		InGamePanel.setLayout(null);
-		InGamePanel.setBackground(new Color(235, 240, 250));
+		InGamePanel.setBackground(new Color(228, 235, 250));
 		InGamePanel.setBounds(0, 0, 1280, 720);
 
 		
@@ -136,6 +136,7 @@ public class InGameFrame extends JFrame {
 		GamePanel.add(btnNewButton);
 		
 		ResultsPanel = new Panel();
+		ResultsPanel.setBackground(new Color(228, 235, 250));
 		
 		// contentPane에 패널들을 추가 (각 패널에 이름을 부여)
 		contentPane.add(StartPanel, "Start");

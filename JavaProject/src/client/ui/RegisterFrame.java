@@ -60,10 +60,10 @@ public class RegisterFrame extends JFrame {
 	public RegisterFrame(DatabaseManager dbManger) {
 		this.dbm = dbManger;
 		setTitle("회원가입");
-		// setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 840, 660);
 		contentPane = new JPanel();
-		contentPane.setBackground(new Color(235, 240, 250));
+		contentPane.setBackground(new Color(228, 235, 250));
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
 		setContentPane(contentPane);
@@ -112,10 +112,26 @@ public class RegisterFrame extends JFrame {
 		RoundJButton btnSignUp = new RoundJButton();
 		btnSignUp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String id = tfInputID.getText();
-				String nickName = tfInputNickname.getText();
-				String password = tfInputPW.getText();
+				String id = tfInputID.getText().trim();
+				String nickName = tfInputNickname.getText().trim();
+				String password = tfInputPW.getText().trim();
 				
+				// 제대로 입력했는지 확인
+				if (id.isEmpty()) {
+					JOptionPane.showMessageDialog(SignUpPanel, "아이디를 입력해주세요.", "회원가입 오류", JOptionPane.WARNING_MESSAGE);
+					tfInputID.requestFocusInWindow(); // 아이디 입력 포커스
+					return; // 로그인 프로세스 중단
+				}
+				if (nickName.isEmpty()) {
+					JOptionPane.showMessageDialog(SignUpPanel, "닉네임을 입력해주세요.", "회원가입 오류", JOptionPane.WARNING_MESSAGE);
+					tfInputNickname.requestFocusInWindow(); // 닉네임 입력 포커스
+					return; // 로그인 프로세스 중단
+				}	
+				if (password.isEmpty()) {
+					JOptionPane.showMessageDialog(SignUpPanel, "비밀번호를 입력해주세요.", "회원가입 오류", JOptionPane.WARNING_MESSAGE);
+					tfInputPW.requestFocusInWindow(); // 비밀번호 입력 포커스
+					return; // 로그인 프로세스 중단
+				}
 				DatabaseManager.SignUpState suState =  dbm.SignUp(id, nickName, password);
 				switch(suState) {
 					case DatabaseManager.SignUpState.SUCCESS:

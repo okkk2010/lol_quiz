@@ -5,17 +5,43 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+
 import java.awt.Color;
 import client.uiTool.RoundJPanel;
 import database.DatabaseManager;
 import javax.swing.UIManager;
 import java.awt.FlowLayout;
+import javax.swing.JLabel;
+import java.awt.Font;
+import javax.swing.SwingConstants;
+import javax.swing.JTextField;
+import javax.swing.JMenuBar;
+import java.awt.BorderLayout;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+import javax.swing.JScrollPane;
+import java.awt.Component;
+import javax.swing.JRadioButtonMenuItem;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JButton;
+import javax.swing.JSeparator;
+import javax.swing.JTable;
+import client.uiTool.RoundJButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class RankingFrame extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private static DatabaseManager dbm;
+	private JTextField tfNickName;
+	private JTextField tfRanking;
+	private JTextField tfMaxScore;
+	private HomeFrame homeframe;
+	private LoginFrame loginframe;
 
 	/**
 	 * Launch the application.
@@ -42,7 +68,7 @@ public class RankingFrame extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1280, 720);
 		contentPane = new JPanel();
-		contentPane.setBackground(new Color(235, 240, 250));
+		contentPane.setBackground(new Color(228, 235, 250));
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
 		setContentPane(contentPane);
@@ -53,6 +79,183 @@ public class RankingFrame extends JFrame {
 		MainPanel.setBackground(Color.WHITE);
 		MainPanel.setBounds(80, 40, 1080, 600);
 		contentPane.add(MainPanel);
+		
+		RoundJPanel ResultPanel = new RoundJPanel(5);
+		ResultPanel.setLayout(null);
+		ResultPanel.setBackground(new Color(228, 235, 250));
+		ResultPanel.setBounds(70, 70, 940, 460);
+		MainPanel.add(ResultPanel);
+		
+		JPanel TierPanel = new JPanel();
+		TierPanel.setBackground(new Color(255, 255, 255));
+		TierPanel.setBounds(60, 60, 200, 200);
+		ResultPanel.add(TierPanel);
+		
+		RoundJPanel TopTierPanel = new RoundJPanel(5);
+		TopTierPanel.setBackground(new Color(255, 255, 255));
+		TopTierPanel.setBounds(350, 60, 500, 360);
+		ResultPanel.add(TopTierPanel);
+		TopTierPanel.setLayout(null);
+		
+		JLabel lblTop = new JLabel("TOP 100");
+		lblTop.setHorizontalAlignment(SwingConstants.CENTER);
+		lblTop.setForeground(Color.BLACK);
+		lblTop.setFont(new Font("CookieRun Regular", Font.PLAIN, 16));
+		lblTop.setBackground(new Color(185, 215, 234));
+		lblTop.setBounds(200, 0, 100, 40);
+		TopTierPanel.add(lblTop);
+		
+		JSeparator separator = new JSeparator();
+		separator.setBounds(10, 38, 480, 4);
+		TopTierPanel.add(separator);
+		
+		// 스크롤 가능한 랭킹 목록 (JTable) 추가
+		// 1. JTable의 헤더 정의
+		String[] columnNames = {"순위", "닉네임", "최고점수"};
+		// 2. JTable의 데이터 (예시로 200개의 더미 데이터 생성)
+		Object[][] data = new Object[100][3];
+		for (int i = 0; i < 100; i++) {
+		    data[i][0] = i + 1; // 순위
+		    data[i][1] = "플레이어" + (i + 1); // 닉네임
+		    data[i][2] = 1000 - (i * 5); // 최고점수 (점점 낮아지도록)
+		}
+		
+		DefaultTableModel tableModel = new DefaultTableModel(data, columnNames) {
+		    @Override
+		    public boolean isCellEditable(int row, int column) {
+		        return false; // 테이블 셀 편집 불가능하게 설정
+		    }
+		};
+		JTable rankingTable = new JTable(tableModel);
+		rankingTable.setFont(new Font("CookieRun Regular", Font.PLAIN, 16));
+		rankingTable.setRowHeight(30); // 행 높이 설정
+		rankingTable.getTableHeader().setFont(new Font("CookieRun Regular", Font.BOLD, 16)); // 헤더 폰트 설정
+		rankingTable.setFillsViewportHeight(true); // JTable이 뷰포트 높이를 채우도록 설정
+		
+		
+		// 순위, 닉네임 가운데 정렬
+		DefaultTableCellRenderer CenterRenderer = new DefaultTableCellRenderer();
+		CenterRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+		
+		// 최고 점수 오른쪽 정렬
+		DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();
+		rightRenderer.setHorizontalAlignment(SwingConstants.RIGHT);
+		
+		// 정렬 적용
+		for (int i = 0; i < rankingTable.getColumnCount(); i++) {
+			if (i == 2) {
+				rankingTable.getColumnModel().getColumn(i).setCellRenderer(rightRenderer);
+			} else {
+				rankingTable.getColumnModel().getColumn(i).setCellRenderer(CenterRenderer);
+			}
+		}
+		
+		// JTable 꾸미기 (배경색, 그리드 색상, 선택 색상, 폰트 등)
+		rankingTable.setShowVerticalLines(false); // 세로줄 숨기기
+		rankingTable.setShowHorizontalLines(false); // 가로줄 숨기기
+		rankingTable.setGridColor(new Color(228, 235, 250)); // 그리드 색상 일치
+
+		rankingTable.setBackground(new Color(255, 255, 255)); // 배경 흰색
+		rankingTable.setForeground(Color.DARK_GRAY); // 텍스트 색상
+		rankingTable.setSelectionBackground(new Color(185, 215, 234)); // 선택된 행의 배경색
+		rankingTable.setSelectionForeground(Color.BLACK); // 선택된 행의 글자색
+
+		// 테이블 헤더 꾸미기
+		rankingTable.getTableHeader().setBackground(new Color(185, 215, 234));
+		rankingTable.getTableHeader().setForeground(Color.BLACK);
+		rankingTable.getTableHeader().setReorderingAllowed(false); // 열 순서 변경 막기
+		rankingTable.getTableHeader().setResizingAllowed(false); // 열 크기 조절 막기
+		rankingTable.getTableHeader().setOpaque(false);
+
+		// JTable 테두리 제거
+		rankingTable.setBorder(null);
+
+		// 3. JTable을 JScrollPane으로 감싸기
+		JScrollPane scrollPane = new JScrollPane(rankingTable);
+		scrollPane.setBounds(10, 45, 480, 305); // Y좌표를 separator 바로 아래로, 높이를 남은 공간에 맞춰 조정
+		TopTierPanel.add(scrollPane); // TopTierPanel에 JScrollPane 추가
+	
+		JLabel lblNickName = new JLabel("닉네임");
+		lblNickName.setForeground(new Color(0, 0, 0));
+		lblNickName.setBackground(new Color(185, 215, 234));
+		lblNickName.setFont(new Font("CookieRun Regular", Font.PLAIN, 16));
+		lblNickName.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNickName.setBounds(60, 280, 60, 40);
+		ResultPanel.add(lblNickName);
+		
+		JLabel lblRanking = new JLabel("순위");
+		lblRanking.setFont(new Font("CookieRun Regular", Font.PLAIN, 16));
+		lblRanking.setHorizontalAlignment(SwingConstants.CENTER);
+		lblRanking.setBounds(60, 330, 60, 40);
+		ResultPanel.add(lblRanking);
+		
+		JLabel lblMaxScore = new JLabel("최고점수");
+		lblMaxScore.setFont(new Font("CookieRun Regular", Font.PLAIN, 16));
+		lblMaxScore.setHorizontalAlignment(SwingConstants.CENTER);
+		lblMaxScore.setBounds(60, 380, 60, 40);
+		ResultPanel.add(lblMaxScore);
+		
+		tfNickName = new JTextField();
+		tfNickName.setFont(new Font("CookieRun Regular", Font.PLAIN, 16));
+		tfNickName.setEnabled(false);
+		tfNickName.setBackground(new Color(228, 235, 250));
+		tfNickName.setBounds(140, 280, 120, 40);
+		ResultPanel.add(tfNickName);
+		tfNickName.setColumns(10);
+		
+		tfRanking = new JTextField();
+		tfRanking.setBackground(new Color(228, 235, 250));
+		tfRanking.setEnabled(false);
+		tfRanking.setFont(new Font("CookieRun Regular", Font.PLAIN, 16));
+		tfRanking.setColumns(10);
+		tfRanking.setBounds(140, 330, 120, 40);
+		ResultPanel.add(tfRanking);
+		
+		tfMaxScore = new JTextField();
+		tfMaxScore.setBackground(new Color(228, 235, 250));
+		tfMaxScore.setEnabled(false);
+		tfMaxScore.setFont(new Font("CookieRun Regular", Font.PLAIN, 16));
+		tfMaxScore.setColumns(10);
+		tfMaxScore.setBounds(140, 380, 120, 40);
+		ResultPanel.add(tfMaxScore);
+		
+		RoundJButton btnHome = new RoundJButton();
+		btnHome.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (homeframe == null) {
+					homeframe = new HomeFrame(dbm);
+					homeframe.setVisible(true);
+				} else {
+					homeframe.setVisible(true);
+				}
+				setVisible(false);
+			}
+		});
+		btnHome.setText("홈");
+		btnHome.setForeground(Color.BLACK);
+		btnHome.setFont(new Font("CookieRun Regular", Font.PLAIN, 16));
+		btnHome.setBackground(new Color(118, 159, 205));
+		btnHome.setBounds(780, 15, 120, 40);
+		MainPanel.add(btnHome);
+		
+		RoundJButton btnLogOut = new RoundJButton();
+		btnLogOut.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (loginframe == null) {
+					loginframe = new LoginFrame();
+					loginframe.setVisible(true);
+				} else {
+					loginframe.setVisible(true);
+				}
+				setVisible(false);
+			}
+		});
+		btnLogOut.setText("로그 아웃");
+		btnLogOut.setForeground(Color.BLACK);
+		btnLogOut.setFont(new Font("CookieRun Regular", Font.PLAIN, 16));
+		btnLogOut.setBackground(new Color(176, 180, 186));
+		btnLogOut.setBounds(930, 15, 120, 40);
+		MainPanel.add(btnLogOut);
 		
 		RoundJPanel outLine1 = new RoundJPanel(5);
 		outLine1.setBackground(new Color(100, 100, 100));

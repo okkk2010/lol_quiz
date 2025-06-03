@@ -63,7 +63,7 @@ public class HomeFrame extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1280, 720);
 		contentPane = new JPanel();
-		contentPane.setBackground(new Color(235, 240, 250));
+		contentPane.setBackground(new Color(228, 235, 250));
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
 		setContentPane(contentPane);

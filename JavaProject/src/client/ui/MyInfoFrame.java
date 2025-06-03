@@ -11,13 +11,18 @@ import client.uiTool.RoundJPanel;
 import database.DatabaseManager;
 import client.uiTool.RoundJButton;
 import java.awt.Font;
-import java.awt.BorderLayout;
-import java.awt.CardLayout; // CardLayout 임포트
+import java.awt.BorderLayout; // BorderLayout 임포트
+import java.awt.CardLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JSeparator;
-import javax.swing.JTable;
-import javax.swing.JScrollPane;
+import javax.swing.JTable; // JTable 임포트
+import javax.swing.SwingConstants;
+import javax.swing.JScrollPane; // JScrollPane 임포트
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel; // DefaultTableModel 임포트
+import javax.swing.table.TableColumnModel;
+
 import java.awt.Component;
 import java.awt.Dimension;
 import javax.swing.UIManager;
@@ -40,7 +45,10 @@ public class MyInfoFrame extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					MyInfoFrame frame = new MyInfoFrame(dbm);
+					
+					dbm = new DatabaseManager() {
+					};
+					MyInfoFrame frame = new MyInfoFrame(dbm); 
 					frame.setResizable(false);
 					frame.setVisible(true);
 				} catch (Exception e) {
@@ -58,7 +66,7 @@ public class MyInfoFrame extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1280, 720);
 		contentPane = new JPanel();
-		contentPane.setBackground(new Color(235, 240, 250));
+		contentPane.setBackground(new Color(228, 235, 250));
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
 		setContentPane(contentPane);
@@ -85,7 +93,6 @@ public class MyInfoFrame extends JFrame {
 
 		RoundJButton btnLogOut = new RoundJButton();
 		btnLogOut.addActionListener(new ActionListener() {
-
 			public void actionPerformed(ActionEvent e) {
 				if(loginframe == null) {
 					loginframe = new LoginFrame();
@@ -111,23 +118,89 @@ public class MyInfoFrame extends JFrame {
 		RecordPanel.setLayout(null);
 
 
-		CardPanel = new JPanel(); // RecordsPanel 초기화
-		CardPanel.setBounds(10, 10, 840, 460);
+		CardPanel = new JPanel(); // CardPanel 초기화
+		CardPanel.setBounds(10, 10, 840, 460); // RecordPanel 내에서 CardPanel의 크기
 		RecordPanel.add(CardPanel);
 
 		cl_cardPanel = new CardLayout(0, 0); // CardLayout 초기화
-		CardPanel.setLayout(cl_cardPanel); // RecordsPanel에 CardLayout 설정
+		CardPanel.setLayout(cl_cardPanel); // CardPanel에 CardLayout 설정
 
-		// 1. "전적" 내용을 담을 패널
+		// 1. "전적" 내용을 담을 패널 (JScrollPane으로 감싸기)
 		JPanel myRecordsPanel = new JPanel();
-		myRecordsPanel.setBackground(new Color(240, 240, 240)); // 구분을 위해 색상 추가
-		CardPanel.add(myRecordsPanel, "records");
-		myRecordsPanel.setLayout(null);
-		myRecordsPanel.setPreferredSize(new Dimension(820, 900)); // 너비는 CardPanel과 같게, 높이는 더 크게
-		// **핵심: recordsContentPanel을 JScrollPane으로 감쌉니다
-		JScrollPane recordsScrollPane = new JScrollPane(myRecordsPanel);
-		// **핵심: CardPanel에 recordsContentPanel 대신 recordsScrollPane을 추가합니다.**
-		CardPanel.add(recordsScrollPane, "records"); 
+		myRecordsPanel.setBackground(new Color(240, 240, 240));
+		myRecordsPanel.setLayout(new BorderLayout()); // BorderLayout 유지
+		
+		// **새로 추가된 부분: myRecordsPanel에 EmptyBorder를 설정하여 여백 추가**
+		// 상, 좌, 하, 우 순서로 패딩 값 지정
+		myRecordsPanel.setBorder(new EmptyBorder(40, 40, 40, 40)); // 상하좌우 20픽셀 여백
+
+		// 테이블 데이터 및 컬럼 정의
+		String[] columnNames = {"게임 종류", "총 문제", "맞춘 문제", "틀린 문제", "총 점수"};
+		Object[][] data = new Object[50][5]; // 50개의 더미 전적 데이터
+		for (int i = 0; i < 50; i++) {
+		    data[i][0] = "챔피언 퀴즈 " + (i + 1);
+		    data[i][1] = 10;
+		    data[i][2] = 8 + (i % 3);
+		    data[i][3] = 2 - (i % 2);
+		    data[i][4] = (int)data[i][2] * 100 - (int)data[i][3] * 50;
+		}
+
+		// 테이블 내의 어떤 셀도 사용자 인터페이스를 통해 직접 편집할 수 없게 됩니다. 즉, 모든 셀은 "읽기 전용"
+		DefaultTableModel tableModel = new DefaultTableModel(data, columnNames) {
+		    @Override
+		    public boolean isCellEditable(int row, int column) {
+		        return false;
+		    }
+		};
+		JTable recordsTable = new JTable(tableModel);
+		recordsTable.setFillsViewportHeight(true);
+		recordsTable.setFont(new Font("CookieRun Regular", Font.PLAIN, 14));
+		recordsTable.setRowHeight(25);
+		recordsTable.getTableHeader().setFont(new Font("CookieRun Regular", Font.BOLD, 14));
+		
+		// JTable 꾸미기 (배경색, 그리드 색상, 선택 색상, 폰트 등)
+		recordsTable.setShowVerticalLines(false); // 세로줄 숨기기
+		recordsTable.setShowHorizontalLines(false); // 가로줄 숨기기
+		recordsTable.setGridColor(new Color(228, 235, 250)); // 그리드 색상 일치
+
+		recordsTable.setBackground(new Color(255, 255, 255)); // 배경 흰색
+		recordsTable.setForeground(Color.DARK_GRAY); // 텍스트 색상
+		recordsTable.setSelectionBackground(new Color(185, 215, 234)); // 선택된 행의 배경색
+		recordsTable.setSelectionForeground(Color.BLACK); // 선택된 행의 글자색
+
+		// 테이블 헤더 꾸미기
+		recordsTable.getTableHeader().setBackground(new Color(185, 215, 234));
+		recordsTable.getTableHeader().setForeground(Color.BLACK);
+		recordsTable.getTableHeader().setReorderingAllowed(false); // 열 순서 변경 막기
+		recordsTable.getTableHeader().setResizingAllowed(false); // 열 크기 조절 막기
+		recordsTable.getTableHeader().setOpaque(false);
+
+		// JTable 테두리 제거
+		recordsTable.setBorder(null);
+		
+		// 문제 종류, 총 문제, 맞춘 문제, 틀린 문제 가운데 정렬
+		DefaultTableCellRenderer CenterRenderer = new DefaultTableCellRenderer();
+		CenterRenderer.setHorizontalAlignment(SwingConstants.CENTER);
+		
+		// 최고 점수 오른쪽 정렬
+		DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();
+		rightRenderer.setHorizontalAlignment(SwingConstants.RIGHT);
+		
+		// 정렬 적용
+		for (int i = 0; i < recordsTable.getColumnCount(); i++) {
+			if (i == 3) {
+				recordsTable.getColumnModel().getColumn(i).setCellRenderer(rightRenderer);
+			} else {
+				recordsTable.getColumnModel().getColumn(i).setCellRenderer(CenterRenderer);
+			}
+		}
+
+		JScrollPane recordsScrollPane = new JScrollPane(recordsTable);
+		
+		myRecordsPanel.add(recordsScrollPane, BorderLayout.CENTER); // recordsScrollPane을 myRecordsPanel에 추가
+
+		CardPanel.add(myRecordsPanel, "records"); // myRecordsPanel (JScrollPane 포함)을 CardPanel에 추가
+
 
 		// 2. "내정보" 내용을 담을 패널
 		JPanel myInfoContentPanel = new JPanel();
@@ -193,7 +266,7 @@ public class MyInfoFrame extends JFrame {
 		btnHome.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(homeframe == null) {
-					homeframe = new HomeFrame(dbm);
+					homeframe = new HomeFrame(dbm); // dbm 전달
 					homeframe.setVisible(true);
 				} else {
 					homeframe.setVisible(true);
@@ -205,7 +278,7 @@ public class MyInfoFrame extends JFrame {
 		btnHome.setForeground(Color.BLACK);
 		btnHome.setFont(new Font("CookieRun Regular", Font.PLAIN, 16));
 		btnHome.setBackground(new Color(118, 159, 205));
-		btnHome.setBounds(782, 15, 120, 40);
+		btnHome.setBounds(780, 15, 120, 40);
 		MainPanel.add(btnHome);
 		
 		RoundJPanel outLine1 = new RoundJPanel(5);

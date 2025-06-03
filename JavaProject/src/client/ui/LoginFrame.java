@@ -2,18 +2,16 @@ package client.ui;
 
 import java.awt.EventQueue;
 import javax.swing.*;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
 import javax.swing.border.EmptyBorder;
 
 import client.uiTool.RoundJButton;
 import client.uiTool.RoundJPanel;
 import client.uiTool.RoundJTextField;
+import database.ApiResponse;
 import database.DatabaseManager;
+import database.HttpConnecter;
 
 import java.awt.BorderLayout;
-import javax.swing.JLabel;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -21,14 +19,8 @@ import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.RoundRectangle2D;
 import java.awt.Color;
-import javax.swing.SwingConstants;
 import java.awt.FlowLayout;
 import java.awt.Component;
-import javax.swing.Box;
-import javax.swing.JTextField;
-import javax.swing.JButton;
-import javax.swing.JSeparator;
-import javax.swing.ImageIcon;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
@@ -41,6 +33,8 @@ public class LoginFrame extends JFrame {
 	private JTextField tfInputID;
 	private RoundJPasswordField tfInputPW;
 	private static DatabaseManager dbm;
+	private HomeFrame homeframe;
+	private RegisterFrame Reframe;
 
 	/**
 	 * Launch the application.
@@ -68,7 +62,7 @@ public class LoginFrame extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 840, 660);
 		contentPane = new JPanel();
-		contentPane.setBackground(new Color(235, 240, 250));
+		contentPane.setBackground(new Color(228, 235, 250));
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
@@ -121,17 +115,32 @@ public class LoginFrame extends JFrame {
 		JButton btnLogin = new RoundJButton();
 		btnLogin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String id = tfInputID.getText();
-				String password = tfInputPW.getText();
+				String id = tfInputID.getText().trim();
+				String password = tfInputPW.getText().trim();
+				
+				// 아이디 또는 비밀번호가 비어있는지 확인
+				if (id.isEmpty()) {
+					JOptionPane.showMessageDialog(LoginPanel, "아이디를 입력해주세요.", "로그인 오류", JOptionPane.WARNING_MESSAGE);
+					tfInputID.requestFocusInWindow(); // 아이디 입력 포커스
+					return; // 로그인 프로세스 중단
+				}
+				if (password.isEmpty()) {
+					JOptionPane.showMessageDialog(LoginPanel, "비밀번호를 입력해주세요.", "로그인 오류", JOptionPane.WARNING_MESSAGE);
+					tfInputPW.requestFocusInWindow(); // 비밀번호 입력 포커스
+					return; // 로그인 프로세스 중단
+				}
 				
 				DatabaseManager.SignInState siState = dbm.SignIn(id, password);
 				switch(siState) {
 					case DatabaseManager.SignInState.SUCCESS:
 						JOptionPane.showMessageDialog(LoginPanel, "로그인에 성공했습니다."); // 로그인 성공 메세지 화면
 						// 메인 프레임 전환
-						HomeFrame frame = new HomeFrame(dbm);
-						frame.setResizable(false);
-						frame.setVisible(true);
+						if(homeframe == null) {
+							homeframe = new HomeFrame(dbm);						
+							homeframe.setVisible(true);
+						} else {
+							homeframe.setVisible(true);
+						}
 						setVisible(false);
 						break;
 					case DatabaseManager.SignInState.ID_INCORRECT:
@@ -144,7 +153,7 @@ public class LoginFrame extends JFrame {
 					case DatabaseManager.SignInState.UNKOWN_ERROR:
 						JOptionPane.showMessageDialog(LoginPanel, "로그인에 실패했습니다.");
 						break;
-				}
+					}
 			}
 		});
 		
@@ -160,9 +169,12 @@ public class LoginFrame extends JFrame {
 		btnSignUp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// 회원가입 버튼 누를 때 로그인 프레임에 있는 dbm을 넘김 (DB 계속 연결)
-				RegisterFrame Reframe = new RegisterFrame(dbm);
-				Reframe.setResizable(false);
-				Reframe.setVisible(true);
+				if(Reframe == null) {
+					Reframe = new RegisterFrame(dbm);				
+					Reframe.setVisible(true);
+				} else {
+					Reframe.setVisible(true);
+				}
 				setVisible(false);
 			}
 		});
