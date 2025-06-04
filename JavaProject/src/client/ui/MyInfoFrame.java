@@ -81,6 +81,7 @@ public class MyInfoFrame extends JFrame {
 		contentPane.add(MainPanel);
 
 		RoundJPanel RecordPanel = new RoundJPanel(5);
+		RecordPanel.setBackground(new Color(255, 255, 255));
 		RecordPanel.setBounds(190, 90, 860, 480);
 		MainPanel.add(RecordPanel);
 		RecordPanel.setLayout(null);
@@ -95,7 +96,7 @@ public class MyInfoFrame extends JFrame {
 
 		// 1. "전적" 내용을 담을 패널 (JScrollPane으로 감싸기)
 		JPanel myRecordsPanel = new JPanel();
-		myRecordsPanel.setBackground(new Color(240, 240, 240));
+		myRecordsPanel.setBackground(new Color(255, 255, 255));
 		myRecordsPanel.setLayout(new BorderLayout()); // BorderLayout 유지
 		
 		// **새로 추가된 부분: myRecordsPanel에 EmptyBorder를 설정하여 여백 추가**
@@ -165,22 +166,16 @@ public class MyInfoFrame extends JFrame {
 
 		JScrollPane recordsScrollPane = new JScrollPane(recordsTable);
 		
-		myRecordsPanel.add(recordsScrollPane, BorderLayout.CENTER); // recordsScrollPane을 myRecordsPanel에 추가
+		myRecordsPanel.add(recordsScrollPane, BorderLayout.CENTER);
 
-		CardPanel.add(myRecordsPanel, "records"); // myRecordsPanel (JScrollPane 포함)을 CardPanel에 추가
+		CardPanel.add(myRecordsPanel, "records");
 
 
 		// 2. "내정보" 내용을 담을 패널
 		JPanel myInfoContentPanel = new JPanel();
-		myInfoContentPanel.setBackground(Color.PINK); // 구분을 위해 색상 추가
+		myInfoContentPanel.setBackground(new Color(255, 255, 255)); // 구분을 위해 색상 추가
 		CardPanel.add(myInfoContentPanel, "myInfo"); // "myInfo"라는 이름으로 추가
 		myInfoContentPanel.setLayout(null);
-		
-		// 3. "회원탈퇴" 내용을 담은 패널
-		JPanel DeleteInfoPanel = new JPanel();
-		DeleteInfoPanel.setBackground(new Color(128, 128, 192)); // 구분을 위해 색상 추가
-		CardPanel.add(DeleteInfoPanel, "DeleteInfo"); // "DeleteInfo"라는 이름으로 추가
-		DeleteInfoPanel.setLayout(null);
 
 		// 처음에는 "전적" 패널이 보이도록 설정 (선택 사항)
 		cl_cardPanel.show(CardPanel, "records");
@@ -246,7 +241,7 @@ public class MyInfoFrame extends JFrame {
 		RoundJButton btnDelete = new RoundJButton("회원탈퇴"); // 버튼 이름 변경
 		btnDelete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				cl_cardPanel.show(CardPanel,"DeleteInfo");
+				
 			}
 		});
 		btnDelete.setBounds(70, 330, 100, 60);

@@ -24,8 +24,11 @@ import java.awt.event.ActionEvent;
 import java.awt.CardLayout;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import java.awt.FlowLayout; // CardLayout 임포트
+import java.awt.FlowLayout;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent; // CardLayout 임포트
 
 public class InGameFrame extends JFrame {
 
@@ -33,11 +36,14 @@ public class InGameFrame extends JFrame {
 	private JPanel contentPane;
 	private JPanel StartPanel; // 시작 화면
 	private JPanel InGamePanel; // 게임 진행 화면
+	private Panel ResultsbtnPanel; // 게임 결과 확인 버튼 화면
 	private Panel ResultsPanel; //  게임 결과 화면
 	private CardLayout cardLayout; // CardLayout 변수
 	private HomeFrame homeframe;
 	private RankingFrame rankingframe;
 	private Player player;
+	private JProgressBar progressBar;
+	private RoundJTextField tfAnswer;
 	/**
 	 * Launch the application.
 	 */
@@ -74,17 +80,55 @@ public class InGameFrame extends JFrame {
 		StartPanel.setBackground(new Color(228, 235, 250)); // 배경색 유지
 		StartPanel.setLayout(null); // startPanel은 여전히 null 레이아웃 사용 가능
 
-		JButton btnStart = new RoundJButton("START !!");
+		RoundJButton btnStart = new RoundJButton("START !!");
 		btnStart.setBackground(new Color(185, 215, 234));
 		btnStart.setFont(new Font("CookieRun Regular", Font.BOLD, 30));
 		btnStart.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				// 버튼 클릭 시 inGamePanel을 보이도록 전환
-				cardLayout.show(contentPane, "InGame"); 
+				cardLayout.show(contentPane, "InGame");
+				tfAnswer.requestFocusInWindow();
+				new Thread(() -> {
+					int i;
+				    for (i = 119; i >= 0; i--) {
+				        try {
+				            Thread.sleep(1000);
+				        } catch (InterruptedException ex) {
+				            Thread.currentThread().interrupt(); // 스레드 인터럽트 상태 복원
+				        }
+				        final int currentValue = i; // 람다 표현식에서 사용하려면 final 또는 effectively final이어야 함
+				        SwingUtilities.invokeLater(() -> {
+				            progressBar.setValue(currentValue);
+				        });
+				        if (i == 0) {
+				        	SwingUtilities.invokeLater(() -> {
+				        		cardLayout.show(contentPane, "btnResult");
+				        	});
+				        }
+				    }
+				}).start();
 			}
+				
 		});
 		btnStart.setBounds(540, 260, 200, 100);
 		StartPanel.add(btnStart); // startPanel에 버튼 추가
+		
+		RoundJButton btnBack = new RoundJButton("돌아가기");
+		btnBack.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (homeframe == null) {
+					homeframe = new HomeFrame(player);
+					homeframe.setVisible(true);
+				} else {
+					homeframe.setVisible(true);
+				}
+				setVisible(false);
+			}
+		});
+		btnBack.setBackground(new Color(176, 180, 186));
+		btnBack.setFont(new Font("CookieRun Regular", Font.BOLD, 25));
+		btnBack.setBounds(1080, 600, 150, 50);
+		StartPanel.add(btnBack);
 
 		// 2. 게임 진행 화면 패널 생성 및 컴포넌트 추가
 		InGamePanel = new JPanel();
@@ -104,7 +148,7 @@ public class InGameFrame extends JFrame {
 		IMGPanel.setBounds(240, 80, 600, 400);
 		GamePanel.add(IMGPanel);
 		
-		RoundJTextField tfAnswer = new RoundJTextField(10);
+		tfAnswer = new RoundJTextField(10);
 		tfAnswer.setForeground(Color.DARK_GRAY);
 		tfAnswer.setFont(new Font("CookieRun Regular", Font.PLAIN, 18));
 		tfAnswer.setColumns(10);
@@ -120,21 +164,13 @@ public class InGameFrame extends JFrame {
 		btnAnswer.setBounds(740, 510, 100, 50);
 		GamePanel.add(btnAnswer);
 		
-		JProgressBar TimeBar = new JProgressBar();
-		TimeBar.setForeground(Color.RED);
-		TimeBar.setFont(new Font("굴림", Font.PLAIN, 16));
-		TimeBar.setBackground(new Color(217, 217, 217));
-		TimeBar.setBounds(240, 30, 600, 25);
-		GamePanel.add(TimeBar);
+		progressBar = new JProgressBar();
+		progressBar.setMaximum(119);
+		progressBar.setForeground(new Color(248, 167, 160));
+		progressBar.setBounds(240, 30, 600, 25);
+		GamePanel.add(progressBar);
 		
-		JButton btnNewButton = new JButton("결과 창 버튼");
-		btnNewButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				cardLayout.show(contentPane, "Results");
-			}
-		});
-		btnNewButton.setBounds(896, 459, 124, 101);
-		GamePanel.add(btnNewButton);
+		ResultsbtnPanel = new Panel();
 		
 		ResultsPanel = new Panel();
 		ResultsPanel.setBackground(new Color(228, 235, 250));
@@ -142,7 +178,21 @@ public class InGameFrame extends JFrame {
 		// contentPane에 패널들을 추가 (각 패널에 이름을 부여)
 		contentPane.add(StartPanel, "Start");
 		contentPane.add(InGamePanel, "InGame");
+		contentPane.add(ResultsbtnPanel, "btnResult");
 		contentPane.add(ResultsPanel, "Result");
+		ResultsbtnPanel.setLayout(null);
+		
+		RoundJButton btnNewButton_1 = new RoundJButton();
+		btnNewButton_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				cardLayout.show(contentPane, "Results");
+			}
+		});
+		btnNewButton_1.setText("결과 확인");
+		btnNewButton_1.setFont(new Font("CookieRun Regular", Font.BOLD, 30));
+		btnNewButton_1.setBackground(new Color(185, 215, 234));
+		btnNewButton_1.setBounds(540, 260, 200, 100);
+		ResultsbtnPanel.add(btnNewButton_1);
 		
 		RoundJPanel outLine1_1 = new RoundJPanel(5);
 		outLine1_1.setBackground(new Color(100, 100, 100));
