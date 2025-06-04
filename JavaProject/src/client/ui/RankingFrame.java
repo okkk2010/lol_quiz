@@ -36,7 +36,6 @@ public class RankingFrame extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	private static DatabaseManager dbm;
 	private JTextField tfNickName;
 	private JTextField tfRanking;
 	private JTextField tfMaxScore;
@@ -50,7 +49,7 @@ public class RankingFrame extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					RankingFrame frame = new RankingFrame(dbm);
+					RankingFrame frame = new RankingFrame();
 					frame.setResizable(false);
 					frame.setVisible(true);
 				} catch (Exception e) {
@@ -63,8 +62,7 @@ public class RankingFrame extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public RankingFrame(DatabaseManager dbManger) {
-		this.dbm = dbManger;
+	public RankingFrame() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1280, 720);
 		contentPane = new JPanel();
@@ -223,7 +221,7 @@ public class RankingFrame extends JFrame {
 		btnHome.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (homeframe == null) {
-					homeframe = new HomeFrame(dbm);
+					homeframe = new HomeFrame();
 					homeframe.setVisible(true);
 				} else {
 					homeframe.setVisible(true);

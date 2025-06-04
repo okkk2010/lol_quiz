@@ -34,7 +34,6 @@ public class InGameFrame extends JFrame {
 	private JPanel InGamePanel; // 게임 진행 화면
 	private Panel ResultsPanel; //  게임 결과 화면
 	private CardLayout cardLayout; // CardLayout 변수
-	private static DatabaseManager dbm;
 	private HomeFrame homeframe;
 	private RankingFrame rankingframe;
 	/**
@@ -44,7 +43,7 @@ public class InGameFrame extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					InGameFrame frame = new InGameFrame(dbm);
+					InGameFrame frame = new InGameFrame();
 					frame.setResizable(false); // 창 크기 조절 방지
 					frame.setVisible(true);
 				} catch (Exception e) {
@@ -57,8 +56,7 @@ public class InGameFrame extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public InGameFrame(DatabaseManager dbManger) {
-		this.dbm = dbManger;
+	public InGameFrame() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1280, 720);
 		
@@ -196,7 +194,7 @@ public class InGameFrame extends JFrame {
 		btnRanking.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(rankingframe == null) {
-					rankingframe = new RankingFrame(dbm);
+					rankingframe = new RankingFrame();
 					rankingframe.setVisible(true);
 				} else {
 					rankingframe.setVisible(true);
@@ -215,7 +213,7 @@ public class InGameFrame extends JFrame {
 		btnHome.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(homeframe == null) {
-					homeframe = new HomeFrame(dbm);
+					homeframe = new HomeFrame();
 					homeframe.setVisible(true);
 				} else {
 					homeframe.setVisible(true);

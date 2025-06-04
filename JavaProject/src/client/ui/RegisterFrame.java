@@ -10,7 +10,9 @@ import client.ui.LoginFrame;
 import client.uiTool.RoundJButton;
 import client.uiTool.RoundJPanel;
 import client.uiTool.RoundJTextField;
+import database.ApiResponse;
 import database.DatabaseManager;
+import database.HttpConnecter;
 import lombok.Getter;
 
 import java.awt.Color;
@@ -34,7 +36,6 @@ public class RegisterFrame extends JFrame {
 	private RoundJPasswordField tfInputPW;
 	private RoundJPasswordField tfInputPwCheck;
 	private RoundJTextField tfInputNickname;
-	private static DatabaseManager dbm;
 
 	/**
 	 * Launch the application.
@@ -43,7 +44,7 @@ public class RegisterFrame extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					RegisterFrame frame = new RegisterFrame(dbm);
+					RegisterFrame frame = new RegisterFrame();
 					frame.setResizable(false);
 					frame.setVisible(true);
 				} catch (Exception e) {
@@ -57,8 +58,7 @@ public class RegisterFrame extends JFrame {
 	 * Create the frame.
 	 * @param dbm2 
 	 */
-	public RegisterFrame(DatabaseManager dbManger) {
-		this.dbm = dbManger;
+	public RegisterFrame() {
 		setTitle("회원가입");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 840, 660);
@@ -132,23 +132,24 @@ public class RegisterFrame extends JFrame {
 					tfInputPW.requestFocusInWindow(); // 비밀번호 입력 포커스
 					return; // 로그인 프로세스 중단
 				}
-				DatabaseManager.SignUpState suState =  dbm.SignUp(id, nickName, password);
-				switch(suState) {
-					case DatabaseManager.SignUpState.SUCCESS:
-						JOptionPane.showMessageDialog(SignUpPanel, "회원가입에 성공했습니다!");
-						// 로그인 프레임 전환
-						LoginFrame frame = new LoginFrame();
-						frame.setResizable(false); // 화면 고정
-						frame.setVisible(true);
-						// 회원가입 화면 끔
-						setVisible(false); 
-						break;
-					case DatabaseManager.SignUpState.ID_DUPLICATION:
-						JOptionPane.showMessageDialog(SignUpPanel, "아이디가 중복 되었습니다.");
-						break;
-					case DatabaseManager.SignUpState.UNKOWN_ERROR:
-						JOptionPane.showMessageDialog(SignUpPanel, "회원가입에 실패했습니다.");
-						break;
+				ApiResponse apiRes = HttpConnecter.instance.signUpUser(id, nickName, password);
+				if(apiRes.isSuccess()) {
+					JOptionPane.showMessageDialog(contentPane, "회원가입 성공!!");
+					// 로그인 프레임 전환
+					LoginFrame frame = new LoginFrame();
+					frame.setResizable(false); // 화면 고정
+					frame.setVisible(true);
+					// 회원가입 화면 끔
+					setVisible(false);
+				} else {
+					switch(apiRes.getError().getCode()) {
+						case "DUPLICATE_ID":
+							JOptionPane.showMessageDialog(contentPane, "아이디 중복");
+							break;
+						case "SERVER_ERROR":
+							JOptionPane.showMessageDialog(contentPane, "회원가입 실패");
+							break;
+					}
 				}
 			}
 		});

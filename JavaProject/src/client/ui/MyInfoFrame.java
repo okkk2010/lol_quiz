@@ -34,7 +34,6 @@ public class MyInfoFrame extends JFrame {
 	private JPanel contentPane;
 	private JPanel CardPanel; // CardLayout을 적용할 패널
 	private CardLayout cl_cardPanel; // CardLayout 변수 추가
-	private static DatabaseManager dbm;
 	private LoginFrame loginframe;
 	private HomeFrame homeframe;
 
@@ -46,9 +45,7 @@ public class MyInfoFrame extends JFrame {
 			public void run() {
 				try {
 					
-					dbm = new DatabaseManager() {
-					};
-					MyInfoFrame frame = new MyInfoFrame(dbm); 
+					MyInfoFrame frame = new MyInfoFrame(); 
 					frame.setResizable(false);
 					frame.setVisible(true);
 				} catch (Exception e) {
@@ -61,8 +58,7 @@ public class MyInfoFrame extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public MyInfoFrame(DatabaseManager dbManger) {
-		this.dbm = dbManger;
+	public MyInfoFrame() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1280, 720);
 		contentPane = new JPanel();
@@ -266,7 +262,7 @@ public class MyInfoFrame extends JFrame {
 		btnHome.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(homeframe == null) {
-					homeframe = new HomeFrame(dbm); // dbm 전달
+					homeframe = new HomeFrame();
 					homeframe.setVisible(true);
 				} else {
 					homeframe.setVisible(true);

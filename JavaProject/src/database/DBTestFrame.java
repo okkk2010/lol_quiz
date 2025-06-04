@@ -189,7 +189,7 @@ public class DBTestFrame extends JFrame {
 				{
 					String content = apiRes.getContent();
 					User user = JSONManager.getJsonData(content, User.class);
-					tFOutput.setText(user.getId() + "\n" + user.getNickname() + "\n" + user.getTier());	
+						
 				} 
 				else 
 				{

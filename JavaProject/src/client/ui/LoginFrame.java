@@ -4,12 +4,15 @@ import java.awt.EventQueue;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
+import client.CtManager.Player;
 import client.uiTool.RoundJButton;
 import client.uiTool.RoundJPanel;
 import client.uiTool.RoundJTextField;
+import dataSet.user.User;
 import database.ApiResponse;
 import database.DatabaseManager;
 import database.HttpConnecter;
+import database.JSONManager;
 
 import java.awt.BorderLayout;
 import java.awt.Font;
@@ -32,7 +35,6 @@ public class LoginFrame extends JFrame {
 	private JPanel contentPane;
 	private JTextField tfInputID;
 	private RoundJPasswordField tfInputPW;
-	private static DatabaseManager dbm;
 	private HomeFrame homeframe;
 	private RegisterFrame Reframe;
 
@@ -43,7 +45,6 @@ public class LoginFrame extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					dbm = new DatabaseManager();
 					LoginFrame frame = new LoginFrame();
 					frame.setResizable(false); // 화면 고정
 					frame.setVisible(true);
@@ -114,7 +115,10 @@ public class LoginFrame extends JFrame {
 		// 로그인 버튼 (RoundButton)
 		JButton btnLogin = new RoundJButton();
 		btnLogin.addActionListener(new ActionListener() {
+			
+
 			public void actionPerformed(ActionEvent e) {
+				
 				String id = tfInputID.getText().trim();
 				String password = tfInputPW.getText().trim();
 				
@@ -129,31 +133,51 @@ public class LoginFrame extends JFrame {
 					tfInputPW.requestFocusInWindow(); // 비밀번호 입력 포커스
 					return; // 로그인 프로세스 중단
 				}
-				
-				DatabaseManager.SignInState siState = dbm.SignIn(id, password);
-				switch(siState) {
-					case DatabaseManager.SignInState.SUCCESS:
-						JOptionPane.showMessageDialog(LoginPanel, "로그인에 성공했습니다."); // 로그인 성공 메세지 화면
-						// 메인 프레임 전환
-						if(homeframe == null) {
-							homeframe = new HomeFrame(dbm);						
-							homeframe.setVisible(true);
+				ApiResponse apiRes = HttpConnecter.instance.signInUser(id, password);
+				if(apiRes.isSuccess()) {
+					JOptionPane.showMessageDialog(LoginPanel, "로그인 성공!!");
+					User user = null;
+					// 정보 값 확인
+					if(apiRes.isSuccess()) 
+					{
+						apiRes = HttpConnecter.instance.userInfo(id);
+						if(apiRes.isSuccess()) {
+							// 메인 프레임 전환
+							if(homeframe == null) {
+								homeframe = new HomeFrame(new Player(user));						
+								homeframe.setResizable(false);
+								homeframe.setVisible(true);
+							} else {
+								homeframe.setVisible(true);
+							}
+							setVisible(false);
 						} else {
-							homeframe.setVisible(true);
+							switch(apiRes.getError().getCode()) {
+							case "NOT_FOUND_ID":
+								JOptionPane.showMessageDialog(contentPane, "test");
+								return;
+							}
 						}
-						setVisible(false);
-						break;
-					case DatabaseManager.SignInState.ID_INCORRECT:
-						JOptionPane.showMessageDialog(LoginPanel, "해당 아이디로 가입된 계정이 없습니다.");
-						break;
-					case DatabaseManager.SignInState.PASSWORD_INCORRECT:
-						JOptionPane.showMessageDialog(LoginPanel, "비밀번호가 틀립니다!");
-						break;
-					case DatabaseManager.SignInState.FAIL:
-					case DatabaseManager.SignInState.UNKOWN_ERROR:
-						JOptionPane.showMessageDialog(LoginPanel, "로그인에 실패했습니다.");
-						break;
+					} 
+					else 
+					{
+						switch(apiRes.getError().getCode()) {
+							case "NOT_FOUND_ID":
+								JOptionPane.showMessageDialog(contentPane, "test");
+								return;
+						}
 					}
+					
+				} else {
+					switch(apiRes.getError().getCode()) {
+						case "DUPLICATE_ID":
+							JOptionPane.showMessageDialog(LoginPanel, "해당 아이디로 가입된 계정이 없습니다.");
+							break;
+						case "NOT_MATCH_PASSWORD":
+							JOptionPane.showMessageDialog(LoginPanel, "비밀번호가 틀립니다.");
+							break;
+					}
+				}
 			}
 		});
 		
@@ -163,14 +187,17 @@ public class LoginFrame extends JFrame {
 		btnLogin.setBounds(250, 380, 100, 40);
 		btnLogin.setForeground(Color.BLACK); // 테두리 색상
 		LoginPanel.add(btnLogin);
+		
+		// enter 키 입력 가능
+		this.getRootPane().setDefaultButton(btnLogin);
 
 		// 회원가입 버튼 (RoundButton)
 		JButton btnSignUp = new RoundJButton();
 		btnSignUp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// 회원가입 버튼 누를 때 로그인 프레임에 있는 dbm을 넘김 (DB 계속 연결)
+			
 				if(Reframe == null) {
-					Reframe = new RegisterFrame(dbm);				
+					Reframe = new RegisterFrame();				
 					Reframe.setVisible(true);
 				} else {
 					Reframe.setVisible(true);

@@ -8,8 +8,11 @@ import javax.swing.border.EmptyBorder;
 import java.awt.Color;
 import javax.swing.UIManager;
 import java.awt.FlowLayout;
+
+import client.CtManager.Player;
 import client.uiTool.RoundJButton;
 import client.uiTool.RoundJPanel;
+import dataSet.user.User;
 import database.DatabaseManager;
 
 import java.awt.Font;
@@ -34,32 +37,32 @@ public class HomeFrame extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	private static DatabaseManager dbm;
 	private InGameFrame ingameframe;
 	private LoginFrame loginframe;
 	private MyInfoFrame myinfoFrame;
+	private Player player;
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					HomeFrame frame = new HomeFrame(dbm);
-					frame.setResizable(false);
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
+//		EventQueue.invokeLater(new Runnable() {
+//			public void run() {
+//				try {
+//					HomeFrame frame = new HomeFrame(player);
+//					frame.setResizable(false);
+//					frame.setVisible(true);
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		});
 	}
 
 	/**
 	 * Create the frame.
 	 */
-	public HomeFrame(DatabaseManager dbManger) {
-		this.dbm = dbManger;
+	public HomeFrame(Player player) {
+		this.player = player;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1280, 720);
 		contentPane = new JPanel();
@@ -80,7 +83,7 @@ public class HomeFrame extends JFrame {
 
 			public void actionPerformed(ActionEvent e) {
 				if(myinfoFrame == null) {
-					myinfoFrame = new MyInfoFrame(dbm);
+					myinfoFrame = new MyInfoFrame();
 					myinfoFrame.setVisible(true);
 				} else {
 					myinfoFrame.setVisible(true);
@@ -89,7 +92,7 @@ public class HomeFrame extends JFrame {
 			}
 		});
 		btnMyInfo.setBounds(700, 15, 200, 40);
-		btnMyInfo.setText("닉네임(내 정보)");
+		btnMyInfo.setText(player != null && player.getNickname() != null ? player.getNickname() : "(내 정보)");
 		btnMyInfo.setForeground(Color.BLACK);
 		btnMyInfo.setFont(new Font("CookieRun Regular", Font.PLAIN, 16));
 		btnMyInfo.setBackground(new Color(185, 215, 234));
@@ -134,11 +137,12 @@ public class HomeFrame extends JFrame {
 		SPanel.add(LOLPanel);
 		
 		JButton btnLOLQuiz = new JButton("");
+		btnLOLQuiz.setIcon(new ImageIcon("C:\\자바팀플\\lol_quiz\\JavaProject\\src\\client\\Icon\\롤테마_이미지.png"));
 		btnLOLQuiz.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
 				if(ingameframe == null) {
-					ingameframe = new InGameFrame(dbm);
+					ingameframe = new InGameFrame();
 					ingameframe.setVisible(true);
 				} else {
 					ingameframe.setVisible(true);
@@ -146,7 +150,6 @@ public class HomeFrame extends JFrame {
 				setVisible(false);
 			}
 		});
-		btnLOLQuiz.setIcon(new ImageIcon("C:\\자바팀프로젝트\\git\\lol_quiz\\JavaProject\\src\\client\\ICON\\롤테마_이미지.png"));
 		btnLOLQuiz.setBounds(15, 15, 150, 150);
 		LOLPanel.add(btnLOLQuiz);
 		
@@ -155,7 +158,7 @@ public class HomeFrame extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if(ingameframe == null) {
-					ingameframe = new InGameFrame(dbm);
+					ingameframe = new InGameFrame();
 					ingameframe.setVisible(true);
 				} else {
 					ingameframe.setVisible(true);
