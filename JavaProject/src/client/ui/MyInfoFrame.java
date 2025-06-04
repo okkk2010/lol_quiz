@@ -9,7 +9,10 @@ import javax.swing.border.EmptyBorder;
 import java.awt.Color;
 import client.uiTool.RoundJPanel;
 import database.DatabaseManager;
+import client.CtManager.Player;
 import client.uiTool.RoundJButton;
+import client.uiTool.RoundJLabel;
+
 import java.awt.Font;
 import java.awt.BorderLayout; // BorderLayout 임포트
 import java.awt.CardLayout;
@@ -36,29 +39,32 @@ public class MyInfoFrame extends JFrame {
 	private CardLayout cl_cardPanel; // CardLayout 변수 추가
 	private LoginFrame loginframe;
 	private HomeFrame homeframe;
+	private RankingFrame rankingframe;
+	private Player player;
 
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					
-					MyInfoFrame frame = new MyInfoFrame(); 
-					frame.setResizable(false);
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
+//		EventQueue.invokeLater(new Runnable() {
+//			public void run() {
+//				try {
+//					
+//					MyInfoFrame frame = new MyInfoFrame(); 
+//					frame.setResizable(false);
+//					frame.setVisible(true);
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		});
 	}
 
 	/**
 	 * Create the frame.
 	 */
-	public MyInfoFrame() {
+	public MyInfoFrame(Player player) {
+		this.player = player;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1280, 720);
 		contentPane = new JPanel();
@@ -73,40 +79,6 @@ public class MyInfoFrame extends JFrame {
 		MainPanel.setBackground(new Color(255, 255, 255));
 		MainPanel.setBounds(80, 40, 1080, 600);
 		contentPane.add(MainPanel);
-
-		RoundJButton btnMyInfo = new RoundJButton();
-		btnMyInfo.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				// 닉네임 버튼 액션 (필요하다면 여기에 추가)
-			}
-		});
-		btnMyInfo.setText("닉네임");
-		btnMyInfo.setForeground(Color.BLACK);
-		btnMyInfo.setFont(new Font("CookieRun Regular", Font.PLAIN, 16));
-		btnMyInfo.setBackground(new Color(185, 215, 234));
-		btnMyInfo.setBounds(550, 15, 200, 40);
-		MainPanel.add(btnMyInfo);
-
-		RoundJButton btnLogOut = new RoundJButton();
-		btnLogOut.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				if(loginframe == null) {
-					loginframe = new LoginFrame();
-					loginframe.setResizable(false);
-					loginframe.setVisible(true);
-				} else {
-					loginframe.setVisible(true);
-				}
-				setVisible(false);
-			}
-		});
-		btnLogOut.setText("로그 아웃");
-		btnLogOut.setForeground(Color.BLACK);
-		btnLogOut.setFont(new Font("CookieRun Regular", Font.PLAIN, 16));
-		btnLogOut.setBackground(new Color(176, 180, 186));
-		btnLogOut.setBounds(930, 15, 120, 40);
-		MainPanel.add(btnLogOut);
-
 
 		RoundJPanel RecordPanel = new RoundJPanel(5);
 		RecordPanel.setBounds(190, 90, 860, 480);
@@ -242,10 +214,34 @@ public class MyInfoFrame extends JFrame {
 		btnMyInformation.setBackground(new Color(240, 240, 240));
 
 		JSeparator spt1 = new JSeparator();
-		spt1.setBounds(60, 240, 120, 3);
+		spt1.setBounds(60, 320, 120, 3);
 		MainPanel.add(spt1);
 		spt1.setForeground(new Color(150, 150, 150));
 		spt1.setBackground(new Color(150, 150, 150));
+		
+		RoundJButton btnRanking = new RoundJButton("내정보");
+		btnRanking.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(rankingframe == null) {
+					rankingframe = new RankingFrame(player);
+					rankingframe.setVisible(true);
+				} else {
+					rankingframe.setVisible(true);
+				}
+				setVisible(false);
+			}
+		});
+		btnRanking.setText("랭킹보기");
+		btnRanking.setFont(new Font("CookieRun Regular", Font.PLAIN, 16));
+		btnRanking.setBackground(UIManager.getColor("Button.background"));
+		btnRanking.setBounds(70, 250, 100, 60);
+		MainPanel.add(btnRanking);
+		
+		JSeparator spt2_1 = new JSeparator();
+		spt2_1.setForeground(new Color(150, 150, 150));
+		spt2_1.setBackground(new Color(150, 150, 150));
+		spt2_1.setBounds(60, 240, 120, 3);
+		MainPanel.add(spt2_1);
 
 		RoundJButton btnDelete = new RoundJButton("회원탈퇴"); // 버튼 이름 변경
 		btnDelete.addActionListener(new ActionListener() {
@@ -253,16 +249,23 @@ public class MyInfoFrame extends JFrame {
 				cl_cardPanel.show(CardPanel,"DeleteInfo");
 			}
 		});
-		btnDelete.setBounds(70, 250, 100, 60);
+		btnDelete.setBounds(70, 330, 100, 60);
 		MainPanel.add(btnDelete);
 		btnDelete.setFont(new Font("CookieRun Regular", Font.PLAIN, 16));
 		btnDelete.setBackground(new Color(240, 240, 240));
+		
+		RoundJLabel lblNewLabel = new RoundJLabel(player != null && player.getNickname() != null ? player.getNickname() : "");
+		lblNewLabel.setBackground(new Color(185, 215, 234));
+		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel.setFont(new Font("CookieRun Regular", Font.BOLD, 16));
+		lblNewLabel.setBounds(550, 15, 200, 40);
+		MainPanel.add(lblNewLabel);
 		
 		RoundJButton btnHome = new RoundJButton();
 		btnHome.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(homeframe == null) {
-					homeframe = new HomeFrame();
+					homeframe = new HomeFrame(player);
 					homeframe.setVisible(true);
 				} else {
 					homeframe.setVisible(true);
@@ -276,6 +279,27 @@ public class MyInfoFrame extends JFrame {
 		btnHome.setBackground(new Color(118, 159, 205));
 		btnHome.setBounds(780, 15, 120, 40);
 		MainPanel.add(btnHome);
+		
+		
+		RoundJButton btnLogOut = new RoundJButton();
+		btnLogOut.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(loginframe == null) {
+					loginframe = new LoginFrame();
+					loginframe.setResizable(false);
+					loginframe.setVisible(true);
+				} else {
+					loginframe.setVisible(true);
+				}
+				setVisible(false);
+			}
+		});
+		btnLogOut.setText("로그 아웃");
+		btnLogOut.setForeground(Color.BLACK);
+		btnLogOut.setFont(new Font("CookieRun Regular", Font.PLAIN, 16));
+		btnLogOut.setBackground(new Color(176, 180, 186));
+		btnLogOut.setBounds(930, 15, 120, 40);
+		MainPanel.add(btnLogOut);
 		
 		RoundJPanel outLine1 = new RoundJPanel(5);
 		outLine1.setBackground(new Color(100, 100, 100));

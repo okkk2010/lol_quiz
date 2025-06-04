@@ -6,6 +6,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
+import client.CtManager.Player;
 import client.uiTool.RoundJButton;
 import client.uiTool.RoundJPanel;
 import client.uiTool.RoundJTextField;
@@ -36,27 +37,29 @@ public class InGameFrame extends JFrame {
 	private CardLayout cardLayout; // CardLayout 변수
 	private HomeFrame homeframe;
 	private RankingFrame rankingframe;
+	private Player player;
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					InGameFrame frame = new InGameFrame();
-					frame.setResizable(false); // 창 크기 조절 방지
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
+//		EventQueue.invokeLater(new Runnable() {
+//			public void run() {
+//				try {
+//					InGameFrame frame = new InGameFrame();
+//					frame.setResizable(false); // 창 크기 조절 방지
+//					frame.setVisible(true);
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		});
 	}
 
 	/**
 	 * Create the frame.
 	 */
-	public InGameFrame() {
+	public InGameFrame(Player player) {
+		this.player = player;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1280, 720);
 		
@@ -194,7 +197,7 @@ public class InGameFrame extends JFrame {
 		btnRanking.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(rankingframe == null) {
-					rankingframe = new RankingFrame();
+					rankingframe = new RankingFrame(player);
 					rankingframe.setVisible(true);
 				} else {
 					rankingframe.setVisible(true);
@@ -213,7 +216,7 @@ public class InGameFrame extends JFrame {
 		btnHome.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(homeframe == null) {
-					homeframe = new HomeFrame();
+					homeframe = new HomeFrame(player);
 					homeframe.setVisible(true);
 				} else {
 					homeframe.setVisible(true);

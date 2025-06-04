@@ -126,55 +126,72 @@ public class LoginFrame extends JFrame {
 				if (id.isEmpty()) {
 					JOptionPane.showMessageDialog(LoginPanel, "아이디를 입력해주세요.", "로그인 오류", JOptionPane.WARNING_MESSAGE);
 					tfInputID.requestFocusInWindow(); // 아이디 입력 포커스
-					return; // 로그인 프로세스 중단
+					return;
 				}
 				if (password.isEmpty()) {
 					JOptionPane.showMessageDialog(LoginPanel, "비밀번호를 입력해주세요.", "로그인 오류", JOptionPane.WARNING_MESSAGE);
 					tfInputPW.requestFocusInWindow(); // 비밀번호 입력 포커스
-					return; // 로그인 프로세스 중단
+					return;
 				}
 				ApiResponse apiRes = HttpConnecter.instance.signInUser(id, password);
 				if(apiRes.isSuccess()) {
 					JOptionPane.showMessageDialog(LoginPanel, "로그인 성공!!");
-					User user = null;
-					// 정보 값 확인
-					if(apiRes.isSuccess()) 
-					{
-						apiRes = HttpConnecter.instance.userInfo(id);
-						if(apiRes.isSuccess()) {
-							// 메인 프레임 전환
+					
+					// 로그인 성공 후 사용자 정보 가져오기
+					ApiResponse userInfoResponse = HttpConnecter.instance.userInfo(id);
+					
+					if(userInfoResponse.isSuccess()) {
+						User user = null;
+						try {
+							// *** 이 부분이 수정되었습니다: userInfoResponse.getData() -> userInfoResponse.getContent() ***
+							// JSONManager의 getJsonData 메서드를 사용하여 ApiResponse의 content 필드에서 User 객체 파싱
+							user = JSONManager.getJsonData(userInfoResponse.getContent(), User.class);
+						} catch (Exception parseException) {
+							System.err.println("사용자 데이터 파싱 오류: " + parseException.getMessage());
+							JOptionPane.showMessageDialog(LoginPanel, "사용자 정보를 가져오는 데 실패했습니다.", "오류", JOptionPane.ERROR_MESSAGE);
+							return;
+						}
+
+						if (user != null) {
+							// 사용자 정보를 성공적으로 가져왔으므로 HomeFrame 생성
 							if(homeframe == null) {
-								homeframe = new HomeFrame(new Player(user));						
+								homeframe = new HomeFrame(new Player(user));			
 								homeframe.setResizable(false);
 								homeframe.setVisible(true);
 							} else {
+								// 이미 홈 프레임이 있다면 다시 보이게 합니다.
 								homeframe.setVisible(true);
 							}
-							setVisible(false);
+							setVisible(false); // 로그인 프레임 숨기기
 						} else {
-							switch(apiRes.getError().getCode()) {
-							case "NOT_FOUND_ID":
-								JOptionPane.showMessageDialog(contentPane, "test");
-								return;
-							}
+							// content 필드가 null이거나 파싱 후 user 객체가 null인 경우
+							JOptionPane.showMessageDialog(LoginPanel, "사용자 정보가 비어있습니다.", "오류", JOptionPane.ERROR_MESSAGE);
 						}
-					} 
-					else 
-					{
-						switch(apiRes.getError().getCode()) {
-							case "NOT_FOUND_ID":
-								JOptionPane.showMessageDialog(contentPane, "test");
-								return;
+					} else {
+						// 사용자 정보 가져오기 실패 (userInfo API 호출 실패)
+						switch(userInfoResponse.getError().getCode()) {
+						case "NOT_FOUND_ID": 
+							JOptionPane.showMessageDialog(LoginPanel, "사용자 정보를 찾을 수 없습니다.");
+							break;
+						default:
+							JOptionPane.showMessageDialog(LoginPanel, "사용자 정보를 가져오는 중 오류가 발생했습니다: " + userInfoResponse.getError().getMessage());
+							break;
 						}
 					}
-					
 				} else {
+					// 로그인 실패 (signInUser API 호출 실패)
 					switch(apiRes.getError().getCode()) {
+						case "NOT_MATCH_PASSWORD":
+							JOptionPane.showMessageDialog(LoginPanel, "비밀번호가 틀립니다.");
+							break;
+						case "NOT_FOUND_ID":
+							JOptionPane.showMessageDialog(LoginPanel, "아이디를 찾을 수 없습니다.");
+							break;
 						case "DUPLICATE_ID":
 							JOptionPane.showMessageDialog(LoginPanel, "해당 아이디로 가입된 계정이 없습니다.");
 							break;
-						case "NOT_MATCH_PASSWORD":
-							JOptionPane.showMessageDialog(LoginPanel, "비밀번호가 틀립니다.");
+						default:
+							JOptionPane.showMessageDialog(LoginPanel, "로그인 중 알 수 없는 오류가 발생했습니다: " + apiRes.getError().getMessage());
 							break;
 					}
 				}

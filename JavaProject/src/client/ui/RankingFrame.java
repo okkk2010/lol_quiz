@@ -28,6 +28,8 @@ import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JButton;
 import javax.swing.JSeparator;
 import javax.swing.JTable;
+
+import client.CtManager.Player;
 import client.uiTool.RoundJButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -41,28 +43,30 @@ public class RankingFrame extends JFrame {
 	private JTextField tfMaxScore;
 	private HomeFrame homeframe;
 	private LoginFrame loginframe;
+	private Player player;
 
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					RankingFrame frame = new RankingFrame();
-					frame.setResizable(false);
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
+//		EventQueue.invokeLater(new Runnable() {
+//			public void run() {
+//				try {
+//					RankingFrame frame = new RankingFrame();
+//					frame.setResizable(false);
+//					frame.setVisible(true);
+//				} catch (Exception e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		});
 	}
 
 	/**
 	 * Create the frame.
 	 */
-	public RankingFrame() {
+	public RankingFrame(Player player) {
+		this.player = player;
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1280, 720);
 		contentPane = new JPanel();
@@ -221,7 +225,7 @@ public class RankingFrame extends JFrame {
 		btnHome.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (homeframe == null) {
-					homeframe = new HomeFrame();
+					homeframe = new HomeFrame(player);
 					homeframe.setVisible(true);
 				} else {
 					homeframe.setVisible(true);

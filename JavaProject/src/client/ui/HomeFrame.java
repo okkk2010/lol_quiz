@@ -83,7 +83,7 @@ public class HomeFrame extends JFrame {
 
 			public void actionPerformed(ActionEvent e) {
 				if(myinfoFrame == null) {
-					myinfoFrame = new MyInfoFrame();
+					myinfoFrame = new MyInfoFrame(player);
 					myinfoFrame.setVisible(true);
 				} else {
 					myinfoFrame.setVisible(true);
@@ -142,7 +142,7 @@ public class HomeFrame extends JFrame {
 
 			public void actionPerformed(ActionEvent e) {
 				if(ingameframe == null) {
-					ingameframe = new InGameFrame();
+					ingameframe = new InGameFrame(player);
 					ingameframe.setVisible(true);
 				} else {
 					ingameframe.setVisible(true);
@@ -158,7 +158,7 @@ public class HomeFrame extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if(ingameframe == null) {
-					ingameframe = new InGameFrame();
+					ingameframe = new InGameFrame(player);
 					ingameframe.setVisible(true);
 				} else {
 					ingameframe.setVisible(true);

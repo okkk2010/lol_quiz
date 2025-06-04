@@ -36,6 +36,7 @@ public class RegisterFrame extends JFrame {
 	private RoundJPasswordField tfInputPW;
 	private RoundJPasswordField tfInputPwCheck;
 	private RoundJTextField tfInputNickname;
+	private LoginFrame loginframe;
 
 	/**
 	 * Launch the application.
@@ -85,20 +86,20 @@ public class RegisterFrame extends JFrame {
 		JLabel lblID = new JLabel("아이디");
 		lblID.setHorizontalAlignment(SwingConstants.LEFT);
 		lblID.setFont(new Font("CookieRun Regular", Font.PLAIN, 16));
-		lblID.setBounds(250, 120, 70, 20);
+		lblID.setBounds(250, 160, 70, 20);
 		SignUpPanel.add(lblID);
 		
 		JLabel lblPW = new JLabel("비밀번호");
 		lblPW.setHorizontalAlignment(SwingConstants.LEFT);
 		lblPW.setFont(new Font("CookieRun Regular", Font.PLAIN, 16));
-		lblPW.setBounds(250, 280, 70, 20);
+		lblPW.setBounds(250, 320, 70, 20);
 		SignUpPanel.add(lblPW);
 		
 		tfInputID = new RoundJTextField(10);
 		tfInputID.setForeground(Color.DARK_GRAY);
 		tfInputID.setFont(new Font("CookieRun Regular", Font.PLAIN, 20));
 		tfInputID.setBackground(new Color(202, 206, 213));
-		tfInputID.setBounds(250, 150, 300, 40);
+		tfInputID.setBounds(250, 190, 300, 40);
 		SignUpPanel.add(tfInputID);
 		
 		tfInputPW = new RoundJPasswordField(10);
@@ -106,7 +107,7 @@ public class RegisterFrame extends JFrame {
 		tfInputPW.setFont(new Font("맑은 고딕", Font.PLAIN, 20));
 		tfInputPW.setEchoChar('*');
 		tfInputPW.setBackground(new Color(202, 206, 213));
-		tfInputPW.setBounds(250, 310, 300, 40);
+		tfInputPW.setBounds(250, 350, 300, 40);
 		SignUpPanel.add(tfInputPW);
 		
 		RoundJButton btnSignUp = new RoundJButton();
@@ -171,22 +172,41 @@ public class RegisterFrame extends JFrame {
 		JLabel lblNickname = new JLabel("닉네임");
 		lblNickname.setHorizontalAlignment(SwingConstants.LEFT);
 		lblNickname.setFont(new Font("CookieRun Regular", Font.PLAIN, 16));
-		lblNickname.setBounds(250, 200, 100, 20);
+		lblNickname.setBounds(250, 240, 100, 20);
 		SignUpPanel.add(lblNickname);
 		
 		tfInputNickname = new RoundJTextField(10);
 		tfInputNickname.setForeground(Color.DARK_GRAY);
 		tfInputNickname.setFont(new Font("CookieRun Regular", Font.PLAIN, 20));
 		tfInputNickname.setBackground(new Color(202, 206, 213));
-		tfInputNickname.setBounds(250, 230, 300, 40);
+		tfInputNickname.setBounds(250, 270, 300, 40);
 		SignUpPanel.add(tfInputNickname);
 		
 		btnSignUp.setText("회원가입");
 		btnSignUp.setForeground(Color.BLACK);
 		btnSignUp.setFont(new Font("CookieRun Regular", Font.PLAIN, 18));
 		btnSignUp.setBackground(new Color(185, 215, 234));
-		btnSignUp.setBounds(250, 470, 300, 40);
+		btnSignUp.setBounds(250, 440, 170, 40);
 		SignUpPanel.add(btnSignUp);
+		
+		RoundJButton btnBack = new RoundJButton();
+		btnBack.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(loginframe == null) {
+					loginframe = new LoginFrame();			
+					loginframe.setVisible(true);
+				} else {
+					loginframe.setVisible(true);
+				}
+				setVisible(false);
+			}
+		});
+		btnBack.setText("돌아가기");
+		btnBack.setForeground(Color.BLACK);
+		btnBack.setFont(new Font("CookieRun Regular", Font.PLAIN, 18));
+		btnBack.setBackground(new Color(176, 180, 186));
+		btnBack.setBounds(450, 440, 100, 40);
+		SignUpPanel.add(btnBack);
 		
 		RoundJPanel outLine1 = new RoundJPanel(5);
 		outLine1.setBackground(new Color(100, 100, 100));
@@ -203,5 +223,4 @@ public class RegisterFrame extends JFrame {
 		
 		setLocationRelativeTo(null);
 	}
-
 }
