@@ -21,6 +21,8 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Shape;
 import java.awt.geom.RoundRectangle2D;
+import java.util.ArrayList;
+import java.util.Random;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Component;
@@ -273,4 +275,5 @@ class RoundJPasswordField extends JPasswordField {
         g2.draw(new RoundRectangle2D.Double(0, 0, getWidth() - 1, getHeight() - 1, arcWidth, arcHeight));
         g2.dispose();
     }
+    
 }
