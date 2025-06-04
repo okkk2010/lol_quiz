@@ -35,6 +35,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
+import java.awt.GridLayout;
+import java.awt.Color;
 
 public class DBTestFrame extends JFrame {
 
@@ -63,6 +65,11 @@ public class DBTestFrame extends JFrame {
 	private int currentQuizCnt = 0;
 	private ArrayList<Quiz> quizs = new ArrayList<>();
 	private JButton tFSubmit;
+	private JPanel panel_1;
+	private JPanel panel_2;
+	private JPanel panel_3;
+	private JPanel panel_4;
+	private JPanel panel_5;
 
 	/**
 	 * Launch the application.
@@ -377,6 +384,7 @@ public class DBTestFrame extends JFrame {
 		});
 		tFSubmit.setBounds(642, 510, 97, 23);
 		contentPane.add(tFSubmit);
+	
 		
 		
 		
