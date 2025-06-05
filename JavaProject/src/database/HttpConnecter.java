@@ -11,6 +11,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import dataSet.quiz.Quiz;
 import dataSet.user.SignUpUser;
 import dataSet.user.User;
+import jdk.internal.org.jline.terminal.TerminalBuilder.SystemOutput;
 
 public class HttpConnecter {
 	
@@ -350,5 +351,24 @@ public class HttpConnecter {
 			e.printStackTrace();
 			return null;
 		}
+	}
+	
+	public ApiResponse recordGameHistory(String userId, String title, int answerQuiz, int playDate ) {
+		if(userId == null) {
+			System.out.println("사용자 ID가 null입니다.");
+			return null; // 사용자 ID가 null일 경우 처리
+		}
+		
+		
+	}
+	
+	public ApiResponse updateUserTier(String id, int answer_quiz) {
+		if(id == null) {
+			System.out.println("사용자 ID가 null입니다.");
+			return null; // 사용자 ID가 null일 경우 처리
+		}
+		
+		User user = new User();
+		
 	}
 }
