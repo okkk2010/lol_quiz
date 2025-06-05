@@ -85,8 +85,10 @@ public class HomeFrame extends JFrame {
 				if(myinfoFrame == null) {
 					myinfoFrame = new MyInfoFrame(player);
 					myinfoFrame.setVisible(true);
+					myinfoFrame.setResizable(false);
 				} else {
 					myinfoFrame.setVisible(true);
+					myinfoFrame.setResizable(false);
 				}
 				setVisible(false);
 			}
@@ -104,7 +106,6 @@ public class HomeFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				if(loginframe == null) {
 					loginframe = new LoginFrame();
-					loginframe.setResizable(false);
 					loginframe.setVisible(true);
 				} else {
 					loginframe.setVisible(true);
@@ -144,8 +145,10 @@ public class HomeFrame extends JFrame {
 				if(ingameframe == null) {
 					ingameframe = new InGameFrame(player);
 					ingameframe.setVisible(true);
+					ingameframe.setResizable(false);
 				} else {
 					ingameframe.setVisible(true);
+					ingameframe.setResizable(false);
 				}
 				setVisible(false);
 			}
@@ -160,8 +163,10 @@ public class HomeFrame extends JFrame {
 				if(ingameframe == null) {
 					ingameframe = new InGameFrame(player);
 					ingameframe.setVisible(true);
+					ingameframe.setResizable(false);
 				} else {
 					ingameframe.setVisible(true);
+					ingameframe.setResizable(false);
 				}
 				setVisible(false);
 			}

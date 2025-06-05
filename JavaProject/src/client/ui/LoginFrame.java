@@ -145,8 +145,7 @@ public class LoginFrame extends JFrame {
 					if(userInfoResponse.isSuccess()) {
 						User user = null;
 						try {
-							// *** 이 부분이 수정되었습니다: userInfoResponse.getData() -> userInfoResponse.getContent() ***
-							// JSONManager의 getJsonData 메서드를 사용하여 ApiResponse의 content 필드에서 User 객체 파싱
+							// 사용자 정보를 JSON으로 파싱하여 User 객체 생성
 							user = JSONManager.getJsonData(userInfoResponse.getContent(), User.class);
 						} catch (Exception parseException) {
 							System.err.println("사용자 데이터 파싱 오류: " + parseException.getMessage());

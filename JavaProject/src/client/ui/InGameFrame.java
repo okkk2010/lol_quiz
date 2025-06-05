@@ -147,9 +147,9 @@ public class InGameFrame extends JFrame {
 				        try {
 				            Thread.sleep(1000);
 				        } catch (InterruptedException ex) {
-				            Thread.currentThread().interrupt(); // 스레드 인터럽트 상태 복원
+				            Thread.currentThread().interrupt();
 				        }
-				        final int currentValue = i; // 람다 표현식에서 사용하려면 final 또는 effectively final이어야 함
+				        final int currentValue = i; // 현재 진행 상태를 저장
 				        SwingUtilities.invokeLater(() -> {
 				            progressBar.setValue(currentValue);
 				        });
@@ -173,8 +173,10 @@ public class InGameFrame extends JFrame {
 				if (homeframe == null) {
 					homeframe = new HomeFrame(player);
 					homeframe.setVisible(true);
+					homeframe.setResizable(false);
 				} else {
 					homeframe.setVisible(true);
+					homeframe.setResizable(false);
 				}
 				setVisible(false);
 			}
@@ -217,7 +219,7 @@ public class InGameFrame extends JFrame {
         // 9개의 패널 생성 및 그리드에 추가
         for (int i = 0; i < 9; i++) {
             JPanel panel = new JPanel();
-            panel.setBackground(Color.WHITE); // 가리는 색
+            panel.setBackground(Color.BLACK); // 가리는 색
             panel.setBorder(BorderFactory.createLineBorder(Color.GRAY)); // 각 패널의 경계선
             gridPanel.add(panel); // 그리드 패널에 추가
             overlayPanels.add(panel); // 리스트에 추가하여 나중에 접근 가능하게 함
@@ -386,8 +388,10 @@ public class InGameFrame extends JFrame {
 				if(rankingframe == null) {
 					rankingframe = new RankingFrame(player);
 					rankingframe.setVisible(true);
+					rankingframe.setResizable(false);
 				} else {
 					rankingframe.setVisible(true);
+					rankingframe.setResizable(false);
 				}
 				setVisible(false);
 			}
@@ -405,8 +409,10 @@ public class InGameFrame extends JFrame {
 				if(homeframe == null) {
 					homeframe = new HomeFrame(player);
 					homeframe.setVisible(true);
+					homeframe.setResizable(false);
 				} else {
 					homeframe.setVisible(true);
+					homeframe.setResizable(false);
 				}
 				setVisible(false);
 			}

@@ -99,7 +99,7 @@ public class RankingFrame extends JFrame {
 		ResultPanel.add(TopTierPanel);
 		TopTierPanel.setLayout(null);
 		
-		JLabel lblTop = new JLabel("TOP 100");
+		JLabel lblTop = new JLabel("TOP 30 (챌린저 5 마스터 25)");
 		lblTop.setHorizontalAlignment(SwingConstants.CENTER);
 		lblTop.setForeground(Color.BLACK);
 		lblTop.setFont(new Font("CookieRun Regular", Font.PLAIN, 16));
@@ -198,27 +198,30 @@ public class RankingFrame extends JFrame {
 		ResultPanel.add(lblMaxScore);
 		
 		tfNickName = new JTextField();
+		tfNickName.setHorizontalAlignment(SwingConstants.CENTER);
+		tfNickName.setForeground(new Color(0, 0, 0));
 		tfNickName.setFont(new Font("CookieRun Regular", Font.PLAIN, 16));
-		tfNickName.setEnabled(false);
-		tfNickName.setBackground(new Color(228, 235, 250));
+		tfNickName.setBackground(new Color(255, 255, 255));
 		tfNickName.setBounds(140, 280, 120, 40);
-		ResultPanel.add(tfNickName);
+		tfNickName.setText(player.getNickname());
+		tfNickName.setFocusable(false);
 		tfNickName.setColumns(10);
+		ResultPanel.add(tfNickName);
 		
 		tfRanking = new JTextField();
-		tfRanking.setBackground(new Color(228, 235, 250));
-		tfRanking.setEnabled(false);
+		tfRanking.setBackground(new Color(255, 255, 255));
 		tfRanking.setFont(new Font("CookieRun Regular", Font.PLAIN, 16));
 		tfRanking.setColumns(10);
 		tfRanking.setBounds(140, 330, 120, 40);
+		tfRanking.setFocusable(false);
 		ResultPanel.add(tfRanking);
 		
 		tfMaxScore = new JTextField();
-		tfMaxScore.setBackground(new Color(228, 235, 250));
-		tfMaxScore.setEnabled(false);
+		tfMaxScore.setBackground(new Color(255, 255, 255));
 		tfMaxScore.setFont(new Font("CookieRun Regular", Font.PLAIN, 16));
 		tfMaxScore.setColumns(10);
 		tfMaxScore.setBounds(140, 380, 120, 40);
+		tfMaxScore.setFocusable(false);
 		ResultPanel.add(tfMaxScore);
 		
 		RoundJButton btnHome = new RoundJButton();
@@ -227,8 +230,10 @@ public class RankingFrame extends JFrame {
 				if (homeframe == null) {
 					homeframe = new HomeFrame(player);
 					homeframe.setVisible(true);
+					homeframe.setResizable(false);
 				} else {
 					homeframe.setVisible(true);
+					homeframe.setResizable(false);
 				}
 				setVisible(false);
 			}

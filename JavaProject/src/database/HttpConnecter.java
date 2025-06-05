@@ -160,7 +160,7 @@ public class HttpConnecter {
 	
 	public ApiResponse changeNickname(String id, String newNickname) {
 		User user = new User();
-		user.setId(id);
+		user.setId(id); user.setNickname(newNickname);
 		String customUrl = URL + "/user/change-nickname";
 		
 		try {

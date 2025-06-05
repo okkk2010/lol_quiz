@@ -137,11 +137,14 @@ public class RegisterFrame extends JFrame {
 				if(apiRes.isSuccess()) {
 					JOptionPane.showMessageDialog(contentPane, "회원가입 성공!!");
 					// 로그인 프레임 전환
-					LoginFrame frame = new LoginFrame();
-					frame.setResizable(false); // 화면 고정
-					frame.setVisible(true);
-					// 회원가입 화면 끔
+					if(loginframe == null) {
+						loginframe = new LoginFrame();			
+						loginframe.setVisible(true);
+					} else {
+						loginframe.setVisible(true);
+					}
 					setVisible(false);
+					
 				} else {
 					switch(apiRes.getError().getCode()) {
 						case "DUPLICATE_ID":

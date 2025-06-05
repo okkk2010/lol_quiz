@@ -4,32 +4,38 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import java.awt.Color;
 import client.uiTool.RoundJPanel;
-import database.DatabaseManager;
+import client.uiTool.RoundJTextField;
+import database.ApiResponse;
+import database.DatabaseManager; // Unused, consider removing if not needed
+import database.HttpConnecter;
 import client.CtManager.Player;
 import client.uiTool.RoundJButton;
 import client.uiTool.RoundJLabel;
 
 import java.awt.Font;
-import java.awt.BorderLayout; // BorderLayout 임포트
+import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JSeparator;
-import javax.swing.JTable; // JTable 임포트
+import javax.swing.JTable;
 import javax.swing.SwingConstants;
-import javax.swing.JScrollPane; // JScrollPane 임포트
+import javax.swing.JScrollPane;
 import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel; // DefaultTableModel 임포트
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 
-import java.awt.Component;
-import java.awt.Dimension;
+import java.awt.Component; // Unused, consider removing if not needed
+import java.awt.Dimension; // Unused, consider removing if not needed
 import javax.swing.UIManager;
-import java.awt.FlowLayout;
+import java.awt.FlowLayout; // Unused, consider removing if not needed
+import javax.swing.JTextField;
+import javax.swing.JButton;
 
 public class MyInfoFrame extends JFrame {
 
@@ -41,6 +47,10 @@ public class MyInfoFrame extends JFrame {
 	private HomeFrame homeframe;
 	private RankingFrame rankingframe;
 	private Player player;
+	private JTextField tfCheckNickName;
+	private JTextField tfCheckId;
+	private JPanel myInfoPanel; // Added for explicit reference
+	private JPanel newNickNamepanel;
 
 	/**
 	 * Launch the application.
@@ -49,8 +59,8 @@ public class MyInfoFrame extends JFrame {
 //		EventQueue.invokeLater(new Runnable() {
 //			public void run() {
 //				try {
-//					
-//					MyInfoFrame frame = new MyInfoFrame(); 
+//
+//					MyInfoFrame frame = new MyInfoFrame();
 //					frame.setResizable(false);
 //					frame.setVisible(true);
 //				} catch (Exception e) {
@@ -58,6 +68,7 @@ public class MyInfoFrame extends JFrame {
 //				}
 //			}
 //		});
+
 	}
 
 	/**
@@ -86,25 +97,22 @@ public class MyInfoFrame extends JFrame {
 		MainPanel.add(RecordPanel);
 		RecordPanel.setLayout(null);
 
-
-		CardPanel = new JPanel(); // CardPanel 초기화
-		CardPanel.setBounds(10, 10, 840, 460); // RecordPanel 내에서 CardPanel의 크기
+		// CardPane에 CardLayout 적용
+		CardPanel = new JPanel();
+		CardPanel.setBounds(10, 10, 840, 460);
 		RecordPanel.add(CardPanel);
 
-		cl_cardPanel = new CardLayout(0, 0); // CardLayout 초기화
-		CardPanel.setLayout(cl_cardPanel); // CardPanel에 CardLayout 설정
+		cl_cardPanel = new CardLayout(0, 0);
+		CardPanel.setLayout(cl_cardPanel);
 
-		// 1. "전적" 내용을 담을 패널 (JScrollPane으로 감싸기)
+		// 1. 전적 패널 (JScrollPane 포함)
 		JPanel myRecordsPanel = new JPanel();
 		myRecordsPanel.setBackground(new Color(255, 255, 255));
-		myRecordsPanel.setLayout(new BorderLayout()); // BorderLayout 유지
-		
-		// **새로 추가된 부분: myRecordsPanel에 EmptyBorder를 설정하여 여백 추가**
-		// 상, 좌, 하, 우 순서로 패딩 값 지정
-		myRecordsPanel.setBorder(new EmptyBorder(40, 40, 40, 40)); // 상하좌우 20픽셀 여백
+		myRecordsPanel.setLayout(new BorderLayout());
+		myRecordsPanel.setBorder(new EmptyBorder(40, 40, 40, 40)); // 패널에 여백 추가
 
 		// 테이블 데이터 및 컬럼 정의
-		String[] columnNames = {"게임 종류", "총 문제", "맞춘 문제", "틀린 문제", "총 점수"};
+		String[] columnNames = {"날짜", "퀴즈 종류", "맞춘 문제", "티어"};
 		Object[][] data = new Object[50][5]; // 50개의 더미 전적 데이터
 		for (int i = 0; i < 50; i++) {
 		    data[i][0] = "챔피언 퀴즈 " + (i + 1);
@@ -126,7 +134,7 @@ public class MyInfoFrame extends JFrame {
 		recordsTable.setFont(new Font("CookieRun Regular", Font.PLAIN, 14));
 		recordsTable.setRowHeight(25);
 		recordsTable.getTableHeader().setFont(new Font("CookieRun Regular", Font.BOLD, 14));
-		
+
 		// JTable 꾸미기 (배경색, 그리드 색상, 선택 색상, 폰트 등)
 		recordsTable.setShowVerticalLines(false); // 세로줄 숨기기
 		recordsTable.setShowHorizontalLines(false); // 가로줄 숨기기
@@ -146,15 +154,15 @@ public class MyInfoFrame extends JFrame {
 
 		// JTable 테두리 제거
 		recordsTable.setBorder(null);
-		
+
 		// 문제 종류, 총 문제, 맞춘 문제, 틀린 문제 가운데 정렬
 		DefaultTableCellRenderer CenterRenderer = new DefaultTableCellRenderer();
 		CenterRenderer.setHorizontalAlignment(SwingConstants.CENTER);
-		
+
 		// 최고 점수 오른쪽 정렬
 		DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();
 		rightRenderer.setHorizontalAlignment(SwingConstants.RIGHT);
-		
+
 		// 정렬 적용
 		for (int i = 0; i < recordsTable.getColumnCount(); i++) {
 			if (i == 3) {
@@ -165,25 +173,130 @@ public class MyInfoFrame extends JFrame {
 		}
 
 		JScrollPane recordsScrollPane = new JScrollPane(recordsTable);
-		
+
 		myRecordsPanel.add(recordsScrollPane, BorderLayout.CENTER);
 
 		CardPanel.add(myRecordsPanel, "records");
 
 
-		// 2. "내정보" 내용을 담을 패널
-		JPanel myInfoContentPanel = new JPanel();
-		myInfoContentPanel.setBackground(new Color(255, 255, 255)); // 구분을 위해 색상 추가
-		CardPanel.add(myInfoContentPanel, "myInfo"); // "myInfo"라는 이름으로 추가
-		myInfoContentPanel.setLayout(null);
+		//2. 내정보 패널 (myInfoPanel)
+		myInfoPanel = new JPanel(); // myInfoPanel 초기화
+		myInfoPanel.setBackground(new Color(255, 255, 255));
+		myInfoPanel.setLayout(null); // Use null layout for absolute positioning
 
-		// 처음에는 "전적" 패널이 보이도록 설정 (선택 사항)
+		// "닉네임 변경" 버튼 (myInfoPanel에 추가)
+		JButton btnChangeNickname = new JButton("닉네임 변경");
+		btnChangeNickname.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				cl_cardPanel.show(CardPanel, "newNickName"); // newNickNamepanel 보이기
+			}
+		});
+		btnChangeNickname.setBounds(59, 150, 186, 115);
+		myInfoPanel.add(btnChangeNickname);
+
+		// 기타 myInfoPanel 요소들 (예: lblNewLabel_1)
+		JLabel lblNewLabel_1 = new JLabel("닉네임 변경, 비밀번호 변경, 통계(테마별 게임수/ 판수 / 평균 맞춘 문제 수 / 평균 티어)");
+		lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel_1.setBounds(0, 0, 840, 50); // Adjust bounds as needed for proper layout
+		myInfoPanel.add(lblNewLabel_1); // Add to myInfoPanel, not myInfoContentPanel
+
+		CardPanel.add(myInfoPanel, "myInfo"); // myInfoPanel을 CardPanel에 추가
+
+		// --- 닉네임 변경 패널 (newNickNamepanel) ---
+		newNickNamepanel = new JPanel();
+		newNickNamepanel.setBackground(new Color(255, 255, 255)); // Background added for clarity
+		newNickNamepanel.setLayout(null);
+
+		JLabel lblCheckId = new JLabel("아이디");
+		lblCheckId.setFont(new Font("CookieRun Regular", Font.PLAIN, 16));
+		lblCheckId.setHorizontalAlignment(SwingConstants.LEFT);
+		lblCheckId.setBounds(270, 110, 70, 20);
+		newNickNamepanel.add(lblCheckId);
+
+		tfCheckId = new RoundJTextField(5);
+		tfCheckId.setFont(new Font("CookieRun Regular", Font.PLAIN, 20));
+		tfCheckId.setColumns(10);
+		tfCheckId.setBackground(new Color(202, 206, 213));
+		tfCheckId.setBounds(270, 140, 300, 40);
+		newNickNamepanel.add(tfCheckId);
+
+		JLabel lblChangeNickName = new JLabel("변경할 닉네임");
+		lblChangeNickName.setFont(new Font("CookieRun Regular", Font.PLAIN, 16));
+		lblChangeNickName.setHorizontalAlignment(SwingConstants.LEFT);
+		lblChangeNickName.setBounds(270, 190, 100, 25);
+		newNickNamepanel.add(lblChangeNickName);
+
+		tfCheckNickName = new RoundJTextField(5);
+		tfCheckNickName.setFont(new Font("CookieRun Regular", Font.PLAIN, 20));
+		tfCheckNickName.setColumns(10);
+		tfCheckNickName.setBackground(new Color(202, 206, 213));
+		tfCheckNickName.setBounds(270, 220, 300, 40);
+		newNickNamepanel.add(tfCheckNickName);
+
+		RoundJButton btnCheck = new RoundJButton("확 인");
+		btnCheck.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+
+				String id = tfCheckId.getText().trim();
+				String newNickname = tfCheckNickName.getText().trim();
+
+				if (id.isEmpty() || newNickname.isEmpty()) {
+					JOptionPane.showMessageDialog(contentPane, "아이디와 닉네임을 모두 입력해주세요.");
+					return;
+				}
+				int newNick = JOptionPane.showConfirmDialog(contentPane, "닉네임을 '" + newNickname + "'(으)로 변경하시겠습니까?", "닉네임 변경 확인", JOptionPane.YES_NO_OPTION);
+
+				if (newNick == JOptionPane.YES_OPTION) {
+					
+					ApiResponse newNickNameResponse = HttpConnecter.instance.changeNickname(id, newNickname);
+
+					if (newNickNameResponse != null && newNickNameResponse.isSuccess()) {
+						// 닉네임 변경 성공
+						JOptionPane.showMessageDialog(contentPane, "닉네임이 '" + newNickname + "'(으)로 변경되었습니다.");
+						player.setNickname(newNickname); // Player 객체의 닉네임 업데이트
+						cl_cardPanel.show(CardPanel, "myInfo"); // "내정보" 패널로 돌아가기
+						tfCheckId.setText(""); // 입력 필드 초기화
+						tfCheckNickName.setText(""); // 입력 필드 초기화
+					} else {
+						// 닉네임 변경 실패
+						String errorMessage = "알 수 없는 오류가 발생했습니다.";
+						if (newNickNameResponse != null && newNickNameResponse.getError() != null) {
+							errorMessage = newNickNameResponse.getError().getMessage();
+						}
+						JOptionPane.showMessageDialog(contentPane, "닉네임 변경에 실패했습니다: " + errorMessage);
+					}
+				}
+			}
+		});
+		btnCheck.setBackground(new Color(185, 215, 234));
+		btnCheck.setFont(new Font("CookieRun Regular", Font.PLAIN, 16));
+		btnCheck.setBounds(270, 300, 120, 40);
+		newNickNamepanel.add(btnCheck);
+
+		RoundJButton btnBack = new RoundJButton("돌아가기");
+		btnBack.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				cl_cardPanel.show(CardPanel, "myInfo"); // "내정보" 패널로 돌아가기
+				tfCheckId.setText("");
+				tfCheckNickName.setText("");
+			}
+		});
+		btnBack.setText("돌아가기");
+		btnBack.setFont(new Font("CookieRun Regular", Font.PLAIN, 16));
+		btnBack.setBackground(new Color(176, 180, 186));
+		btnBack.setBounds(450, 300, 120, 40);
+		newNickNamepanel.add(btnBack);
+
+		CardPanel.add(newNickNamepanel, "newNickName");
+
+
+		// 처음에는 전적 패널이 보이도록 설정
 		cl_cardPanel.show(CardPanel, "records");
 
-		RoundJButton btnRecords = new RoundJButton("전적"); // 버튼 이름 변경
+		RoundJButton btnRecords = new RoundJButton("전적");
 		btnRecords.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				cl_cardPanel.show(CardPanel, "records"); // "records" 패널 표시
+				cl_cardPanel.show(CardPanel, "records");
 			}
 		});
 		btnRecords.setBounds(70, 90, 100, 60);
@@ -197,7 +310,7 @@ public class MyInfoFrame extends JFrame {
 		spt2.setForeground(new Color(150, 150, 150));
 		spt2.setBackground(new Color(150, 150, 150));
 
-		RoundJButton btnMyInformation = new RoundJButton("내정보"); // 버튼 이름 변경
+		RoundJButton btnMyInformation = new RoundJButton("내정보");
 		btnMyInformation.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				cl_cardPanel.show(CardPanel, "myInfo"); // "myInfo" 패널 표시
@@ -213,15 +326,17 @@ public class MyInfoFrame extends JFrame {
 		MainPanel.add(spt1);
 		spt1.setForeground(new Color(150, 150, 150));
 		spt1.setBackground(new Color(150, 150, 150));
-		
-		RoundJButton btnRanking = new RoundJButton("내정보");
+
+		RoundJButton btnRanking = new RoundJButton("랭킹보기");
 		btnRanking.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(rankingframe == null) {
 					rankingframe = new RankingFrame(player);
 					rankingframe.setVisible(true);
+					rankingframe.setResizable(false);
 				} else {
 					rankingframe.setVisible(true);
+					rankingframe.setResizable(false);
 				}
 				setVisible(false);
 			}
@@ -231,7 +346,7 @@ public class MyInfoFrame extends JFrame {
 		btnRanking.setBackground(UIManager.getColor("Button.background"));
 		btnRanking.setBounds(70, 250, 100, 60);
 		MainPanel.add(btnRanking);
-		
+
 		JSeparator spt2_1 = new JSeparator();
 		spt2_1.setForeground(new Color(150, 150, 150));
 		spt2_1.setBackground(new Color(150, 150, 150));
@@ -241,29 +356,56 @@ public class MyInfoFrame extends JFrame {
 		RoundJButton btnDelete = new RoundJButton("회원탈퇴"); // 버튼 이름 변경
 		btnDelete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				int Delete = JOptionPane.showConfirmDialog(contentPane, "정말로 회원탈퇴를 하시겠습니까?", "회원탈퇴", JOptionPane.YES_NO_OPTION);
+				if(Delete == JOptionPane.YES_OPTION) { // Outer if-block for confirmation
+					ApiResponse userDeleteRespone = HttpConnecter.instance.userDelete(player.getId());
+					if(userDeleteRespone != null && userDeleteRespone.isSuccess()) {
+						// 회원탈퇴 성공
+						JOptionPane.showMessageDialog(contentPane, "회원탈퇴가 완료되었습니다.");
+						// 로그인 프레임으로 돌아가기
+						if(loginframe == null) {
+							loginframe = new LoginFrame();
+							loginframe.setResizable(false);
+							loginframe.setVisible(true);
+						} else {
+							loginframe.setVisible(true);
+						}
+						setVisible(false);
+					} else {
+						// 회원탈퇴 실패
+						String errorMessage = "알 수 없는 오류가 발생했습니다.";
+						if (userDeleteRespone != null && userDeleteRespone.getError() != null) {
+							errorMessage = userDeleteRespone.getError().getMessage();
+						}
+						JOptionPane.showMessageDialog(contentPane, "회원탈퇴에 실패했습니다: " + errorMessage);
+					}
+				}
+				// Original duplicate code block removed here.
+				// It was redundant and caused unintended logic flow.
 			}
 		});
 		btnDelete.setBounds(70, 330, 100, 60);
 		MainPanel.add(btnDelete);
 		btnDelete.setFont(new Font("CookieRun Regular", Font.PLAIN, 16));
 		btnDelete.setBackground(new Color(240, 240, 240));
-		
-		RoundJLabel lblNewLabel = new RoundJLabel(player != null && player.getNickname() != null ? player.getNickname() : "");
-		lblNewLabel.setBackground(new Color(185, 215, 234));
-		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel.setFont(new Font("CookieRun Regular", Font.BOLD, 16));
-		lblNewLabel.setBounds(550, 15, 200, 40);
-		MainPanel.add(lblNewLabel);
-		
+
+		RoundJLabel lblNickname = new RoundJLabel(player != null && player.getNickname() != null ? player.getNickname() : "");
+		lblNickname.setBackground(new Color(185, 215, 234));
+		lblNickname.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNickname.setFont(new Font("CookieRun Regular", Font.BOLD, 16));
+		lblNickname.setBounds(550, 15, 200, 40);
+		MainPanel.add(lblNickname);
+
 		RoundJButton btnHome = new RoundJButton();
 		btnHome.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(homeframe == null) {
 					homeframe = new HomeFrame(player);
 					homeframe.setVisible(true);
+					homeframe.setResizable(false);
 				} else {
 					homeframe.setVisible(true);
+					homeframe.setResizable(false);
 				}
 				setVisible(false);
 			}
@@ -274,8 +416,8 @@ public class MyInfoFrame extends JFrame {
 		btnHome.setBackground(new Color(118, 159, 205));
 		btnHome.setBounds(780, 15, 120, 40);
 		MainPanel.add(btnHome);
-		
-		
+
+
 		RoundJButton btnLogOut = new RoundJButton();
 		btnLogOut.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -295,13 +437,13 @@ public class MyInfoFrame extends JFrame {
 		btnLogOut.setBackground(new Color(176, 180, 186));
 		btnLogOut.setBounds(930, 15, 120, 40);
 		MainPanel.add(btnLogOut);
-		
+
 		RoundJPanel outLine1 = new RoundJPanel(5);
 		outLine1.setBackground(new Color(100, 100, 100));
 		outLine1.setBounds(85, 635, 1080, 11);
 		contentPane.add(outLine1);
 		outLine1.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-		
+
 		RoundJPanel outLine2 = new RoundJPanel(5);
 		outLine2.setBackground(new Color(100, 100, 100));
 		outLine2.setBounds(1155, 45, 11, 600);
