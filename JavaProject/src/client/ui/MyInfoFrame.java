@@ -14,6 +14,7 @@ import client.uiTool.RoundJTextField;
 import database.ApiResponse;
 import database.DatabaseManager; // Unused, consider removing if not needed
 import database.HttpConnecter;
+import database.JSONManager;
 import client.CtManager.Player;
 import client.uiTool.RoundJButton;
 import client.uiTool.RoundJLabel;
@@ -22,10 +23,12 @@ import java.awt.Font;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.event.ActionListener;
+import java.util.List;
 import java.awt.event.ActionEvent;
 import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.JScrollPane;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -56,6 +59,7 @@ public class MyInfoFrame extends JFrame {
 	private RoundJPasswordField tfCheckPW;
 	private RoundJPasswordField tfChangePW;
 	private JPanel myRecordsPanel;
+	private DefaultTableModel tableModel;
 
 	/**
 	 * Launch the application.
@@ -119,7 +123,7 @@ public class MyInfoFrame extends JFrame {
 		// 테이블 데이터 및 컬럼 정의
 		String[] columnNames = {"날짜", "퀴즈 종류", "맞춘 문제", "티어"};
 		// 테이블 내의 어떤 셀도 사용자 인터페이스를 통해 직접 편집할 수 없게 됩니다. 즉, 모든 셀은 "읽기 전용"
-		DefaultTableModel tableModel = new DefaultTableModel(new Object[][]{}, columnNames) {
+		tableModel = new DefaultTableModel(new Object[][]{}, columnNames) {
 		    @Override
 		    public boolean isCellEditable(int row, int column) {
 		        return false;
@@ -135,12 +139,10 @@ public class MyInfoFrame extends JFrame {
 		recordsTable.getTableHeader().setFont(new Font("CookieRun Regular", Font.BOLD, 14));
 
 		// JTable 꾸미기 (배경색, 그리드 색상, 선택 색상, 폰트 등)
-		recordsTable.setShowVerticalLines(false); // 세로줄 숨기기
-		recordsTable.setShowHorizontalLines(false); // 가로줄 숨기기
-		recordsTable.setGridColor(new Color(228, 235, 250)); // 그리드 색상 일치
+		recordsTable.setGridColor(new Color(0, 0, 0)); // 그리드 색상 일치
 
 		recordsTable.setBackground(new Color(255, 255, 255)); // 배경 흰색
-		recordsTable.setForeground(Color.DARK_GRAY); // 텍스트 색상
+		recordsTable.setForeground(Color.black); // 텍스트 색상
 		recordsTable.setSelectionBackground(new Color(185, 215, 234)); // 선택된 행의 배경색
 		recordsTable.setSelectionForeground(Color.BLACK); // 선택된 행의 글자색
 
@@ -581,11 +583,48 @@ public class MyInfoFrame extends JFrame {
 
 		setLocationRelativeTo(null);
 	}
-	private void loadAndDisplayRecords() { 
-		new Thread(() -> {
-			ApiResponse apiResponse = HttpConnecter.instance.getUserRecord(player.getId());
-			
-		}).start();
-	}
+	 private void loadAndDisplayRecords() {
+	        // 백그라운드 스레드에서 네트워크 통신 수행
+	        new Thread(() -> {
+	            // 수정된 getUserRecord 메서드 호출
+	            ApiResponse apiRes = HttpConnecter.instance.getUserRecord(player.getId());
+
+	            SwingUtilities.invokeLater(() -> { // UI 업데이트는 EDT에서 수행
+	                if (apiRes != null && apiRes.isSuccess()) {
+	                    // 기존 테이블 데이터 모두 삭제
+	                    tableModel.setRowCount(0);
+
+	                    // 서버에서 받은 데이터를 파싱하여 테이블에 추가
+	                    // 가정: ApiResponse의 content는 List<Record>의 JSON 문자열
+	                    // JSONManager.getJsonDataList는 JSON 배열을 객체 리스트로 파싱합니다.
+	                    List<dataSet.record.Record> records = JSONManager.getJsonDataList(apiRes.getContent(), dataSet.record.Record.class);
+
+	                    if (records != null && !records.isEmpty()) {
+	                        for (dataSet.record.Record record : records) {
+	                            // Record 객체에서 데이터를 가져와 테이블 행으로 추가
+	                            Object[] rowData = {
+	                                record.getPlay_date(),
+	                                record.getTitle(),
+	                                record.getAnswer_quiz(),
+	                                // record.getTier() // Record 클래스에 'tier' 필드가 있다면 사용하세요.
+	                                // 서버 응답에 티어 정보가 없다면 아래와 같이 기본값이나 공백으로 설정
+	                                "정보 없음"
+	                            };
+	                            tableModel.addRow(rowData);
+	                        }
+	                    } else {
+	                        JOptionPane.showMessageDialog(this, "아직 전적이 없습니다.");
+	                    }
+	                } else {
+	                    // 전적 로드 실패
+	                    String errorMessage = "전적을 불러오는 데 실패했습니다.";
+	                    if (apiRes != null && apiRes.getError() != null && apiRes.getError().getMessage() != null) {
+	                        errorMessage = apiRes.getError().getMessage();
+	                    }
+	                    JOptionPane.showMessageDialog(this, errorMessage, "오류", JOptionPane.ERROR_MESSAGE);
+	                }
+	            });
+	        }).start();
+	    }
 }
 	

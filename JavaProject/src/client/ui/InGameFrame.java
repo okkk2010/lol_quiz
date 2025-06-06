@@ -167,7 +167,7 @@ public class InGameFrame extends JFrame {
 				                playDate = dateFormat.format(new Date());
 
 				                // 게임 결과 전송
-				                ApiResponse resultApiRes = HttpConnecter.instance.recordGameHistory(player.getId(), "lol", score, playDate);
+				                ApiResponse resultApiRes = HttpConnecter.instance.recordGameHistory(player.getId(), "lol 챔피언 퀴즈", score, playDate);
 				                if (resultApiRes != null && resultApiRes.isSuccess()) {
 				                    JOptionPane.showMessageDialog(contentPane, "게임 결과가 성공적으로 전송되었습니다!");
 				                } else {
@@ -280,6 +280,7 @@ public class InGameFrame extends JFrame {
 				
 		        if (isCorrect) {
 		            // 정답 처리 로직
+		        	score ++;
 		            currentQuizCnt++;
 		            // 
 		            if (currentQuizCnt >= quizs.size()) {
@@ -289,7 +290,7 @@ public class InGameFrame extends JFrame {
 		                playDate = dateFormat.format(new Date());
 
 		                // 게임 결과 전송
-		                ApiResponse resultApiRes = HttpConnecter.instance.recordGameHistory(player.getId(), "lol", score, playDate);
+		                ApiResponse resultApiRes = HttpConnecter.instance.recordGameHistory(player.getId(), "lol 챔피언 퀴즈", score, playDate);
 		                if (resultApiRes != null && resultApiRes.isSuccess()) {
 		                    JOptionPane.showMessageDialog(contentPane, "게임 결과가 성공적으로 전송되었습니다!");
 		                } else {
