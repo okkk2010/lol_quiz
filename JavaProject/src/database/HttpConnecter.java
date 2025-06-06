@@ -20,6 +20,7 @@ public class HttpConnecter {
 	private static final String HEROKU_URL = "https://lol-quiz-node-server-2b48f85da5a8.herokuapp.com";
 	private static final String LOCAL_URL = "http://localhost:3000";
 	private static final String URL = HEROKU_URL;
+	private static final String AWS_S3_URL = "https://lol-quiz.s3.us-east-2.amazonaws.com/";
 	private final HttpClient client = HttpClient.newHttpClient();
 	
 	public HttpConnecter() { }
@@ -332,13 +333,35 @@ public class HttpConnecter {
 		}
 	}
 	
-	public byte[] loadImage(String imageUrl) {
-		if(imageUrl == null || imageUrl.isEmpty()) {
+//	public byte[] loadImage(String imageUrl) {
+//		if(imageUrl == null || imageUrl.isEmpty()) {
+//			System.out.println("이미지 URL이 비어 있습니다.");
+//			return null; // 이미지 URL이 비어 있을 경우 처리
+//		}
+//		HttpRequest request = HttpRequest.newBuilder()
+//				.uri(URI.create(imageUrl))
+//				.GET()
+//				.build();
+//		
+//		try {
+//			HttpResponse<byte[]> response = client.send(request, HttpResponse.BodyHandlers.ofByteArray());
+//			if(response.statusCode() != 200) {
+//				throw new RuntimeException("이미지 로드 실패: " + response.statusCode());
+//			}
+//			return response.body();
+//		} catch (IOException | InterruptedException e) {
+//			e.printStackTrace();
+//			return null;
+//		}
+//	}
+	
+	public byte[] loadImage(String imageName) {
+		if(imageName == null || imageName.isEmpty()) {
 			System.out.println("이미지 URL이 비어 있습니다.");
 			return null; // 이미지 URL이 비어 있을 경우 처리
 		}
 		HttpRequest request = HttpRequest.newBuilder()
-				.uri(URI.create(imageUrl))
+				.uri(URI.create(AWS_S3_URL + imageName))
 				.GET()
 				.build();
 		
@@ -353,6 +376,8 @@ public class HttpConnecter {
 			return null;
 		}
 	}
+	
+	
 	
 	public ApiResponse recordGameHistory(String userid, String title, int answerQuiz, String playDate ) {
 		dataSet.record.Record record = new dataSet.record.Record();

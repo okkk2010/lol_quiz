@@ -87,6 +87,8 @@ public class DBTestFrame extends JFrame {
 	private JButton getUserHighScore;
 	private JTextField textField;
 	private JTextField textField_1;
+	private JTextField textField_2;
+	private JButton getUserHighScore_1;
 
 	/**
 	 * Launch the application.
@@ -343,7 +345,7 @@ public class DBTestFrame extends JFrame {
 					return;
 				}
 				
-				byte[] imgData = HttpConnecter.instance.loadImage(quizs.get(currentQuizCnt).getImg_url());
+				byte[] imgData = HttpConnecter.instance.loadImage(Integer.toString(quizs.get(currentQuizCnt).getId()));
 				if(imgData == null) {
 					JOptionPane.showMessageDialog(contentPane, "이미지 로드 실패");
 					return;
@@ -379,7 +381,7 @@ public class DBTestFrame extends JFrame {
 						JOptionPane.showMessageDialog(contentPane, "모든 퀴즈를 완료했습니다!");
 						currentQuizCnt = 0; // 리셋
 					} else {
-						byte[] imgData = HttpConnecter.instance.loadImage(quizs.get(currentQuizCnt).getImg_url());
+						byte[] imgData = HttpConnecter.instance.loadImage(Integer.toString(quizs.get(currentQuizCnt).getId()));
 						if(imgData != null) {
 							ByteArrayInputStream bais = new ByteArrayInputStream(imgData);
 							try {
@@ -640,6 +642,32 @@ public class DBTestFrame extends JFrame {
 		textField_1.setColumns(10);
 		textField_1.setBounds(928, 166, 86, 21);
 		contentPane.add(textField_1);
+		
+		textField_2 = new JTextField();
+		textField_2.setColumns(10);
+		textField_2.setBounds(910, 245, 116, 108);
+		contentPane.add(textField_2);
+		
+		getUserHighScore_1 = new JButton("save record");
+		getUserHighScore_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				byte[] imgData = HttpConnecter.instance.loadImage("다이아");
+				if(imgData != null) {
+					ByteArrayInputStream bais = new ByteArrayInputStream(imgData);
+					try {
+						BufferedImage img = ImageIO.read(bais);
+						quizImg.setIcon(new ImageIcon(img));
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				} else {
+					JOptionPane.showMessageDialog(contentPane, "이미지 로드 실패");
+				}
+			}
+		});
+		getUserHighScore_1.setBounds(917, 362, 97, 23);
+		contentPane.add(getUserHighScore_1);
 	
 		
 		
