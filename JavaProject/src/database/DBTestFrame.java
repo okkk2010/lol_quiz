@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import dataSet.quiz.Quiz;
 import dataSet.user.User;
+import dataSet.record.Record;
 
 import javax.swing.JTextField;
 import javax.imageio.ImageIO;
@@ -70,6 +71,17 @@ public class DBTestFrame extends JFrame {
 	private JPanel panel_3;
 	private JPanel panel_4;
 	private JPanel panel_5;
+	private JTextField tFInputUserId;
+	private JTextField tFOutputUserRecord;
+	private JTextField tFInputRecordToUserId;
+	private JButton btnSaveRecord;
+	private JTextField tFInputRecordToTitle;
+	private JTextField tFInputRecordToAnswerQuiz;
+	private JTextField tFInputRecordToPlayDate;
+	private JButton btnUpdateAllUserTier;
+	private JTextField tFInputUserIdForRank;
+	private JTextField tFOutputUserRank;
+	private JButton getUserRank;
 
 	/**
 	 * Launch the application.
@@ -93,7 +105,7 @@ public class DBTestFrame extends JFrame {
 	 */
 	public DBTestFrame() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 814, 596);
+		setBounds(100, 100, 1042, 596);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -176,12 +188,12 @@ public class DBTestFrame extends JFrame {
 		contentPane.add(btnSignIn);
 		
 		tFInput = new JTextField();
-		tFInput.setBounds(510, 50, 116, 21);
+		tFInput.setBounds(480, 50, 116, 21);
 		contentPane.add(tFInput);
 		tFInput.setColumns(10);
 		
 		tFOutput = new JTextField();
-		tFOutput.setBounds(510, 79, 116, 108);
+		tFOutput.setBounds(480, 79, 116, 108);
 		contentPane.add(tFOutput);
 		tFOutput.setColumns(10);
 		
@@ -216,7 +228,7 @@ public class DBTestFrame extends JFrame {
 //				}
 			}
 		});
-		btnFind.setBounds(520, 197, 97, 23);
+		btnFind.setBounds(490, 197, 97, 23);
 		contentPane.add(btnFind);
 		
 		JLabel imgIcon = new JLabel("");
@@ -384,6 +396,139 @@ public class DBTestFrame extends JFrame {
 		});
 		tFSubmit.setBounds(642, 510, 97, 23);
 		contentPane.add(tFSubmit);
+		
+		tFInputUserId = new JTextField();
+		tFInputUserId.setBounds(642, 50, 116, 21);
+		contentPane.add(tFInputUserId);
+		tFInputUserId.setColumns(10);
+		
+		tFOutputUserRecord = new JTextField();
+		tFOutputUserRecord.setBounds(642, 79, 116, 108);
+		contentPane.add(tFOutputUserRecord);
+		tFOutputUserRecord.setColumns(10);
+		
+		JButton btnUserRecordSearch = new JButton("user record search");
+		btnUserRecordSearch.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String userId = tFInputUserId.getText();
+				
+				ApiResponse apiRes = HttpConnecter.instance.getUserRecord(userId);
+				if(apiRes.isSuccess()) {
+					String content = apiRes.getContent();
+					ArrayList<Record> records = JSONManager.getJsonDataList(content, Record.class);
+					
+					tFOutputUserRecord.setText("");
+					if(records != null && !records.isEmpty()) {
+						StringBuilder sb = new StringBuilder();
+						for(Record record : records) {
+							sb.append("Title: ").append(record.getTitle())
+							  .append(", User ID: ").append(record.getUser_id())
+							  .append(", Total Quiz: ").append(record.getTotal_quiz())
+							  .append(", Answer Quiz: ").append(record.getAnswer_quiz())
+							  .append(", Date: ").append(record.getPlay_date())
+							  .append("\n");
+						}
+						tFOutputUserRecord.setText(sb.toString());
+					} else {
+						tFOutputUserRecord.setText("해당 사용자의 기록이 없습니다.");
+					}
+				} else {
+					switch(apiRes.getError().getCode()) {
+						case "NOT_FOUND_RECORDS":
+							JOptionPane.showMessageDialog(contentPane, "사용자를 찾을 수 없습니다.");
+							break;
+						case "SERVER_ERROR":
+							JOptionPane.showMessageDialog(contentPane, "서버 오류 발생");
+							break;
+					}
+				}
+			}
+		});
+		btnUserRecordSearch.setBounds(652, 197, 97, 23);
+		contentPane.add(btnUserRecordSearch);
+		
+		tFInputRecordToUserId = new JTextField();
+		tFInputRecordToUserId.setColumns(10);
+		tFInputRecordToUserId.setBounds(791, 50, 116, 21);
+		contentPane.add(tFInputRecordToUserId);
+		
+		btnSaveRecord = new JButton("save record");
+		btnSaveRecord.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String userId = tFInputRecordToUserId.getText();
+				String title = tFInputRecordToTitle.getText();
+				int answerQuiz = Integer.parseInt(tFInputRecordToAnswerQuiz.getText());
+				String playDate = tFInputRecordToPlayDate.getText();
+				
+				
+				ApiResponse apiRes = HttpConnecter.instance.recordGameHistory(userId, title, answerQuiz, playDate);
+				
+				if(apiRes.isSuccess()) {
+					JOptionPane.showMessageDialog(contentPane, "기록 저장 성공!");
+				} else {
+					switch(apiRes.getError().getCode()) {
+						case "NOT_FOUND_USER":
+							JOptionPane.showMessageDialog(contentPane, "사용자를 찾을 수 없습니다.");
+							break;
+						case "SERVER_ERROR":
+							JOptionPane.showMessageDialog(contentPane, "서버 오류 발생");
+							break;
+					}
+				}
+			}
+		});
+		btnSaveRecord.setBounds(801, 197, 97, 23);
+		contentPane.add(btnSaveRecord);
+		
+		tFInputRecordToTitle = new JTextField();
+		tFInputRecordToTitle.setColumns(10);
+		tFInputRecordToTitle.setBounds(791, 79, 116, 21);
+		contentPane.add(tFInputRecordToTitle);
+		
+		tFInputRecordToAnswerQuiz = new JTextField();
+		tFInputRecordToAnswerQuiz.setColumns(10);
+		tFInputRecordToAnswerQuiz.setBounds(791, 109, 116, 21);
+		contentPane.add(tFInputRecordToAnswerQuiz);
+		
+		tFInputRecordToPlayDate = new JTextField();
+		tFInputRecordToPlayDate.setColumns(10);
+		tFInputRecordToPlayDate.setBounds(791, 137, 116, 21);
+		contentPane.add(tFInputRecordToPlayDate);
+		
+		btnUpdateAllUserTier = new JButton("save record");
+		btnUpdateAllUserTier.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				ApiResponse apiRes = HttpConnecter.instance.updateAllUserTier();
+				if(apiRes.isSuccess()) {
+					JOptionPane.showMessageDialog(contentPane, "모든 사용자 티어 업데이트 성공!");
+				} else {
+					switch(apiRes.getError().getCode()) {
+						case "SERVER_ERROR":
+							JOptionPane.showMessageDialog(contentPane, "서버 오류 발생");
+							break;
+						default:
+							JOptionPane.showMessageDialog(contentPane, "알 수 없는 오류 발생");
+							break;
+					}
+				}
+			}
+		});
+		btnUpdateAllUserTier.setBounds(917, 49, 97, 23);
+		contentPane.add(btnUpdateAllUserTier);
+		
+		tFInputUserIdForRank = new JTextField();
+		tFInputUserIdForRank.setColumns(10);
+		tFInputUserIdForRank.setBounds(791, 249, 116, 21);
+		contentPane.add(tFInputUserIdForRank);
+		
+		tFOutputUserRank = new JTextField();
+		tFOutputUserRank.setColumns(10);
+		tFOutputUserRank.setBounds(791, 281, 116, 21);
+		contentPane.add(tFOutputUserRank);
+		
+		getUserRank = new JButton("user rank search");
+		getUserRank.setBounds(801, 312, 97, 23);
+		contentPane.add(getUserRank);
 	
 		
 		

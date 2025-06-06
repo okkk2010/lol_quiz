@@ -11,7 +11,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import dataSet.quiz.Quiz;
 import dataSet.user.SignUpUser;
 import dataSet.user.User;
-import jdk.internal.org.jline.terminal.TerminalBuilder.SystemOutput;
+import dataSet.user.UserNTier;
 
 public class HttpConnecter {
 	
@@ -162,7 +162,7 @@ public class HttpConnecter {
 	public ApiResponse changeNickname(String id, String newNickname) {
 		User user = new User();
 		user.setId(id); user.setNickname(newNickname);
-		String customUrl = URL + "/user/change-nickname";
+		String customUrl = URL + "/user/user-nickname-change";
 		
 		try {
 			String userJson = JSONManager.mapper.writeValueAsString(user);
@@ -353,22 +353,123 @@ public class HttpConnecter {
 		}
 	}
 	
-	public ApiResponse recordGameHistory(String userId, String title, int answerQuiz, int playDate ) {
-		if(userId == null) {
-			System.out.println("사용자 ID가 null입니다.");
-			return null; // 사용자 ID가 null일 경우 처리
+	public ApiResponse recordGameHistory(String userid, String title, int answerQuiz, String playDate ) {
+		dataSet.record.Record record = new dataSet.record.Record();
+		
+		record.setUser_id(userid); record.setTitle(title); record.setAnswer_quiz(answerQuiz); record.setPlay_date(playDate);
+		String customUrl = URL + "/record/record-game-history";
+		
+		try {
+			String recordJson = JSONManager.mapper.writeValueAsString(record);
+			HttpRequest request = HttpRequest.newBuilder().uri(URI.create(customUrl))
+					.header("Content-Type", "application/json")
+					.POST(HttpRequest.BodyPublishers.ofString(recordJson))
+					.build();
+			
+			HttpResponse<String> putResponse = client.send(request, HttpResponse.BodyHandlers.ofString());
+			String responseBody = putResponse.body();
+			ApiResponse apiRes = JSONManager.mapper.readValue(responseBody, ApiResponse.class);
+			return apiRes;
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+			return null;
+		} catch (IOException | InterruptedException e) {
+			e.printStackTrace();
+			return null;
 		}
-		
-		
 	}
 	
-	public ApiResponse updateUserTier(String id, int answer_quiz) {
-		if(id == null) {
-			System.out.println("사용자 ID가 null입니다.");
-			return null; // 사용자 ID가 null일 경우 처리
+	public ApiResponse updateUserTier(String id) {
+		User user = new User();	
+		user.setId(id);
+		String customUrl = URL + "/user/user-tier-update";
+		
+		try {
+			String userJson = JSONManager.mapper.writeValueAsString(user);
+			HttpRequest request = HttpRequest.newBuilder().uri(URI.create(customUrl))
+					.header("Content-Type", "application/json")
+					.POST(HttpRequest.BodyPublishers.ofString(userJson))
+					.build();
+			
+			HttpResponse<String> putResponse = client.send(request, HttpResponse.BodyHandlers.ofString());
+			String responseBody = putResponse.body();
+			ApiResponse apiRes = JSONManager.mapper.readValue(responseBody, ApiResponse.class);
+			return apiRes;
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+			return null;
+		} catch (IOException | InterruptedException e) {
+			e.printStackTrace();
+			return null;
 		}
-		
+	}
+	
+	public ApiResponse updateAllUserTier() {
+		String customUrl = URL + "/user/user-tier-all-update";
+		try {
+			HttpRequest request = HttpRequest.newBuilder().uri(URI.create(customUrl))
+					.header("Content-Type", "application/json")
+					.POST(HttpRequest.BodyPublishers.noBody())
+					.build();
+			
+			HttpResponse<String> putResponse = client.send(request, HttpResponse.BodyHandlers.ofString());
+			String responseBody = putResponse.body();
+			ApiResponse apiRes = JSONManager.mapper.readValue(responseBody, ApiResponse.class);
+			return apiRes;
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+			return null;
+		} catch (IOException | InterruptedException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public ApiResponse getUserRecord(String id) {
 		User user = new User();
-		
+		user.setId(id);
+		String customUrl = URL + "/record/get-user-records";
+		try {
+			String userJson = JSONManager.mapper.writeValueAsString(user);
+			HttpRequest request = HttpRequest.newBuilder().uri(URI.create(customUrl))
+					.header("Content-Type", "application/json")
+					.POST(HttpRequest.BodyPublishers.ofString(userJson))
+					.build();
+			
+			HttpResponse<String> putResponse = client.send(request, HttpResponse.BodyHandlers.ofString());
+			String responseBody = putResponse.body();
+			ApiResponse apiRes = JSONManager.mapper.readValue(responseBody, ApiResponse.class);
+			return apiRes;
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+			return null;
+		} catch (IOException | InterruptedException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public ApiResponse getUserRanking(String id) {
+		User user = new User();
+		user.setId(id);
+		String customUrl = URL + "/user/get-user-ranking";
+		try {
+			String userJson = JSONManager.mapper.writeValueAsString(user);
+			HttpRequest request = HttpRequest.newBuilder().uri(URI.create(customUrl))
+					.header("Content-Type", "application/json")
+					.POST(HttpRequest.BodyPublishers.ofString(userJson))
+					.build();
+			
+			HttpResponse<String> putResponse = client.send(request, HttpResponse.BodyHandlers.ofString());
+			String responseBody = putResponse.body();
+			ApiResponse apiRes = JSONManager.mapper.readValue(responseBody, ApiResponse.class);
+			return apiRes;
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+			return null;
+		} catch (IOException | InterruptedException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 }

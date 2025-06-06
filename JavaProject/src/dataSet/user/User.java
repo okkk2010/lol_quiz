@@ -14,6 +14,7 @@ public class User {
 	private String new_password;
 	private String create_at;
 	private String tier;
+	private String ranking;
 	
 	public User() {}
 	

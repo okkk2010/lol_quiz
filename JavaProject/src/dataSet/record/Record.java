@@ -11,7 +11,7 @@ public class Record {
 	private String user_id;
 	private int total_quiz;
 	private int answer_quiz;
-	private String player_date;
-	
+	private String play_date;
+	 
 	public Record() { }
 }
