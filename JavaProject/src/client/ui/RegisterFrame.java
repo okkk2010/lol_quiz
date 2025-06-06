@@ -9,6 +9,7 @@ import javax.swing.border.EmptyBorder;
 import client.ui.LoginFrame;
 import client.uiTool.RoundJButton;
 import client.uiTool.RoundJPanel;
+import client.uiTool.RoundJPasswordField;
 import client.uiTool.RoundJTextField;
 import database.ApiResponse;
 import database.DatabaseManager;
@@ -189,7 +190,7 @@ public class RegisterFrame extends JFrame {
 		btnSignUp.setForeground(Color.BLACK);
 		btnSignUp.setFont(new Font("CookieRun Regular", Font.PLAIN, 18));
 		btnSignUp.setBackground(new Color(185, 215, 234));
-		btnSignUp.setBounds(250, 440, 170, 40);
+		btnSignUp.setBounds(250, 440, 120, 40);
 		SignUpPanel.add(btnSignUp);
 		
 		RoundJButton btnBack = new RoundJButton();
@@ -208,7 +209,7 @@ public class RegisterFrame extends JFrame {
 		btnBack.setForeground(Color.BLACK);
 		btnBack.setFont(new Font("CookieRun Regular", Font.PLAIN, 18));
 		btnBack.setBackground(new Color(176, 180, 186));
-		btnBack.setBounds(450, 440, 100, 40);
+		btnBack.setBounds(430, 440, 120, 40);
 		SignUpPanel.add(btnBack);
 		
 		RoundJPanel outLine1 = new RoundJPanel(5);

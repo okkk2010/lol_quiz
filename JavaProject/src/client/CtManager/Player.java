@@ -9,6 +9,7 @@ import lombok.Setter;
 public class Player {
 	private String id;
 	private String Nickname;
+	private String password;
 	private String tier;
 	
 	

@@ -148,6 +148,7 @@ public class InGameFrame extends JFrame {
 				            Thread.sleep(1000);
 				        } catch (InterruptedException ex) {
 				            Thread.currentThread().interrupt();
+				            break;
 				        }
 				        final int currentValue = i; // 현재 진행 상태를 저장
 				        SwingUtilities.invokeLater(() -> {
@@ -398,7 +399,7 @@ public class InGameFrame extends JFrame {
 		});
 		btnRanking.setText("랭킹보기");
 		btnRanking.setForeground(Color.BLACK);
-		btnRanking.setFont(new Font("CookieRun Regular", Font.PLAIN, 16));
+		btnRanking.setFont(new Font("CookieRun Regular", Font.PLAIN, 18));
 		btnRanking.setBackground(new Color(185, 215, 234));
 		btnRanking.setBounds(340, 480, 150, 50);
 		GamePanel2.add(btnRanking);
@@ -417,9 +418,9 @@ public class InGameFrame extends JFrame {
 				setVisible(false);
 			}
 		});
-		btnHome.setText("홈");
+		btnHome.setText("메인으로");
 		btnHome.setForeground(Color.BLACK);
-		btnHome.setFont(new Font("CookieRun Regular", Font.PLAIN, 16));
+		btnHome.setFont(new Font("CookieRun Regular", Font.PLAIN, 18));
 		btnHome.setBackground(new Color(176, 180, 186));
 		btnHome.setBounds(590, 480, 150, 50);
 		GamePanel2.add(btnHome);
