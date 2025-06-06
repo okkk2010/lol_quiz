@@ -12,6 +12,8 @@ import client.uiTool.RoundJPanel;
 import client.uiTool.RoundJPasswordField;
 import client.uiTool.RoundJTextField;
 import dataSet.user.User;
+import dataSet.*;
+import dataSet.Tier.Tier;
 import database.ApiResponse;
 import database.DatabaseManager; // Unused, consider removing if not needed
 import database.HttpConnecter;
@@ -141,8 +143,6 @@ public class MyInfoFrame extends JFrame {
 		    }
 		};
 		
-		loadAndDisplayRecords();
-		
 		JTable recordsTable = new JTable(tableModel);
 		recordsTable.setFillsViewportHeight(true); 
 		recordsTable.setFont(new Font("CookieRun Regular", Font.PLAIN, 14));
@@ -167,21 +167,13 @@ public class MyInfoFrame extends JFrame {
 		// JTable 테두리 제거
 		recordsTable.setBorder(null);
 
-		// 문제 종류, 총 문제, 맞춘 문제, 틀린 문제 가운데 정렬
+		// 테이블 가운데 정렬
 		DefaultTableCellRenderer CenterRenderer = new DefaultTableCellRenderer();
 		CenterRenderer.setHorizontalAlignment(SwingConstants.CENTER);
 
-		// 최고 점수 오른쪽 정렬
-		DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();
-		rightRenderer.setHorizontalAlignment(SwingConstants.RIGHT);
-
 		// 정렬 적용
 		for (int i = 0; i < recordsTable.getColumnCount(); i++) {
-			if (i == 3) {
-				recordsTable.getColumnModel().getColumn(i).setCellRenderer(rightRenderer); 
-			} else {
-				recordsTable.getColumnModel().getColumn(i).setCellRenderer(CenterRenderer);
-			}
+			recordsTable.getColumnModel().getColumn(i).setCellRenderer(CenterRenderer);
 		}
 
 		JScrollPane recordsScrollPane = new JScrollPane(recordsTable);
@@ -613,13 +605,13 @@ public class MyInfoFrame extends JFrame {
 		outLine2.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 
 		setLocationRelativeTo(null);
+		loadAndDisplayRecords();
 	}
 	 private void loadAndDisplayRecords() {
 	        // 백그라운드 스레드에서 네트워크 통신 수행
 	        new Thread(() -> {
 	            // 수정된 getUserRecord 메서드 호출
 	            ApiResponse apiRes = HttpConnecter.instance.getUserRecord(player.getId());
-
 	            SwingUtilities.invokeLater(() -> { // UI 업데이트는 EDT에서 수행
 	                if (apiRes != null && apiRes.isSuccess()) {
 	                    // 기존 테이블 데이터 모두 삭제
@@ -629,17 +621,28 @@ public class MyInfoFrame extends JFrame {
 	                    // 가정: ApiResponse의 content는 List<Record>의 JSON 문자열
 	                    // JSONManager.getJsonDataList는 JSON 배열을 객체 리스트로 파싱합니다.
 	                    List<dataSet.record.Record> records = JSONManager.getJsonDataList(apiRes.getContent(), dataSet.record.Record.class);
-
+	                    
+	                    // records가 null이 아니고 비어있지 않은 경우에만 테이블에 추가
 	                    if (records != null && !records.isEmpty()) {
 	                        for (dataSet.record.Record record : records) {
-	                            // Record 객체에서 데이터를 가져와 테이블 행으로 추가
+	                        	ApiResponse recordApiRes = HttpConnecter.instance.getTierByScore(record.getAnswer_quiz());
+	                        	String tier = "정보 없음";
+	                        	if (recordApiRes != null && recordApiRes.isSuccess()) {
+	                        		// 티어 정보가 있다면 가져오기
+	                        		String content = recordApiRes.getContent(); // 티어 정보가 담긴 문자열
+	                        		Tier tierData = JSONManager.getJsonData(content, Tier.class);
+	                        		if (tierData != null) {
+	                        			tier = tierData.getName(); // 티어 이름 가져오기
+	                        		}
+	                        	}
+
 	                            Object[] rowData = {
 	                                record.getPlay_date(),
 	                                record.getTitle(),
 	                                record.getAnswer_quiz(),
 	                                // record.getTier() // Record 클래스에 'tier' 필드가 있다면 사용하세요.
 	                                // 서버 응답에 티어 정보가 없다면 아래와 같이 기본값이나 공백으로 설정
-	                                "정보 없음"
+	                      		    tier                    
 	                            };
 	                            tableModel.addRow(rowData);
 	                        }
