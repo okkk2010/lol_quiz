@@ -40,6 +40,8 @@ import javax.swing.UIManager;
 import java.awt.FlowLayout; // Unused, consider removing if not needed
 import javax.swing.JTextField;
 import javax.swing.JButton;
+import javax.swing.JMenu;
+import javax.swing.JComboBox;
 
 public class MyInfoFrame extends JFrame {
 
@@ -60,6 +62,7 @@ public class MyInfoFrame extends JFrame {
 	private RoundJPasswordField tfChangePW;
 	private JPanel myRecordsPanel;
 	private DefaultTableModel tableModel;
+	private JTable table;
 
 	/**
 	 * Launch the application.
@@ -215,6 +218,14 @@ public class MyInfoFrame extends JFrame {
 		btnChangePW.setBackground(new Color(185, 215, 234));
 		btnChangePW.setBounds(30, 260, 180, 100);
 		myInfoPanel.add(btnChangePW);
+		
+		JComboBox comboBox = new JComboBox();
+		comboBox.setBounds(260, 100, 120, 40);
+		myInfoPanel.add(comboBox);
+		
+		table = new JTable();
+		table.setBounds(400, 100, 400, 200);
+		myInfoPanel.add(table);
 
 		// 3. 닉네임 변경 패널
 		changeNickNamepanel = new JPanel();

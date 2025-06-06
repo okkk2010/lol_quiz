@@ -8,6 +8,7 @@ import javax.swing.border.EmptyBorder;
 
 import client.CtManager.*;
 import client.uiTool.RoundJButton;
+import client.uiTool.RoundJLabel;
 import client.uiTool.RoundJPanel;
 import client.uiTool.RoundJTextField;
 import dataSet.quiz.Quiz;
@@ -153,7 +154,7 @@ public class InGameFrame extends JFrame {
 				}
 				new Thread(() -> {
 					int i;
-				    for (i = 5; i >= 0; i--) {
+				    for (i = 119; i >= 0; i--) {
 				        try {
 				            Thread.sleep(1000);
 				        } catch (InterruptedException ex) {
@@ -178,7 +179,33 @@ public class InGameFrame extends JFrame {
 				                } else {
 				                    JOptionPane.showMessageDialog(contentPane, "게임 결과 전송 실패: " + resultApiRes.getMessage(), "오류", JOptionPane.ERROR_MESSAGE);
 				                }
-				                tfAnswerQuiz.setText(score + ""); 
+				                tfAnswerQuiz.setText(score + "");
+				                // 티어 정보 갱신
+				                ApiResponse getTierByScoreTierApiRes = HttpConnecter.instance.getTierByScore(score);
+				                if (getTierByScoreTierApiRes != null && getTierByScoreTierApiRes.isSuccess()) {
+				                    Tier tier = JSONManager.getJsonData(getTierByScoreTierApiRes.getContent(), Tier.class);
+				                    lblTier.setText(tier.getName());
+				                    
+				                    // 티어 정보 업데이트
+				                    player.setTier(tier.getName());
+				                    
+				          		  	// 유저 티어 갱신
+				                    byte[] tierImgData = HttpConnecter.instance.loadImage(player.getTier());
+				                    if (tierImgData != null) {
+				                        ByteArrayInputStream tierBais = new ByteArrayInputStream(tierImgData);
+				                        try {
+				                            BufferedImage tierImg = ImageIO.read(tierBais);
+				                            lblTier.setIcon(new ImageIcon(new ImageIcon(tierImg).getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH)));
+				                        } catch (IOException e1) {
+				                            e1.printStackTrace();
+				                            JOptionPane.showMessageDialog(contentPane, "티어 이미지 로드 실패", "오류", JOptionPane.ERROR_MESSAGE);
+				                        }
+				                    } else {
+				                        JOptionPane.showMessageDialog(contentPane, "티어 이미지 로드 실패", "오류", JOptionPane.ERROR_MESSAGE);
+				                    }
+				                } else {
+				                    JOptionPane.showMessageDialog(contentPane, "티어 정보 로드 실패: " + getTierByScoreTierApiRes.getMessage(), "오류", JOptionPane.ERROR_MESSAGE);
+				                }
 				                score = 0; // 점수 리셋
 				                // 모든 유저 티어 갱신
 				                ApiResponse updateAllUserTierApiRes = HttpConnecter.instance.updateAllUserTier();
@@ -425,7 +452,7 @@ public class InGameFrame extends JFrame {
 		ResultPanel.add(tierPanel);
 		tierPanel.setLayout(new BorderLayout(0, 0));
 		
-		lblTier = new JLabel("티어");
+		lblTier = new RoundJLabel("티어");
 		tierPanel.add(lblTier);
 		lblTier.setHorizontalAlignment(SwingConstants.CENTER);
 		lblTier.setFont(new Font("CookieRun Regular", Font.PLAIN, 18));

@@ -157,21 +157,7 @@ public class RegisterFrame extends JFrame {
 					}
 				}
 			}
-		});
-		
-//		JLabel lblPwCheck = new JLabel("비밀번호 확인");
-//		lblPwCheck.setHorizontalAlignment(SwingConstants.LEFT);
-//		lblPwCheck.setFont(new Font("CookieRun Regular", Font.PLAIN, 16));
-//		lblPwCheck.setBounds(250, 360, 100, 20);
-//		LoginPanel.add(lblPwCheck);
-//		
-//		tfInputPwCheck = new RoundJPasswordField(10);
-//		tfInputPwCheck.setForeground(Color.DARK_GRAY);
-//		tfInputPwCheck.setFont(new Font("맑은 고딕", Font.PLAIN, 20));
-//		tfInputPwCheck.setEchoChar('*');
-//		tfInputPwCheck.setBackground(new Color(202, 206, 213));
-//		tfInputPwCheck.setBounds(250, 390, 300, 40);
-//		LoginPanel.add(tfInputPwCheck);
+		});		
 		
 		JLabel lblNickname = new JLabel("닉네임");
 		lblNickname.setHorizontalAlignment(SwingConstants.LEFT);
