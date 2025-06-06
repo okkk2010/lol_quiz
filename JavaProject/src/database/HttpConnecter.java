@@ -8,6 +8,7 @@ import java.net.http.HttpResponse;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
+import dataSet.Tier.Tier;
 import dataSet.quiz.Quiz;
 import dataSet.user.SignUpUser;
 import dataSet.user.User;
@@ -480,6 +481,54 @@ public class HttpConnecter {
 			HttpRequest request = HttpRequest.newBuilder().uri(URI.create(customUrl))
 					.header("Content-Type", "application/json")
 					.POST(HttpRequest.BodyPublishers.noBody())
+					.build();
+			
+			HttpResponse<String> putResponse = client.send(request, HttpResponse.BodyHandlers.ofString());
+			String responseBody = putResponse.body();
+			ApiResponse apiRes = JSONManager.mapper.readValue(responseBody, ApiResponse.class);
+			return apiRes;
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+			return null;
+		} catch (IOException | InterruptedException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public ApiResponse getTierByScore(int answer_quiz) {
+		Tier tier = new Tier();
+		tier.setAnswer_quiz(answer_quiz);
+		String customUrl = URL + "/tier/get-tier-by-score";
+		try {
+			String tierJson = JSONManager.mapper.writeValueAsString(tier);
+			HttpRequest request = HttpRequest.newBuilder().uri(URI.create(customUrl))
+					.header("Content-Type", "application/json")
+					.POST(HttpRequest.BodyPublishers.ofString(tierJson))
+					.build();
+			
+			HttpResponse<String> putResponse = client.send(request, HttpResponse.BodyHandlers.ofString());
+			String responseBody = putResponse.body();
+			ApiResponse apiRes = JSONManager.mapper.readValue(responseBody, ApiResponse.class);
+			return apiRes;
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+			return null;
+		} catch (IOException | InterruptedException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public ApiResponse getHighAnswerQuiz(String id) {
+		User user = new User();
+		user.setId(id);
+		String customUrl = URL + "/record/get-high-answer-quiz";
+		try {
+			String userJson = JSONManager.mapper.writeValueAsString(user);
+			HttpRequest request = HttpRequest.newBuilder().uri(URI.create(customUrl))
+					.header("Content-Type", "application/json")
+					.POST(HttpRequest.BodyPublishers.ofString(userJson))
 					.build();
 			
 			HttpResponse<String> putResponse = client.send(request, HttpResponse.BodyHandlers.ofString());

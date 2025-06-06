@@ -84,6 +84,9 @@ public class DBTestFrame extends JFrame {
 	private JButton getUserRank;
 	private JTextField tFRanking;
 	private JButton getRank;
+	private JButton getUserHighScore;
+	private JTextField textField;
+	private JTextField textField_1;
 
 	/**
 	 * Launch the application.
@@ -597,6 +600,46 @@ public class DBTestFrame extends JFrame {
 		});
 		getRank.setBounds(801, 510, 97, 23);
 		contentPane.add(getRank);
+		
+		getUserHighScore = new JButton("save record");
+		getUserHighScore.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String id = textField.getText();
+				
+				ApiResponse apiRes = HttpConnecter.instance.getHighAnswerQuiz(id);
+				if(apiRes.isSuccess()) {
+					String content = apiRes.getContent();
+					try {
+						int highScore = Integer.parseInt(content);
+						textField_1.setText("사용자의 최고 점수: " + highScore);
+					} catch (NumberFormatException ex) {
+						JOptionPane.showMessageDialog(contentPane, "점수 정보가 올바르지 않습니다.");
+					}
+				} else {
+					switch(apiRes.getError().getCode()) {
+						case "NOT_FOUND_USER":
+							JOptionPane.showMessageDialog(contentPane, "사용자를 찾을 수 없습니다.");
+							break;
+						case "SERVER_ERROR":
+							JOptionPane.showMessageDialog(contentPane, "서버 오류 발생");
+							break;
+					}
+				}
+				
+			}
+		});
+		getUserHighScore.setBounds(917, 197, 97, 23);
+		contentPane.add(getUserHighScore);
+		
+		textField = new JTextField();
+		textField.setColumns(10);
+		textField.setBounds(928, 137, 86, 21);
+		contentPane.add(textField);
+		
+		textField_1 = new JTextField();
+		textField_1.setColumns(10);
+		textField_1.setBounds(928, 166, 86, 21);
+		contentPane.add(textField_1);
 	
 		
 		
