@@ -95,6 +95,9 @@ public class DBTestFrame extends JFrame {
 	private JTextField answer_quiz;
 	private JTextField tFInputStatsRecordForUserId;
 	private JTextField tFOutputStatsRecordUser;
+	private JTextField tFInputUserIdForMyRank;
+	private JTextField tFOutputMyRank;
+	private JButton btnNewButton;
 
 	/**
 	 * Launch the application.
@@ -748,6 +751,45 @@ public class DBTestFrame extends JFrame {
 		});
 		btnGetStatsRecord.setBounds(72, 663, 97, 23);
 		contentPane.add(btnGetStatsRecord);
+		
+		tFInputUserIdForMyRank = new JTextField();
+		tFInputUserIdForMyRank.setBounds(510, 610, 116, 21);
+		contentPane.add(tFInputUserIdForMyRank);
+		tFInputUserIdForMyRank.setColumns(10);
+		
+		tFOutputMyRank = new JTextField();
+		tFOutputMyRank.setBounds(510, 641, 116, 21);
+		contentPane.add(tFOutputMyRank);
+		tFOutputMyRank.setColumns(10);
+		
+		btnNewButton = new JButton("New button");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String userId = tFInputUserIdForMyRank.getText();
+				
+				ApiResponse apiRes = HttpConnecter.instance.getUserRanking(userId);
+				if(apiRes.isSuccess()) {
+					String content = apiRes.getContent();
+					try {
+						int myRank = Integer.parseInt(content);
+						tFOutputMyRank.setText("내 랭킹: " + myRank);
+					} catch (NumberFormatException ex) {
+						JOptionPane.showMessageDialog(contentPane, "랭킹 정보가 올바르지 않습니다.");
+					}
+				} else {
+					switch(apiRes.getError().getCode()) {
+						case "NOT_FOUND_USER":
+							JOptionPane.showMessageDialog(contentPane, "사용자를 찾을 수 없습니다.");
+							break;
+						case "SERVER_ERROR":
+							JOptionPane.showMessageDialog(contentPane, "서버 오류 발생");
+							break;
+					}
+				}
+			}
+		});
+		btnNewButton.setBounds(520, 672, 97, 23);
+		contentPane.add(btnNewButton);
 	
 		
 		

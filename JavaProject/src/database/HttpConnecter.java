@@ -19,7 +19,7 @@ public class HttpConnecter {
 	public static final HttpConnecter instance = new HttpConnecter();
 	private static final String HEROKU_URL = "https://lol-quiz-node-server-2b48f85da5a8.herokuapp.com";
 	private static final String LOCAL_URL = "http://localhost:3000";
-	private static final String URL = HEROKU_URL;
+	private static final String URL = LOCAL_URL;
 	private static final String AWS_S3_URL = "https://lol-quiz.s3.us-east-2.amazonaws.com/";
 	private final HttpClient client = HttpClient.newHttpClient();
 	
@@ -499,7 +499,7 @@ public class HttpConnecter {
 	
 	public ApiResponse getRanking() {
 		
-		String customUrl = URL + "/user/get-ranking";
+		String customUrl = URL + "/record/get-ranking";
 		try {
 			HttpRequest request = HttpRequest.newBuilder().uri(URI.create(customUrl))
 					.header("Content-Type", "application/json")
