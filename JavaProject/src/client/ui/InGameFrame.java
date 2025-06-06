@@ -154,7 +154,7 @@ public class InGameFrame extends JFrame {
 				}
 				new Thread(() -> {
 					int i;
-				    for (i = 119; i >= 0; i--) {
+				    for (i = 3; i >= 0; i--) {
 				        try {
 				            Thread.sleep(1000);
 				        } catch (InterruptedException ex) {
@@ -184,8 +184,6 @@ public class InGameFrame extends JFrame {
 				                ApiResponse getTierByScoreTierApiRes = HttpConnecter.instance.getTierByScore(score);
 				                if (getTierByScoreTierApiRes != null && getTierByScoreTierApiRes.isSuccess()) {
 				                    Tier tier = JSONManager.getJsonData(getTierByScoreTierApiRes.getContent(), Tier.class);
-				                    lblTier.setText(tier.getName());
-				                    
 				                    // 티어 정보 업데이트
 				                    player.setTier(tier.getName());
 				                    
@@ -453,6 +451,7 @@ public class InGameFrame extends JFrame {
 		tierPanel.setLayout(new BorderLayout(0, 0));
 		
 		lblTier = new RoundJLabel("티어");
+		lblTier.setText("");
 		tierPanel.add(lblTier);
 		lblTier.setHorizontalAlignment(SwingConstants.CENTER);
 		lblTier.setFont(new Font("CookieRun Regular", Font.PLAIN, 18));
@@ -491,6 +490,7 @@ public class InGameFrame extends JFrame {
 		btnRanking.setFont(new Font("CookieRun Regular", Font.PLAIN, 18));
 		btnRanking.setBackground(new Color(185, 215, 234));
 		btnRanking.setBounds(340, 480, 150, 50);
+		btnRanking.requestFocusInWindow();
 		GamePanel2.add(btnRanking);
 		
 		RoundJButton btnHome = new RoundJButton();

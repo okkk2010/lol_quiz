@@ -42,6 +42,7 @@ import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.JMenu;
 import javax.swing.JComboBox;
+import javax.swing.DefaultComboBoxModel;
 
 public class MyInfoFrame extends JFrame {
 
@@ -62,7 +63,7 @@ public class MyInfoFrame extends JFrame {
 	private RoundJPasswordField tfChangePW;
 	private JPanel myRecordsPanel;
 	private DefaultTableModel tableModel;
-	private JTable table;
+	private JTable statisticsTable;
 
 	/**
 	 * Launch the application.
@@ -124,7 +125,7 @@ public class MyInfoFrame extends JFrame {
 		myRecordsPanel.setBorder(new EmptyBorder(40, 40, 40, 40)); // 패널에 여백 추가
 
 		// 테이블 데이터 및 컬럼 정의
-		String[] columnNames = {"날짜", "퀴즈 종류", "맞춘 문제", "티어"};
+		String[] columnNames = {"날짜", "퀴즈 종류", "2분 동안 맞춘 문제", "티어"};
 		// 테이블 내의 어떤 셀도 사용자 인터페이스를 통해 직접 편집할 수 없게 됩니다. 즉, 모든 셀은 "읽기 전용"
 		tableModel = new DefaultTableModel(new Object[][]{}, columnNames) {
 		    @Override
@@ -136,7 +137,7 @@ public class MyInfoFrame extends JFrame {
 		loadAndDisplayRecords();
 		
 		JTable recordsTable = new JTable(tableModel);
-		recordsTable.setFillsViewportHeight(true);
+		recordsTable.setFillsViewportHeight(true); 
 		recordsTable.setFont(new Font("CookieRun Regular", Font.PLAIN, 14));
 		recordsTable.setRowHeight(25);
 		recordsTable.getTableHeader().setFont(new Font("CookieRun Regular", Font.BOLD, 14));
@@ -150,11 +151,11 @@ public class MyInfoFrame extends JFrame {
 		recordsTable.setSelectionForeground(Color.BLACK); // 선택된 행의 글자색
 
 		// 테이블 헤더 꾸미기
-		recordsTable.getTableHeader().setBackground(new Color(185, 215, 234));
-		recordsTable.getTableHeader().setForeground(Color.BLACK);
+		recordsTable.getTableHeader().setBackground(new Color(185, 215, 234)); 
+		recordsTable.getTableHeader().setForeground(Color.BLACK); 
 		recordsTable.getTableHeader().setReorderingAllowed(false); // 열 순서 변경 막기
 		recordsTable.getTableHeader().setResizingAllowed(false); // 열 크기 조절 막기
-		recordsTable.getTableHeader().setOpaque(false);
+		recordsTable.getTableHeader().setOpaque(false); 
 
 		// JTable 테두리 제거
 		recordsTable.setBorder(null);
@@ -170,7 +171,7 @@ public class MyInfoFrame extends JFrame {
 		// 정렬 적용
 		for (int i = 0; i < recordsTable.getColumnCount(); i++) {
 			if (i == 3) {
-				recordsTable.getColumnModel().getColumn(i).setCellRenderer(rightRenderer);
+				recordsTable.getColumnModel().getColumn(i).setCellRenderer(rightRenderer); 
 			} else {
 				recordsTable.getColumnModel().getColumn(i).setCellRenderer(CenterRenderer);
 			}
@@ -197,14 +198,8 @@ public class MyInfoFrame extends JFrame {
 				cl_cardPanel.show(CardPanel, "changeNickName"); // newNickNamepanel 보이기
 			}
 		});
-		btnChangeNickname.setBounds(30, 100, 180, 100);
+		btnChangeNickname.setBounds(40, 115, 180, 80);
 		myInfoPanel.add(btnChangeNickname);
-
-		// 기타 myInfoPanel 요소들 (예: lblNewLabel_1)
-		JLabel lblNewLabel_1 = new JLabel("닉네임 변경, 비밀번호 변경, 통계(테마별 게임수/ 판수 / 평균 맞춘 문제 수 / 평균 티어)");
-		lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_1.setBounds(0, 0, 840, 50); // Adjust bounds as needed for proper layout
-		myInfoPanel.add(lblNewLabel_1); // Add to myInfoPanel, not myInfoContentPanel
 
 		CardPanel.add(myInfoPanel, "myInfo"); // myInfoPanel을 CardPanel에 추가
 		
@@ -216,16 +211,34 @@ public class MyInfoFrame extends JFrame {
 		});
 		btnChangePW.setFont(new Font("CookieRun Regular", Font.PLAIN, 20));
 		btnChangePW.setBackground(new Color(185, 215, 234));
-		btnChangePW.setBounds(30, 260, 180, 100);
+		btnChangePW.setBounds(40, 250, 180, 80);
 		myInfoPanel.add(btnChangePW);
 		
 		JComboBox comboBox = new JComboBox();
-		comboBox.setBounds(260, 100, 120, 40);
+		comboBox.setFont(new Font("CookieRun Regular", Font.PLAIN, 18));
+		comboBox.setModel(new DefaultComboBoxModel(new String[] {"lol 챔피언 퀴즈"}));
+		comboBox.setBounds(300, 115, 160, 40);
 		myInfoPanel.add(comboBox);
 		
-		table = new JTable();
-		table.setBounds(400, 100, 400, 200);
-		myInfoPanel.add(table);
+		// 통계 테이블
+		statisticsTable = new JTable();
+		statisticsTable.setBounds(300, 200, 500, 60);
+		statisticsTable.setFont(new Font("CookieRun Regular", Font.PLAIN, 16));
+		statisticsTable.setRowHeight(30); // 행 높이 설정
+		statisticsTable.getTableHeader().setFont(new Font("CookieRun Regular", Font.BOLD, 16)); // 헤더 폰트 설정
+		statisticsTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF); // 열 너비 자동 조정 비활성화
+		statisticsTable.setModel(new DefaultTableModel(
+			new Object[][] {
+				{"퀴즈이름", "판`수", "평균 맞춘 문제", "평균 티어"},
+				{"lol 챔피언 퀴즈", 0, 0, 0.0},
+			},
+			new String[] {"게임수", "판수", "평균 맞춘 문제 수", "평균 티어"}
+		));
+		statisticsTable.getTableHeader().setReorderingAllowed(false); // 열 순서 변경 막기
+		statisticsTable.getTableHeader().setResizingAllowed(false); // 열 크기 조절 막기
+		statisticsTable.getTableHeader().setOpaque(false); // 헤더 배경 투명하게 설정
+		
+		myInfoPanel.add(statisticsTable);
 
 		// 3. 닉네임 변경 패널
 		changeNickNamepanel = new JPanel();

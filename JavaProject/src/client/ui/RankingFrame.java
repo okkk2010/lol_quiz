@@ -10,7 +10,14 @@ import javax.swing.table.DefaultTableModel;
 
 import java.awt.Color;
 import client.uiTool.RoundJPanel;
+import dataSet.Tier.Tier;
+import dataSet.record.Record;
+import dataSet.user.UserNTier;
+import database.ApiResponse;
 import database.DatabaseManager;
+import database.HttpConnecter;
+import database.JSONManager;
+
 import javax.swing.UIManager;
 import java.awt.FlowLayout;
 import javax.swing.JLabel;
@@ -21,6 +28,7 @@ import javax.swing.JMenuBar;
 import java.awt.BorderLayout;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import java.awt.Component;
 import javax.swing.JRadioButtonMenuItem;
@@ -31,7 +39,10 @@ import javax.swing.JTable;
 
 import client.CtManager.Player;
 import client.uiTool.RoundJButton;
+import client.uiTool.RoundJLabel;
+
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 
 public class RankingFrame extends JFrame {
@@ -44,6 +55,9 @@ public class RankingFrame extends JFrame {
 	private HomeFrame homeframe;
 	private LoginFrame loginframe;
 	private Player player;
+	private JLabel lblMyHighTier;
+	private DefaultTableModel tableModel;
+	private JTable rankingTable;
 
 	/**
 	 * Launch the application.
@@ -75,30 +89,34 @@ public class RankingFrame extends JFrame {
 
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-		
+
 		RoundJPanel MainPanel = new RoundJPanel(5);
 		MainPanel.setLayout(null);
 		MainPanel.setBackground(Color.WHITE);
 		MainPanel.setBounds(80, 40, 1080, 600);
 		contentPane.add(MainPanel);
-		
+
 		RoundJPanel ResultPanel = new RoundJPanel(5);
 		ResultPanel.setLayout(null);
 		ResultPanel.setBackground(new Color(228, 235, 250));
 		ResultPanel.setBounds(70, 70, 940, 460);
 		MainPanel.add(ResultPanel);
-		
-		JPanel TierPanel = new JPanel();
+
+		RoundJPanel TierPanel = new RoundJPanel(5);
 		TierPanel.setBackground(new Color(255, 255, 255));
 		TierPanel.setBounds(60, 60, 200, 200);
 		ResultPanel.add(TierPanel);
-		
+		TierPanel.setLayout(new BorderLayout(0, 0));
+
+		lblMyHighTier = new RoundJLabel("");
+		TierPanel.add(lblMyHighTier, BorderLayout.CENTER);
+
 		RoundJPanel TopTierPanel = new RoundJPanel(5);
 		TopTierPanel.setBackground(new Color(255, 255, 255));
 		TopTierPanel.setBounds(350, 60, 500, 360);
 		ResultPanel.add(TopTierPanel);
 		TopTierPanel.setLayout(null);
-		
+
 		JLabel lblTop = new JLabel("TOP 30 (챌린저 5 마스터 25)");
 		lblTop.setHorizontalAlignment(SwingConstants.CENTER);
 		lblTop.setForeground(Color.BLACK);
@@ -106,43 +124,35 @@ public class RankingFrame extends JFrame {
 		lblTop.setBackground(new Color(185, 215, 234));
 		lblTop.setBounds(200, 0, 100, 40);
 		TopTierPanel.add(lblTop);
-		
+
 		JSeparator separator = new JSeparator();
 		separator.setBounds(10, 38, 480, 4);
 		TopTierPanel.add(separator);
-		
+
 		// 스크롤 가능한 랭킹 목록 (JTable) 추가
 		// 1. JTable의 헤더 정의
-		String[] columnNames = {"순위", "닉네임", "최고점수"};
-		// 2. JTable의 데이터 (예시로 200개의 더미 데이터 생성)
-		Object[][] data = new Object[100][3];
-		for (int i = 0; i < 100; i++) {
-		    data[i][0] = i + 1; // 순위
-		    data[i][1] = "플레이어" + (i + 1); // 닉네임
-		    data[i][2] = 1000 - (i * 5); // 최고점수 (점점 낮아지도록)
-		}
-		
-		DefaultTableModel tableModel = new DefaultTableModel(data, columnNames) {
-		    @Override
-		    public boolean isCellEditable(int row, int column) {
-		        return false; // 테이블 셀 편집 불가능하게 설정
-		    }
+		String[] columnNames = { "순위", "닉네임", "최고점수" };
+
+		tableModel = new DefaultTableModel(columnNames, 0) { // 0은 초기 행 수, 나중에 데이터 추가 시 자동으로 행이 늘어남
+			@Override
+			public boolean isCellEditable(int row, int column) {
+				return false; // 테이블 셀 편집 불가능하게 설정
+			}
 		};
-		JTable rankingTable = new JTable(tableModel);
+		rankingTable = new JTable(tableModel);
 		rankingTable.setFont(new Font("CookieRun Regular", Font.PLAIN, 16));
 		rankingTable.setRowHeight(30); // 행 높이 설정
 		rankingTable.getTableHeader().setFont(new Font("CookieRun Regular", Font.BOLD, 16)); // 헤더 폰트 설정
 		rankingTable.setFillsViewportHeight(true); // JTable이 뷰포트 높이를 채우도록 설정
-		
-		
+
 		// 순위, 닉네임 가운데 정렬
 		DefaultTableCellRenderer CenterRenderer = new DefaultTableCellRenderer();
 		CenterRenderer.setHorizontalAlignment(SwingConstants.CENTER);
-		
+
 		// 최고 점수 오른쪽 정렬
 		DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();
 		rightRenderer.setHorizontalAlignment(SwingConstants.RIGHT);
-		
+
 		// 정렬 적용
 		for (int i = 0; i < rankingTable.getColumnCount(); i++) {
 			if (i == 2) {
@@ -151,7 +161,7 @@ public class RankingFrame extends JFrame {
 				rankingTable.getColumnModel().getColumn(i).setCellRenderer(CenterRenderer);
 			}
 		}
-		
+
 		// JTable 꾸미기 (배경색, 그리드 색상, 선택 색상, 폰트 등)
 		rankingTable.setShowVerticalLines(false); // 세로줄 숨기기
 		rankingTable.setShowHorizontalLines(false); // 가로줄 숨기기
@@ -176,7 +186,7 @@ public class RankingFrame extends JFrame {
 		JScrollPane scrollPane = new JScrollPane(rankingTable);
 		scrollPane.setBounds(10, 45, 480, 305); // Y좌표를 separator 바로 아래로, 높이를 남은 공간에 맞춰 조정
 		TopTierPanel.add(scrollPane); // TopTierPanel에 JScrollPane 추가
-	
+
 		JLabel lblNickName = new JLabel("닉네임");
 		lblNickName.setForeground(new Color(0, 0, 0));
 		lblNickName.setBackground(new Color(185, 215, 234));
@@ -184,19 +194,19 @@ public class RankingFrame extends JFrame {
 		lblNickName.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNickName.setBounds(60, 280, 60, 40);
 		ResultPanel.add(lblNickName);
-		
+
 		JLabel lblRanking = new JLabel("순위");
 		lblRanking.setFont(new Font("CookieRun Regular", Font.PLAIN, 16));
 		lblRanking.setHorizontalAlignment(SwingConstants.CENTER);
 		lblRanking.setBounds(60, 330, 60, 40);
 		ResultPanel.add(lblRanking);
-		
+
 		JLabel lblMaxScore = new JLabel("최고점수");
 		lblMaxScore.setFont(new Font("CookieRun Regular", Font.PLAIN, 16));
 		lblMaxScore.setHorizontalAlignment(SwingConstants.CENTER);
 		lblMaxScore.setBounds(60, 380, 60, 40);
 		ResultPanel.add(lblMaxScore);
-		
+
 		tfNickName = new JTextField();
 		tfNickName.setHorizontalAlignment(SwingConstants.CENTER);
 		tfNickName.setForeground(new Color(0, 0, 0));
@@ -207,23 +217,74 @@ public class RankingFrame extends JFrame {
 		tfNickName.setFocusable(false);
 		tfNickName.setColumns(10);
 		ResultPanel.add(tfNickName);
-		
-		tfRanking = new JTextField();
+
+		tfRanking = new JTextField("0");
+		tfRanking.setHorizontalAlignment(SwingConstants.CENTER);
 		tfRanking.setBackground(new Color(255, 255, 255));
 		tfRanking.setFont(new Font("CookieRun Regular", Font.PLAIN, 16));
 		tfRanking.setColumns(10);
 		tfRanking.setBounds(140, 330, 120, 40);
 		tfRanking.setFocusable(false);
-		ResultPanel.add(tfRanking);
 		
-		tfMaxScore = new JTextField();
+		String rkUserId = player.getId();
+		
+		ApiResponse apiRes = HttpConnecter.instance.getUserRanking(rkUserId);
+		if(apiRes.isSuccess()) {
+			String content = apiRes.getContent();
+			try {
+				int rank = Integer.parseInt(content);
+				tfRanking.setText(rank + "위");
+			} catch (NumberFormatException ex) {
+				JOptionPane.showMessageDialog(contentPane, "랭킹 정보가 올바르지 않습니다.");
+			}
+		} else {
+			switch(apiRes.getError().getCode()) {
+				case "NOT_FOUND_USER":
+					JOptionPane.showMessageDialog(contentPane, "사용자를 찾을 수 없습니다.");
+					break;
+				case "SERVER_ERROR":
+					JOptionPane.showMessageDialog(contentPane, "서버 오류 발생");
+					break;
+			}
+		}
+		
+		ResultPanel.add(tfRanking);
+
+		tfMaxScore = new JTextField("0");
+		tfMaxScore.setHorizontalAlignment(SwingConstants.CENTER);
 		tfMaxScore.setBackground(new Color(255, 255, 255));
 		tfMaxScore.setFont(new Font("CookieRun Regular", Font.PLAIN, 16));
 		tfMaxScore.setColumns(10);
 		tfMaxScore.setBounds(140, 380, 120, 40);
 		tfMaxScore.setFocusable(false);
-		ResultPanel.add(tfMaxScore);
 		
+		String mSUserId = player.getId();
+
+		ApiResponse MaxScoreApiRes = HttpConnecter.instance.getHighAnswerQuiz(mSUserId);
+		if (MaxScoreApiRes != null && MaxScoreApiRes.isSuccess()) {
+		    String content = MaxScoreApiRes.getContent();
+		    try {
+		        int highScore = Integer.parseInt(content);
+		        tfMaxScore.setText(String.valueOf(highScore));
+		    } catch (NumberFormatException ex) {
+		        JOptionPane.showMessageDialog(contentPane, "최고 점수 정보가 올바르지 않습니다: " + content);
+		    }
+		} else {
+		    // 에러 처리 로직은 그대로 유지
+		    switch (MaxScoreApiRes.getError().getCode()) {
+		        case "NOT_FOUND_USER":
+		            JOptionPane.showMessageDialog(contentPane, "사용자를 찾을 수 없습니다.");
+		            break;
+		        case "SERVER_ERROR":
+		            JOptionPane.showMessageDialog(contentPane, "서버 오류 발생");
+		            break;
+		        default: // 예상치 못한 에러 코드 처리
+		            JOptionPane.showMessageDialog(contentPane, "알 수 없는 오류 발생: " + MaxScoreApiRes.getError().getCode());
+		            break;
+		    }
+		}
+		ResultPanel.add(tfMaxScore);
+
 		RoundJButton btnHome = new RoundJButton();
 		btnHome.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -244,7 +305,7 @@ public class RankingFrame extends JFrame {
 		btnHome.setBackground(new Color(118, 159, 205));
 		btnHome.setBounds(780, 15, 120, 40);
 		MainPanel.add(btnHome);
-		
+
 		RoundJButton btnLogOut = new RoundJButton();
 		btnLogOut.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -263,19 +324,64 @@ public class RankingFrame extends JFrame {
 		btnLogOut.setBackground(new Color(176, 180, 186));
 		btnLogOut.setBounds(930, 15, 120, 40);
 		MainPanel.add(btnLogOut);
-		
+
 		RoundJPanel outLine1 = new RoundJPanel(5);
 		outLine1.setBackground(new Color(100, 100, 100));
 		outLine1.setBounds(85, 635, 1080, 11);
 		contentPane.add(outLine1);
 		outLine1.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-		
+
 		RoundJPanel outLine2 = new RoundJPanel(5);
 		outLine2.setBackground(new Color(100, 100, 100));
 		outLine2.setBounds(1155, 45, 11, 600);
 		contentPane.add(outLine2);
 		outLine2.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-		
-		setLocationRelativeTo(null);
+
+		setLocationRelativeTo(null); 
+		top30UserRanking();
+	}
+	
+	public void top30UserRanking() {
+	    ApiResponse apiRes = HttpConnecter.instance.getRanking(); // 랭킹 정보 API 호출
+
+	    if(apiRes.isSuccess()) {
+	        String content = apiRes.getContent();
+	        // JSONManager를 통해 Record 객체 리스트로 변환
+	        ArrayList<Record> records = JSONManager.getJsonDataList(content, Record.class);
+
+	        // 테이블 모델의 기존 데이터 모두 제거
+	        tableModel.setRowCount(0); // JTable을 비우는 가장 확실한 방법
+
+	        if(records != null && !records.isEmpty()) {
+	            // 서버에서 rank_num을 제공하지 않거나, 클라이언트에서 순위를 다시 매기고 싶을 경우
+	            // int rank = 1;
+
+	            for(Record record : records) {
+	                // Record 객체의 데이터를 가져와 Object 배열로 만듭니다.
+	                // 컬럼 순서: "순위", "닉네임", "최고점수"
+	                Object[] rowData = {
+	                    record.getRank_num(), // Record 객체의 rank_num 사용 (서버에서 제공하는 순위)
+	                    // 만약 서버 rank_num이 없다면, 클라이언트에서 계산: rank++
+	                    record.getNickname(),
+	                    record.getAnswer_quiz() // 최고 점수 (answer_quiz)
+	                };
+	                tableModel.addRow(rowData); // 테이블 모델에 행 추가
+	            }
+	          
+	        } else {
+	            // 랭킹 정보가 없을 경우
+	            JOptionPane.showMessageDialog(contentPane, "랭킹 정보가 없습니다.");
+	        }
+	    } else {
+	        // API 호출 실패 시 에러 처리
+	        switch(apiRes.getError().getCode()) {
+	            case "SERVER_ERROR":
+	                JOptionPane.showMessageDialog(contentPane, "서버 오류 발생");
+	                break;
+	            default:
+	                JOptionPane.showMessageDialog(contentPane, "알 수 없는 오류 발생: " + apiRes.getError().getCode());
+	                break;
+	        }
+	    }
 	}
 }

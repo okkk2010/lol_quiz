@@ -13,6 +13,7 @@ public class Record {
 	private int total_quiz;
 	private int answer_quiz;
 	private String play_date;
+	private int rank_num;
 	 
 	public Record() { }
 }
