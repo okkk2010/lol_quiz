@@ -240,7 +240,7 @@ public class RankingFrame extends JFrame {
 		});
 		btnHome.setText("홈");
 		btnHome.setForeground(Color.BLACK);
-		btnHome.setFont(new Font("CookieRun Regular", Font.PLAIN, 16));
+		btnHome.setFont(new Font("CookieRun Regular", Font.PLAIN, 18));
 		btnHome.setBackground(new Color(118, 159, 205));
 		btnHome.setBounds(780, 15, 120, 40);
 		MainPanel.add(btnHome);
@@ -259,7 +259,7 @@ public class RankingFrame extends JFrame {
 		});
 		btnLogOut.setText("로그 아웃");
 		btnLogOut.setForeground(Color.BLACK);
-		btnLogOut.setFont(new Font("CookieRun Regular", Font.PLAIN, 16));
+		btnLogOut.setFont(new Font("CookieRun Regular", Font.PLAIN, 18));
 		btnLogOut.setBackground(new Color(176, 180, 186));
 		btnLogOut.setBounds(930, 15, 120, 40);
 		MainPanel.add(btnLogOut);

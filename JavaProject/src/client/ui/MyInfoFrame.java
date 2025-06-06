@@ -9,6 +9,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import java.awt.Color;
 import client.uiTool.RoundJPanel;
+import client.uiTool.RoundJPasswordField;
 import client.uiTool.RoundJTextField;
 import database.ApiResponse;
 import database.DatabaseManager; // Unused, consider removing if not needed
@@ -50,7 +51,10 @@ public class MyInfoFrame extends JFrame {
 	private JTextField tfCheckNickName;
 	private JTextField tfCheckId;
 	private JPanel myInfoPanel; // Added for explicit reference
-	private JPanel newNickNamepanel;
+	private JPanel changeNickNamepanel;
+	private JPanel chagePWPanel;
+	private RoundJPasswordField tfCheckPW;
+	private RoundJPasswordField tfChangePW;
 
 	/**
 	 * Launch the application.
@@ -185,13 +189,15 @@ public class MyInfoFrame extends JFrame {
 		myInfoPanel.setLayout(null); // Use null layout for absolute positioning
 
 		// "닉네임 변경" 버튼 (myInfoPanel에 추가)
-		JButton btnChangeNickname = new JButton("닉네임 변경");
+		RoundJButton btnChangeNickname = new RoundJButton("닉네임 변경");
+		btnChangeNickname.setBackground(new Color(185, 215, 234));
+		btnChangeNickname.setFont(new Font("CookieRun Regular", Font.PLAIN, 20));
 		btnChangeNickname.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				cl_cardPanel.show(CardPanel, "newNickName"); // newNickNamepanel 보이기
+				cl_cardPanel.show(CardPanel, "changeNickName"); // newNickNamepanel 보이기
 			}
 		});
-		btnChangeNickname.setBounds(59, 150, 186, 115);
+		btnChangeNickname.setBounds(30, 100, 180, 100);
 		myInfoPanel.add(btnChangeNickname);
 
 		// 기타 myInfoPanel 요소들 (예: lblNewLabel_1)
@@ -201,37 +207,48 @@ public class MyInfoFrame extends JFrame {
 		myInfoPanel.add(lblNewLabel_1); // Add to myInfoPanel, not myInfoContentPanel
 
 		CardPanel.add(myInfoPanel, "myInfo"); // myInfoPanel을 CardPanel에 추가
+		
+		RoundJButton btnChangePW = new RoundJButton("비밀번호 변경");
+		btnChangePW.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				cl_cardPanel.show(CardPanel, "changePW");
+			}
+		});
+		btnChangePW.setFont(new Font("CookieRun Regular", Font.PLAIN, 20));
+		btnChangePW.setBackground(new Color(185, 215, 234));
+		btnChangePW.setBounds(30, 260, 180, 100);
+		myInfoPanel.add(btnChangePW);
 
-		// --- 닉네임 변경 패널 (newNickNamepanel) ---
-		newNickNamepanel = new JPanel();
-		newNickNamepanel.setBackground(new Color(255, 255, 255)); // Background added for clarity
-		newNickNamepanel.setLayout(null);
+		// 3. 닉네임 변경 패널
+		changeNickNamepanel = new JPanel();
+		changeNickNamepanel.setBackground(new Color(255, 255, 255));
+		changeNickNamepanel.setLayout(null);
 
 		JLabel lblCheckId = new JLabel("아이디");
 		lblCheckId.setFont(new Font("CookieRun Regular", Font.PLAIN, 16));
 		lblCheckId.setHorizontalAlignment(SwingConstants.LEFT);
 		lblCheckId.setBounds(270, 110, 70, 20);
-		newNickNamepanel.add(lblCheckId);
+		changeNickNamepanel.add(lblCheckId);
 
 		tfCheckId = new RoundJTextField(5);
 		tfCheckId.setFont(new Font("CookieRun Regular", Font.PLAIN, 20));
 		tfCheckId.setColumns(10);
 		tfCheckId.setBackground(new Color(202, 206, 213));
 		tfCheckId.setBounds(270, 140, 300, 40);
-		newNickNamepanel.add(tfCheckId);
+		changeNickNamepanel.add(tfCheckId);
 
 		JLabel lblChangeNickName = new JLabel("변경할 닉네임");
 		lblChangeNickName.setFont(new Font("CookieRun Regular", Font.PLAIN, 16));
 		lblChangeNickName.setHorizontalAlignment(SwingConstants.LEFT);
 		lblChangeNickName.setBounds(270, 190, 100, 25);
-		newNickNamepanel.add(lblChangeNickName);
+		changeNickNamepanel.add(lblChangeNickName);
 
 		tfCheckNickName = new RoundJTextField(5);
 		tfCheckNickName.setFont(new Font("CookieRun Regular", Font.PLAIN, 20));
 		tfCheckNickName.setColumns(10);
 		tfCheckNickName.setBackground(new Color(202, 206, 213));
 		tfCheckNickName.setBounds(270, 220, 300, 40);
-		newNickNamepanel.add(tfCheckNickName);
+		changeNickNamepanel.add(tfCheckNickName);
 
 		RoundJButton btnCheck = new RoundJButton("확 인");
 		btnCheck.addActionListener(new ActionListener() {
@@ -254,9 +271,17 @@ public class MyInfoFrame extends JFrame {
 						// 닉네임 변경 성공
 						JOptionPane.showMessageDialog(contentPane, "닉네임이 '" + newNickname + "'(으)로 변경되었습니다.");
 						player.setNickname(newNickname); // Player 객체의 닉네임 업데이트
-						cl_cardPanel.show(CardPanel, "myInfo"); // "내정보" 패널로 돌아가기
 						tfCheckId.setText(""); // 입력 필드 초기화
 						tfCheckNickName.setText(""); // 입력 필드 초기화
+						if(homeframe == null) {
+							homeframe = new HomeFrame(player);
+							homeframe.setVisible(true);
+							homeframe.setResizable(false);
+						} else {
+							homeframe.setVisible(true);
+							homeframe.setResizable(false);
+						}
+						setVisible(false);
 					} else {
 						// 닉네임 변경 실패
 						String errorMessage = "알 수 없는 오류가 발생했습니다.";
@@ -269,9 +294,9 @@ public class MyInfoFrame extends JFrame {
 			}
 		});
 		btnCheck.setBackground(new Color(185, 215, 234));
-		btnCheck.setFont(new Font("CookieRun Regular", Font.PLAIN, 16));
+		btnCheck.setFont(new Font("CookieRun Regular", Font.PLAIN, 18));
 		btnCheck.setBounds(270, 300, 120, 40);
-		newNickNamepanel.add(btnCheck);
+		changeNickNamepanel.add(btnCheck);
 
 		RoundJButton btnBack = new RoundJButton("돌아가기");
 		btnBack.addActionListener(new ActionListener() {
@@ -282,14 +307,125 @@ public class MyInfoFrame extends JFrame {
 			}
 		});
 		btnBack.setText("돌아가기");
-		btnBack.setFont(new Font("CookieRun Regular", Font.PLAIN, 16));
+		btnBack.setFont(new Font("CookieRun Regular", Font.PLAIN, 18));
 		btnBack.setBackground(new Color(176, 180, 186));
 		btnBack.setBounds(450, 300, 120, 40);
-		newNickNamepanel.add(btnBack);
+		changeNickNamepanel.add(btnBack);
 
-		CardPanel.add(newNickNamepanel, "newNickName");
+		CardPanel.add(changeNickNamepanel, "changeNickName");
+		
+		// 4. 비밀번호 변경 패널
+		chagePWPanel = new JPanel();
+		chagePWPanel.setBackground(new Color(255, 255, 255));
+		chagePWPanel.setLayout(null);
+		
+		CardPanel.add(chagePWPanel, "changePW");
+		
+		JLabel lblCheckId2 = new JLabel("아이디");
+		lblCheckId2.setHorizontalAlignment(SwingConstants.LEFT);
+		lblCheckId2.setFont(new Font("CookieRun Regular", Font.PLAIN, 16));
+		lblCheckId2.setBounds(270, 80, 70, 20);
+		chagePWPanel.add(lblCheckId2);
+		
+		RoundJTextField tfCheckId2 = new RoundJTextField(5);
+		tfCheckId2.setFont(new Font("CookieRun Regular", Font.PLAIN, 20));
+		tfCheckId2.setColumns(10);
+		tfCheckId2.setBackground(new Color(202, 206, 213));
+		tfCheckId2.setBounds(270, 110, 300, 40);
+		chagePWPanel.add(tfCheckId2);
+		
+		JLabel lblCheckPW = new JLabel("현재 비밀번호");
+		lblCheckPW.setHorizontalAlignment(SwingConstants.LEFT);
+		lblCheckPW.setFont(new Font("CookieRun Regular", Font.PLAIN, 16));
+		lblCheckPW.setBounds(270, 160, 100, 25);
+		chagePWPanel.add(lblCheckPW);
+		
+		tfCheckPW = new RoundJPasswordField(10);
+		tfCheckPW.setFont(new Font("맑은 고딕", Font.PLAIN, 20));
+		tfCheckPW.setColumns(10);
+		tfCheckPW.setBackground(new Color(202, 206, 213));
+		tfCheckPW.setBounds(270, 190, 300, 40);
+		chagePWPanel.add(tfCheckPW);
+		
+		JLabel lblChangePW = new JLabel("변경할 비밀번호");
+		lblChangePW.setHorizontalAlignment(SwingConstants.LEFT);
+		lblChangePW.setFont(new Font("CookieRun Regular", Font.PLAIN, 16));
+		lblChangePW.setBounds(270, 240, 120, 25);
+		chagePWPanel.add(lblChangePW);
+		
+		tfChangePW = new RoundJPasswordField(10);
+		tfChangePW.setFont(new Font("맑은 고딕", Font.PLAIN, 20));
+		tfChangePW.setColumns(10);
+		tfChangePW.setBackground(new Color(202, 206, 213));
+		tfChangePW.setBounds(270, 270, 300, 40);
+		chagePWPanel.add(tfChangePW);
+		
+		
+		RoundJButton btnCheck2 = new RoundJButton("확 인");
+		btnCheck2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// 비밀번호 변경
+				String id = tfCheckId2.getText().trim();
+				String currentPassword = new String(tfCheckPW.getPassword()).trim();
+				String newPassword = new String(tfChangePW.getPassword()).trim();
 
+				if (id.isEmpty() || currentPassword.isEmpty() || newPassword.isEmpty()) {
+					JOptionPane.showMessageDialog(contentPane, "아이디, 현재 비밀번호, 새 비밀번호를 모두 입력해주세요.");
+					return;
+				}
 
+				int changePWConfirm = JOptionPane.showConfirmDialog(contentPane, "비밀번호를 '" + newPassword + "'(으)로 변경하시겠습니까?", "비밀번호 변경 확인", JOptionPane.YES_NO_OPTION);
+
+				if (changePWConfirm == JOptionPane.YES_OPTION) {
+					ApiResponse changePWResponse = HttpConnecter.instance.changePassword(player.getId(), currentPassword, newPassword);
+
+					if (changePWResponse != null && changePWResponse.isSuccess()) {
+						// 비밀번호 변경 성공
+						JOptionPane.showMessageDialog(contentPane, "비밀번호가 변경되었습니다.");
+						player.setPassword(newPassword);
+						tfCheckId2.setText("");
+						tfCheckPW.setText("");
+						tfChangePW.setText("");
+						if(homeframe == null) {
+							homeframe = new HomeFrame(player);
+							homeframe.setVisible(true);
+							homeframe.setResizable(false);
+						} else {
+							homeframe.setVisible(true);
+							homeframe.setResizable(false);
+						}
+						setVisible(false);
+					} else {
+						// 비밀번호 변경 실패
+						String errorMessage = "알 수 없는 오류가 발생했습니다.";
+						if (changePWResponse != null && changePWResponse.getError() != null) {
+							errorMessage = changePWResponse.getError().getMessage();
+						}
+						JOptionPane.showMessageDialog(contentPane, "비밀번호 변경에 실패했습니다: " + errorMessage);
+					}
+				}
+			}
+		});
+		btnCheck2.setFont(new Font("CookieRun Regular", Font.PLAIN, 18));
+		btnCheck2.setBackground(new Color(185, 215, 234));
+		btnCheck2.setBounds(270, 350, 120, 40);
+		chagePWPanel.add(btnCheck2);
+		
+		RoundJButton btnBack2 = new RoundJButton("돌아가기");
+		btnBack2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				cl_cardPanel.show(CardPanel, "myInfo"); // "내정보" 패널로 돌아가기
+				tfCheckId2.setText(""); 
+				tfCheckPW.setText(""); 
+				tfChangePW.setText(""); 
+			}
+		});
+		btnBack2.setText("돌아가기");
+		btnBack2.setFont(new Font("CookieRun Regular", Font.PLAIN, 18));
+		btnBack2.setBackground(new Color(176, 180, 186));
+		btnBack2.setBounds(450, 350, 120, 40);
+		chagePWPanel.add(btnBack2);
+		
 		// 처음에는 전적 패널이 보이도록 설정
 		cl_cardPanel.show(CardPanel, "records");
 
@@ -380,8 +516,6 @@ public class MyInfoFrame extends JFrame {
 						JOptionPane.showMessageDialog(contentPane, "회원탈퇴에 실패했습니다: " + errorMessage);
 					}
 				}
-				// Original duplicate code block removed here.
-				// It was redundant and caused unintended logic flow.
 			}
 		});
 		btnDelete.setBounds(70, 330, 100, 60);
@@ -392,7 +526,7 @@ public class MyInfoFrame extends JFrame {
 		RoundJLabel lblNickname = new RoundJLabel(player != null && player.getNickname() != null ? player.getNickname() : "");
 		lblNickname.setBackground(new Color(185, 215, 234));
 		lblNickname.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNickname.setFont(new Font("CookieRun Regular", Font.BOLD, 16));
+		lblNickname.setFont(new Font("CookieRun Regular", Font.PLAIN, 18));
 		lblNickname.setBounds(550, 15, 200, 40);
 		MainPanel.add(lblNickname);
 
@@ -412,7 +546,7 @@ public class MyInfoFrame extends JFrame {
 		});
 		btnHome.setText("홈");
 		btnHome.setForeground(Color.BLACK);
-		btnHome.setFont(new Font("CookieRun Regular", Font.PLAIN, 16));
+		btnHome.setFont(new Font("CookieRun Regular", Font.PLAIN, 18));
 		btnHome.setBackground(new Color(118, 159, 205));
 		btnHome.setBounds(780, 15, 120, 40);
 		MainPanel.add(btnHome);
@@ -433,7 +567,7 @@ public class MyInfoFrame extends JFrame {
 		});
 		btnLogOut.setText("로그 아웃");
 		btnLogOut.setForeground(Color.BLACK);
-		btnLogOut.setFont(new Font("CookieRun Regular", Font.PLAIN, 16));
+		btnLogOut.setFont(new Font("CookieRun Regular", Font.PLAIN, 18));
 		btnLogOut.setBackground(new Color(176, 180, 186));
 		btnLogOut.setBounds(930, 15, 120, 40);
 		MainPanel.add(btnLogOut);

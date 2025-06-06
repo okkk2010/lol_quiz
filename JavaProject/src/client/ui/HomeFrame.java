@@ -96,7 +96,7 @@ public class HomeFrame extends JFrame {
 		btnMyInfo.setBounds(700, 15, 200, 40);
 		btnMyInfo.setText(player != null && player.getNickname() != null ? player.getNickname() : "(내 정보)");
 		btnMyInfo.setForeground(Color.BLACK);
-		btnMyInfo.setFont(new Font("CookieRun Regular", Font.PLAIN, 16));
+		btnMyInfo.setFont(new Font("CookieRun Regular", Font.PLAIN, 18));
 		btnMyInfo.setBackground(new Color(185, 215, 234));
 		MainPanel.add(btnMyInfo);
 		
@@ -116,7 +116,7 @@ public class HomeFrame extends JFrame {
 		btnLogOut.setBounds(930, 15, 120, 40);
 		btnLogOut.setText("로그 아웃");
 		btnLogOut.setForeground(Color.BLACK);
-		btnLogOut.setFont(new Font("CookieRun Regular", Font.PLAIN, 16));
+		btnLogOut.setFont(new Font("CookieRun Regular", Font.PLAIN, 18));
 		btnLogOut.setBackground(new Color(176, 180, 186));
 		MainPanel.add(btnLogOut);
 		
@@ -172,7 +172,7 @@ public class HomeFrame extends JFrame {
 			}
 		});
 		lblLOLQuiz.setHorizontalAlignment(SwingConstants.CENTER);
-		lblLOLQuiz.setFont(new Font("CookieRun Regular", Font.PLAIN, 16));
+		lblLOLQuiz.setFont(new Font("CookieRun Regular", Font.PLAIN, 18));
 		lblLOLQuiz.setBounds(15, 160, 150, 40);
 		LOLPanel.add(lblLOLQuiz);
 		

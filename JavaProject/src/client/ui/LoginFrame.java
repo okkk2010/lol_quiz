@@ -7,6 +7,7 @@ import javax.swing.border.EmptyBorder;
 import client.CtManager.Player;
 import client.uiTool.RoundJButton;
 import client.uiTool.RoundJPanel;
+import client.uiTool.RoundJPasswordField;
 import client.uiTool.RoundJTextField;
 import dataSet.user.User;
 import database.ApiResponse;
@@ -200,9 +201,9 @@ public class LoginFrame extends JFrame {
 		});
 		
 		btnLogin.setText("로그인");
-		btnLogin.setFont(new Font("CookieRun Regular", Font.PLAIN, 16));
+		btnLogin.setFont(new Font("CookieRun Regular", Font.PLAIN, 18));
 		btnLogin.setBackground(new Color(185, 215, 234));
-		btnLogin.setBounds(250, 380, 100, 40);
+		btnLogin.setBounds(250, 380, 120, 40);
 		btnLogin.setForeground(Color.BLACK); // 테두리 색상
 		LoginPanel.add(btnLogin);
 		
@@ -224,9 +225,9 @@ public class LoginFrame extends JFrame {
 			}
 		});
 		btnSignUp.setText("회원가입");
-		btnSignUp.setFont(new Font("CookieRun Regular", Font.PLAIN, 16));
+		btnSignUp.setFont(new Font("CookieRun Regular", Font.PLAIN, 18));
 		btnSignUp.setBackground(new Color(176, 180, 186));
-		btnSignUp.setBounds(450, 380, 100, 40);
+		btnSignUp.setBounds(430, 380, 120, 40);
 		btnSignUp.setForeground(new Color(0, 0, 0)); // 테두리 색상
 		LoginPanel.add(btnSignUp);
 
@@ -245,34 +246,4 @@ public class LoginFrame extends JFrame {
 		setLocationRelativeTo(null);
 
 	}
-}
-class RoundJPasswordField extends JPasswordField {
-    private Shape shape;
-    private int arcWidth = 20;
-    private int arcHeight = 20;
-
-    public RoundJPasswordField(int size) {
-        super(size);
-        setOpaque(false);
-    }
-
-    @Override
-    protected void paintComponent(Graphics g) {
-        Graphics2D g2 = (Graphics2D) g.create();
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g2.setColor(getBackground());
-        g2.fill(new RoundRectangle2D.Double(0, 0, getWidth() - 1, getHeight() - 1, arcWidth, arcHeight));
-        super.paintComponent(g2);
-        g2.dispose();
-    }
-
-    @Override
-    protected void paintBorder(Graphics g) {
-        Graphics2D g2 = (Graphics2D) g.create();
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-        g2.setColor(getForeground());
-        g2.draw(new RoundRectangle2D.Double(0, 0, getWidth() - 1, getHeight() - 1, arcWidth, arcHeight));
-        g2.dispose();
-    }
-    
 }
