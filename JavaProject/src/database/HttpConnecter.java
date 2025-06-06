@@ -19,7 +19,7 @@ public class HttpConnecter {
 	public static final HttpConnecter instance = new HttpConnecter();
 	private static final String HEROKU_URL = "https://lol-quiz-node-server-2b48f85da5a8.herokuapp.com";
 	private static final String LOCAL_URL = "http://localhost:3000";
-	private static final String URL = HEROKU_URL;
+	private static final String URL = LOCAL_URL;
 	private static final String AWS_S3_URL = "https://lol-quiz.s3.us-east-2.amazonaws.com/";
 	private final HttpClient client = HttpClient.newHttpClient();
 	
@@ -377,8 +377,6 @@ public class HttpConnecter {
 		}
 	}
 	
-	
-	
 	public ApiResponse recordGameHistory(String userid, String title, int answerQuiz, String playDate ) {
 		dataSet.record.Record record = new dataSet.record.Record();
 		
@@ -549,6 +547,30 @@ public class HttpConnecter {
 		User user = new User();
 		user.setId(id);
 		String customUrl = URL + "/record/get-high-answer-quiz";
+		try {
+			String userJson = JSONManager.mapper.writeValueAsString(user);
+			HttpRequest request = HttpRequest.newBuilder().uri(URI.create(customUrl))
+					.header("Content-Type", "application/json")
+					.POST(HttpRequest.BodyPublishers.ofString(userJson))
+					.build();
+			
+			HttpResponse<String> putResponse = client.send(request, HttpResponse.BodyHandlers.ofString());
+			String responseBody = putResponse.body();
+			ApiResponse apiRes = JSONManager.mapper.readValue(responseBody, ApiResponse.class);
+			return apiRes;
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+			return null;
+		} catch (IOException | InterruptedException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public ApiResponse getRecordStats(String id) {
+		User user = new User();
+		user.setId(id);
+		String customUrl = URL + "/record/get-record-stats";
 		try {
 			String userJson = JSONManager.mapper.writeValueAsString(user);
 			HttpRequest request = HttpRequest.newBuilder().uri(URI.create(customUrl))

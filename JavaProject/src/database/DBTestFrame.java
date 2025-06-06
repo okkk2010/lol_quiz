@@ -9,6 +9,7 @@ import javax.swing.border.EmptyBorder;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import dataSet.Tier.Tier;
 import dataSet.quiz.Quiz;
 import dataSet.user.User;
 import dataSet.record.Record;
@@ -89,6 +90,11 @@ public class DBTestFrame extends JFrame {
 	private JTextField textField_1;
 	private JTextField textField_2;
 	private JButton getUserHighScore_1;
+	private JTextField outputTier;
+	private JButton getUserHighScore_2;
+	private JTextField answer_quiz;
+	private JTextField tFInputStatsRecordForUserId;
+	private JTextField tFOutputStatsRecordUser;
 
 	/**
 	 * Launch the application.
@@ -112,7 +118,7 @@ public class DBTestFrame extends JFrame {
 	 */
 	public DBTestFrame() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 1042, 596);
+		setBounds(100, 100, 1042, 782);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 
@@ -668,6 +674,80 @@ public class DBTestFrame extends JFrame {
 		});
 		getUserHighScore_1.setBounds(917, 362, 97, 23);
 		contentPane.add(getUserHighScore_1);
+		
+		outputTier = new JTextField();
+		outputTier.setColumns(10);
+		outputTier.setBounds(928, 428, 86, 21);
+		contentPane.add(outputTier);
+		
+		getUserHighScore_2 = new JButton("save record");
+		getUserHighScore_2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				int score = Integer.parseInt(answer_quiz.getText());
+				
+				ApiResponse apiRes = HttpConnecter.instance.getTierByScore(score);
+				if(apiRes.isSuccess()) {
+					Tier tier = JSONManager.getJsonData(apiRes.getContent(), Tier.class);
+					outputTier.setText("사용자의 티어: " + tier.getName());
+				} else {
+					switch(apiRes.getError().getCode()) {
+						case "NOT_FOUND_TIER":
+							JOptionPane.showMessageDialog(contentPane, "티어를 찾을 수 없습니다.");
+							break;
+						case "SERVER_ERROR":
+							JOptionPane.showMessageDialog(contentPane, "서버 오류 발생");
+							break;
+					}
+				}
+			}
+		});
+		getUserHighScore_2.setBounds(917, 464, 97, 23);
+		contentPane.add(getUserHighScore_2);
+		
+		answer_quiz = new JTextField();
+		answer_quiz.setColumns(10);
+		answer_quiz.setBounds(928, 400, 86, 21);
+		contentPane.add(answer_quiz);
+		
+		tFInputStatsRecordForUserId = new JTextField();
+		tFInputStatsRecordForUserId.setBounds(61, 578, 116, 21);
+		contentPane.add(tFInputStatsRecordForUserId);
+		tFInputStatsRecordForUserId.setColumns(10);
+		
+		tFOutputStatsRecordUser = new JTextField();
+		tFOutputStatsRecordUser.setBounds(61, 621, 223, 21);
+		contentPane.add(tFOutputStatsRecordUser);
+		tFOutputStatsRecordUser.setColumns(10);
+		
+		JButton btnGetStatsRecord = new JButton("New button");
+		btnGetStatsRecord.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String userId = tFInputStatsRecordForUserId.getText();
+				
+				ApiResponse apiRes = HttpConnecter.instance.getRecordStats(userId);
+				if(apiRes.isSuccess()) {
+					String content = apiRes.getContent();
+					try {
+						Record record = JSONManager.getJsonData(content, Record.class);
+						tFOutputStatsRecordUser.setText("사용자: " + record.getUser_id() + ", 총 퀴즈: " + record.getTotal_quiz() + ", 정답 퀴즈: " + record.getAvg_answer_quiz());
+					} catch (Exception ex) {
+						JOptionPane.showMessageDialog(contentPane, "데이터 파싱 오류: " + ex.getMessage());
+					}
+				} else {
+					switch(apiRes.getError().getCode()) {
+						case "NOT_FOUND_USER":
+							JOptionPane.showMessageDialog(contentPane, "사용자를 찾을 수 없습니다.");
+							break;
+						case "SERVER_ERROR":
+							JOptionPane.showMessageDialog(contentPane, "서버 오류 발생");
+							break;
+					}
+				}
+			}
+		});
+		btnGetStatsRecord.setBounds(72, 663, 97, 23);
+		contentPane.add(btnGetStatsRecord);
 	
 		
 		
