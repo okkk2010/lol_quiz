@@ -43,7 +43,9 @@ import java.awt.event.FocusEvent; // CardLayout 임포트
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Random;
 
 import javax.swing.JTable;
@@ -68,6 +70,9 @@ public class InGameFrame extends JFrame {
 	private JLabel lblQuizImg;
 	private ArrayList<JPanel> overlayPanels;
 	private JPanel IMGPanel;
+	private int score = 0;
+	private SimpleDateFormat dateFormat;
+	private String playDate;
 	/**
 	 * Launch the application.
 	 */
@@ -157,6 +162,18 @@ public class InGameFrame extends JFrame {
 				        if (i == 0) {
 				        	SwingUtilities.invokeLater(() -> {
 				        		tfAnswer.setText("");
+				        		// 현재 날짜 가져오기
+				                dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+				                playDate = dateFormat.format(new Date());
+
+				                // 게임 결과 전송
+				                ApiResponse resultApiRes = HttpConnecter.instance.recordGameHistory(player.getId(), "lol", score, playDate);
+				                if (resultApiRes != null && resultApiRes.isSuccess()) {
+				                    JOptionPane.showMessageDialog(contentPane, "게임 결과가 성공적으로 전송되었습니다!");
+				                } else {
+				                    JOptionPane.showMessageDialog(contentPane, "게임 결과 전송 실패: " + resultApiRes.getMessage(), "오류", JOptionPane.ERROR_MESSAGE);
+				                }
+				                score = 0; // 점수 리셋t
 				        		cardLayout.show(contentPane, "btnResult");
 				        	});
 				        }
@@ -242,6 +259,7 @@ public class InGameFrame extends JFrame {
 		
 		RoundJButton btnAnswer = new RoundJButton();
 		btnAnswer.addActionListener(new ActionListener() {
+
 			public void actionPerformed(ActionEvent e) {
 				
 				String userAnswer = tfAnswer.getText().trim();
@@ -266,6 +284,18 @@ public class InGameFrame extends JFrame {
 		            // 
 		            if (currentQuizCnt >= quizs.size()) {
 		                JOptionPane.showMessageDialog(contentPane, "모든 퀴즈를 완료했습니다!");
+		                // 현재 날짜 가져오기
+		                dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		                playDate = dateFormat.format(new Date());
+
+		                // 게임 결과 전송
+		                ApiResponse resultApiRes = HttpConnecter.instance.recordGameHistory(player.getId(), "lol", score, playDate);
+		                if (resultApiRes != null && resultApiRes.isSuccess()) {
+		                    JOptionPane.showMessageDialog(contentPane, "게임 결과가 성공적으로 전송되었습니다!");
+		                } else {
+		                    JOptionPane.showMessageDialog(contentPane, "게임 결과 전송 실패: " + resultApiRes.getMessage(), "오류", JOptionPane.ERROR_MESSAGE);
+		                }
+		                score = 0; // 점수 리셋
 		                currentQuizCnt = 0; // 퀴즈 리셋
 		                // 결과화면 출력
 		                cardLayout.show(contentPane, "btnResult");

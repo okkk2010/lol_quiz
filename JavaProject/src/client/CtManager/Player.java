@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 public class Player {
 	private String id;
-	private String Nickname;
+	private String nickname;
 	private String password;
 	private String tier;
 	
@@ -17,7 +17,8 @@ public class Player {
 	
 	public Player(User user) {
 		this.id = user.getId();
-		this.Nickname = user.getNickname();
+		this.password = user.getPassword();
+		this.nickname = user.getNickname();
 		this.tier = user.getTier();
 	}
 	

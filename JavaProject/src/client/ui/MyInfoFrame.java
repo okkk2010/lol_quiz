@@ -55,6 +55,7 @@ public class MyInfoFrame extends JFrame {
 	private JPanel chagePWPanel;
 	private RoundJPasswordField tfCheckPW;
 	private RoundJPasswordField tfChangePW;
+	private JPanel myRecordsPanel;
 
 	/**
 	 * Launch the application.
@@ -110,29 +111,23 @@ public class MyInfoFrame extends JFrame {
 		CardPanel.setLayout(cl_cardPanel);
 
 		// 1. 전적 패널 (JScrollPane 포함)
-		JPanel myRecordsPanel = new JPanel();
+		myRecordsPanel = new JPanel();
 		myRecordsPanel.setBackground(new Color(255, 255, 255));
 		myRecordsPanel.setLayout(new BorderLayout());
 		myRecordsPanel.setBorder(new EmptyBorder(40, 40, 40, 40)); // 패널에 여백 추가
 
 		// 테이블 데이터 및 컬럼 정의
 		String[] columnNames = {"날짜", "퀴즈 종류", "맞춘 문제", "티어"};
-		Object[][] data = new Object[50][5]; // 50개의 더미 전적 데이터
-		for (int i = 0; i < 50; i++) {
-		    data[i][0] = "챔피언 퀴즈 " + (i + 1);
-		    data[i][1] = 10;
-		    data[i][2] = 8 + (i % 3);
-		    data[i][3] = 2 - (i % 2);
-		    data[i][4] = (int)data[i][2] * 100 - (int)data[i][3] * 50;
-		}
-
 		// 테이블 내의 어떤 셀도 사용자 인터페이스를 통해 직접 편집할 수 없게 됩니다. 즉, 모든 셀은 "읽기 전용"
-		DefaultTableModel tableModel = new DefaultTableModel(data, columnNames) {
+		DefaultTableModel tableModel = new DefaultTableModel(new Object[][]{}, columnNames) {
 		    @Override
 		    public boolean isCellEditable(int row, int column) {
 		        return false;
 		    }
 		};
+		
+		loadAndDisplayRecords();
+		
 		JTable recordsTable = new JTable(tableModel);
 		recordsTable.setFillsViewportHeight(true);
 		recordsTable.setFont(new Font("CookieRun Regular", Font.PLAIN, 14));
@@ -377,7 +372,7 @@ public class MyInfoFrame extends JFrame {
 				int changePWConfirm = JOptionPane.showConfirmDialog(contentPane, "비밀번호를 '" + newPassword + "'(으)로 변경하시겠습니까?", "비밀번호 변경 확인", JOptionPane.YES_NO_OPTION);
 
 				if (changePWConfirm == JOptionPane.YES_OPTION) {
-					ApiResponse changePWResponse = HttpConnecter.instance.changePassword(player.getId(), currentPassword, newPassword);
+					ApiResponse changePWResponse = HttpConnecter.instance.changePassword(id, currentPassword, newPassword);
 
 					if (changePWResponse != null && changePWResponse.isSuccess()) {
 						// 비밀번호 변경 성공
@@ -586,4 +581,11 @@ public class MyInfoFrame extends JFrame {
 
 		setLocationRelativeTo(null);
 	}
+	private void loadAndDisplayRecords() { 
+		new Thread(() -> {
+			ApiResponse apiResponse = HttpConnecter.instance.getUserRecord(player.getId());
+			
+		}).start();
+	}
 }
+	
