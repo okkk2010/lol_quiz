@@ -11,10 +11,12 @@ import client.uiTool.RoundJButton;
 import client.uiTool.RoundJPanel;
 import client.uiTool.RoundJTextField;
 import dataSet.quiz.Quiz;
+import dataSet.Tier.Tier;
 import database.ApiResponse;
 import database.DatabaseManager;
 import database.HttpConnecter;
 import database.JSONManager;
+
 
 import java.awt.Color;
 import java.awt.Container;
@@ -50,6 +52,7 @@ import java.util.Random;
 
 import javax.swing.JTable;
 import java.awt.GridLayout;
+import java.awt.BorderLayout;
 
 public class InGameFrame extends JFrame {
 
@@ -73,6 +76,8 @@ public class InGameFrame extends JFrame {
 	private int score = 0;
 	private SimpleDateFormat dateFormat;
 	private String playDate;
+	private JTextField tfAnswerQuiz;
+	private JLabel lblTier;
 	/**
 	 * Launch the application.
 	 */
@@ -129,7 +134,7 @@ public class InGameFrame extends JFrame {
 					return;
 				}
 				
-				byte[] imgData = HttpConnecter.instance.loadImage(quizs.get(currentQuizCnt).getImg_url());
+				byte[] imgData = HttpConnecter.instance.loadImage(Integer.toString(quizs.get(currentQuizCnt).getId()));
 				if(imgData == null) {
 					JOptionPane.showMessageDialog(contentPane, "이미지 로드 실패");
 					return;
@@ -148,7 +153,7 @@ public class InGameFrame extends JFrame {
 				}
 				new Thread(() -> {
 					int i;
-				    for (i = 119; i >= 0; i--) {
+				    for (i = 5; i >= 0; i--) {
 				        try {
 				            Thread.sleep(1000);
 				        } catch (InterruptedException ex) {
@@ -173,7 +178,16 @@ public class InGameFrame extends JFrame {
 				                } else {
 				                    JOptionPane.showMessageDialog(contentPane, "게임 결과 전송 실패: " + resultApiRes.getMessage(), "오류", JOptionPane.ERROR_MESSAGE);
 				                }
-				                score = 0; // 점수 리셋t
+				                tfAnswerQuiz.setText(score + ""); 
+				                score = 0; // 점수 리셋
+				                // 모든 유저 티어 갱신
+				                ApiResponse updateAllUserTierApiRes = HttpConnecter.instance.updateAllUserTier();
+				                if (updateAllUserTierApiRes != null && updateAllUserTierApiRes.isSuccess()) {
+				                    JOptionPane.showMessageDialog(contentPane, "티어 업데이트가 성공적으로 전송되었습니다!");
+				                } else {
+				                    JOptionPane.showMessageDialog(contentPane, "티어 업데이트 전송 실패: " + updateAllUserTierApiRes.getMessage(), "오류", JOptionPane.ERROR_MESSAGE);
+				                }
+				                
 				        		cardLayout.show(contentPane, "btnResult");
 				        	});
 				        }
@@ -296,13 +310,21 @@ public class InGameFrame extends JFrame {
 		                } else {
 		                    JOptionPane.showMessageDialog(contentPane, "게임 결과 전송 실패: " + resultApiRes.getMessage(), "오류", JOptionPane.ERROR_MESSAGE);
 		                }
+		                tfAnswerQuiz.setText(score + "");
 		                score = 0; // 점수 리셋
 		                currentQuizCnt = 0; // 퀴즈 리셋
+		                // 모든 유저 티어 갱신
+		                ApiResponse updateAllUserTierApiRes = HttpConnecter.instance.updateAllUserTier();
+		                if (updateAllUserTierApiRes != null && updateAllUserTierApiRes.isSuccess()) {
+		                    JOptionPane.showMessageDialog(contentPane, "티어 업데이트가 성공적으로 전송되었습니다!");
+		                } else {
+		                    JOptionPane.showMessageDialog(contentPane, "티어 업데이트 전송 실패: " + updateAllUserTierApiRes.getMessage(), "오류", JOptionPane.ERROR_MESSAGE);
+		                }
 		                // 결과화면 출력
 		                cardLayout.show(contentPane, "btnResult");
 		            } else {
 		                // 다음 퀴즈 이미지 로드 및 정답 필드 초기화
-		                byte[] imgData = HttpConnecter.instance.loadImage(quizs.get(currentQuizCnt).getImg_url());
+		                byte[] imgData = HttpConnecter.instance.loadImage(Integer.toString(quizs.get(currentQuizCnt).getId()));
 		                if (imgData != null) {
 		                    ByteArrayInputStream bais = new ByteArrayInputStream(imgData);
 		                    try {
@@ -397,22 +419,31 @@ public class InGameFrame extends JFrame {
 		lblNewLabel.setBounds(160, 20, 80, 40);
 		ResultPanel.add(lblNewLabel);
 		
-		RoundJPanel panel = new RoundJPanel(5);
-		panel.setBackground(new Color(255, 255, 255));
-		panel.setBounds(50, 70, 300, 300);
-		ResultPanel.add(panel);
+		RoundJPanel tierPanel = new RoundJPanel(5);
+		tierPanel.setBackground(new Color(255, 255, 255));
+		tierPanel.setBounds(100, 100, 200, 200);
+		ResultPanel.add(tierPanel);
+		tierPanel.setLayout(new BorderLayout(0, 0));
 		
-		RoundJPanel outLine1 = new RoundJPanel(5);
-		outLine1.setBackground(UIManager.getColor("windowBorder"));
-		outLine1.setBounds(-530, 534, 1080, 11);
-		ResultPanel.add(outLine1);
-		outLine1.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		lblTier = new JLabel("티어");
+		tierPanel.add(lblTier);
+		lblTier.setHorizontalAlignment(SwingConstants.CENTER);
+		lblTier.setFont(new Font("CookieRun Regular", Font.PLAIN, 18));
 		
-		RoundJPanel outLine2 = new RoundJPanel(5);
-		outLine2.setBackground(UIManager.getColor("windowBorder"));
-		outLine2.setBounds(540, -56, 11, 600);
-		ResultPanel.add(outLine2);
-		outLine2.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		JLabel lblNewLabel_1 = new JLabel("맞춘 문제");
+		lblNewLabel_1.setFont(new Font("CookieRun Regular", Font.PLAIN, 18));
+		lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel_1.setBounds(100, 320, 80, 40);
+		ResultPanel.add(lblNewLabel_1);
+		
+		tfAnswerQuiz = new RoundJTextField(5);
+		tfAnswerQuiz.setFont(new Font("CookieRun Regular", Font.PLAIN, 18));
+		tfAnswerQuiz.setHorizontalAlignment(SwingConstants.CENTER);
+		tfAnswerQuiz.setEditable(false);
+		tfAnswerQuiz.setBounds(200, 320, 100, 40);
+		tfAnswerQuiz.setColumns(10);
+		tfAnswerQuiz.requestFocus(false);
+		ResultPanel.add(tfAnswerQuiz);
 		
 		RoundJButton btnRanking = new RoundJButton();
 		btnRanking.addActionListener(new ActionListener() {
