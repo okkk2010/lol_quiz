@@ -82,6 +82,8 @@ public class DBTestFrame extends JFrame {
 	private JTextField tFInputUserIdForRank;
 	private JTextField tFOutputUserRank;
 	private JButton getUserRank;
+	private JTextField tFRanking;
+	private JButton getRank;
 
 	/**
 	 * Launch the application.
@@ -527,8 +529,74 @@ public class DBTestFrame extends JFrame {
 		contentPane.add(tFOutputUserRank);
 		
 		getUserRank = new JButton("user rank search");
+		getUserRank.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String userId = tFInputUserIdForRank.getText();
+				
+				ApiResponse apiRes = HttpConnecter.instance.getUserRanking(userId);
+				if(apiRes.isSuccess()) {
+					String content = apiRes.getContent();
+					try {
+						int rank = Integer.parseInt(content);
+						tFOutputUserRank.setText("사용자 랭킹: " + rank);
+					} catch (NumberFormatException ex) {
+						JOptionPane.showMessageDialog(contentPane, "랭킹 정보가 올바르지 않습니다.");
+					}
+				} else {
+					switch(apiRes.getError().getCode()) {
+						case "NOT_FOUND_USER":
+							JOptionPane.showMessageDialog(contentPane, "사용자를 찾을 수 없습니다.");
+							break;
+						case "SERVER_ERROR":
+							JOptionPane.showMessageDialog(contentPane, "서버 오류 발생");
+							break;
+					}
+				}
+			}
+		});
 		getUserRank.setBounds(801, 312, 97, 23);
 		contentPane.add(getUserRank);
+		
+		tFRanking = new JTextField();
+		tFRanking.setColumns(10);
+		tFRanking.setBounds(791, 367, 116, 108);
+		contentPane.add(tFRanking);
+		
+		getRank = new JButton("print rank");
+		getRank.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				ApiResponse apiRes = HttpConnecter.instance.getRanking();
+				if(apiRes.isSuccess()) {
+					String content = apiRes.getContent();
+					ArrayList<Record> records = JSONManager.getJsonDataList(content, Record.class);
+					
+					tFRanking.setText("");
+					if(records != null && !records.isEmpty()) {
+						StringBuilder sb = new StringBuilder();
+						for(Record record : records) {
+							sb.append("ID: ").append(record.getId())
+							  .append(", Nickname: ").append(record.getNickname())
+							  .append(", Answer Quiz: ").append(record.getAnswer_quiz())
+							  .append("\n");
+						}
+						tFRanking.setText(sb.toString());
+					} else {
+						tFRanking.setText("랭킹 정보가 없습니다.");
+					}
+				} else {
+					switch(apiRes.getError().getCode()) {
+						case "SERVER_ERROR":
+							JOptionPane.showMessageDialog(contentPane, "서버 오류 발생");
+							break;
+						default:
+							JOptionPane.showMessageDialog(contentPane, "알 수 없는 오류 발생");
+							break;
+					}
+				}
+			}
+		});
+		getRank.setBounds(801, 510, 97, 23);
+		contentPane.add(getRank);
 	
 		
 		

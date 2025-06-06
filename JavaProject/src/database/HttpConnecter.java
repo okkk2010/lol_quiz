@@ -138,7 +138,7 @@ public class HttpConnecter {
 	public ApiResponse changePassword(String id, String curPassword, String newPassword) {
 		User user = new User();
 		user.setId(id); user.setPassword(curPassword); user.setNew_password(newPassword);
-		String customUrl = URL + "/user/change-password";
+		String customUrl = URL + "/user/user-password-change";
 		try {
 			String userJson = JSONManager.mapper.writeValueAsString(user);
 			HttpRequest request = HttpRequest.newBuilder().uri(URI.create(customUrl))
@@ -458,6 +458,28 @@ public class HttpConnecter {
 			HttpRequest request = HttpRequest.newBuilder().uri(URI.create(customUrl))
 					.header("Content-Type", "application/json")
 					.POST(HttpRequest.BodyPublishers.ofString(userJson))
+					.build();
+			
+			HttpResponse<String> putResponse = client.send(request, HttpResponse.BodyHandlers.ofString());
+			String responseBody = putResponse.body();
+			ApiResponse apiRes = JSONManager.mapper.readValue(responseBody, ApiResponse.class);
+			return apiRes;
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+			return null;
+		} catch (IOException | InterruptedException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public ApiResponse getRanking() {
+		
+		String customUrl = URL + "/user/get-ranking";
+		try {
+			HttpRequest request = HttpRequest.newBuilder().uri(URI.create(customUrl))
+					.header("Content-Type", "application/json")
+					.POST(HttpRequest.BodyPublishers.noBody())
 					.build();
 			
 			HttpResponse<String> putResponse = client.send(request, HttpResponse.BodyHandlers.ofString());
