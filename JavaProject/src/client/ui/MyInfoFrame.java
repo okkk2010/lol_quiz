@@ -11,6 +11,7 @@ import java.awt.Color;
 import client.uiTool.RoundJPanel;
 import client.uiTool.RoundJPasswordField;
 import client.uiTool.RoundJTextField;
+import dataSet.user.User;
 import database.ApiResponse;
 import database.DatabaseManager; // Unused, consider removing if not needed
 import database.HttpConnecter;
@@ -20,9 +21,13 @@ import client.uiTool.RoundJButton;
 import client.uiTool.RoundJLabel;
 
 import java.awt.Font;
+import java.awt.Image;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.List;
 import java.awt.event.ActionEvent;
 import javax.swing.JSeparator;
@@ -42,7 +47,9 @@ import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.JMenu;
 import javax.swing.JComboBox;
+import javax.imageio.ImageIO;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
 
 public class MyInfoFrame extends JFrame {
 

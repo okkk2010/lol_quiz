@@ -8,10 +8,13 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
 import java.awt.Color;
 import client.uiTool.RoundJPanel;
 import dataSet.Tier.Tier;
 import dataSet.record.Record;
+import dataSet.user.User;
 import dataSet.user.UserNTier;
 import database.ApiResponse;
 import database.DatabaseManager;
@@ -22,6 +25,8 @@ import javax.swing.UIManager;
 import java.awt.FlowLayout;
 import javax.swing.JLabel;
 import java.awt.Font;
+import java.awt.Image;
+
 import javax.swing.SwingConstants;
 import javax.swing.JTextField;
 import javax.swing.JMenuBar;
@@ -31,8 +36,12 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import java.awt.Component;
+import java.awt.Dimension;
+
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JCheckBoxMenuItem;
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JSeparator;
 import javax.swing.JTable;
@@ -42,6 +51,12 @@ import client.uiTool.RoundJButton;
 import client.uiTool.RoundJLabel;
 
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 
@@ -58,6 +73,7 @@ public class RankingFrame extends JFrame {
 	private JLabel lblMyHighTier;
 	private DefaultTableModel tableModel;
 	private JTable rankingTable;
+	private RoundJPanel TierPanel;
 
 	/**
 	 * Launch the application.
@@ -102,7 +118,7 @@ public class RankingFrame extends JFrame {
 		ResultPanel.setBounds(70, 70, 940, 460);
 		MainPanel.add(ResultPanel);
 
-		RoundJPanel TierPanel = new RoundJPanel(5);
+		TierPanel = new RoundJPanel(5);
 		TierPanel.setBackground(new Color(255, 255, 255));
 		TierPanel.setBounds(60, 60, 200, 200);
 		ResultPanel.add(TierPanel);
@@ -110,6 +126,7 @@ public class RankingFrame extends JFrame {
 
 		lblMyHighTier = new RoundJLabel("");
 		TierPanel.add(lblMyHighTier, BorderLayout.CENTER);
+		myHighTier();
 
 		RoundJPanel TopTierPanel = new RoundJPanel(5);
 		TopTierPanel.setBackground(new Color(255, 255, 255));
@@ -117,7 +134,7 @@ public class RankingFrame extends JFrame {
 		ResultPanel.add(TopTierPanel);
 		TopTierPanel.setLayout(null);
 
-		JLabel lblTop = new JLabel("TOP 30 (챌린저 5 마스터 25)");
+		JLabel lblTop = new JLabel("TOP 30");
 		lblTop.setHorizontalAlignment(SwingConstants.CENTER);
 		lblTop.setForeground(Color.BLACK);
 		lblTop.setFont(new Font("CookieRun Regular", Font.PLAIN, 16));
@@ -383,5 +400,29 @@ public class RankingFrame extends JFrame {
 	                break;
 	        }
 	    }
+	}
+	public void myHighTier () {
+		 // 플레이어의 최고 티어를 가져오는 API 호출
+		 ApiResponse userInfoapiRes = HttpConnecter.instance.userInfo(player.getId());
+		 if (userInfoapiRes != null && userInfoapiRes.isSuccess()) {
+			User user = JSONManager.getJsonData(userInfoapiRes.getContent(), User.class);
+			
+			byte[] tierImgData = HttpConnecter.instance.loadImage(user.getTier());
+			if (tierImgData != null) {
+               ByteArrayInputStream tierBais = new ByteArrayInputStream(tierImgData);
+               try {
+                   BufferedImage tierImg = ImageIO.read(tierBais);
+                   lblMyHighTier.setIcon(new ImageIcon(new ImageIcon(tierImg).getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH)));
+               } catch (IOException e1) {
+                   e1.printStackTrace();
+                   JOptionPane.showMessageDialog(contentPane, "티어 이미지 로드 실패", "오류", JOptionPane.ERROR_MESSAGE);
+               }
+           } else {
+               JOptionPane.showMessageDialog(contentPane, "티어 이미지 로드 실패", "오류", JOptionPane.ERROR_MESSAGE);
+           }
+       } else {
+           JOptionPane.showMessageDialog(contentPane, "티어 정보 로드 실패: " + userInfoapiRes.getMessage(), "오류", JOptionPane.ERROR_MESSAGE);
+       }
+		 
 	}
 }

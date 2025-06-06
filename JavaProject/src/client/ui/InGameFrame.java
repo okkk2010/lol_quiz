@@ -181,29 +181,7 @@ public class InGameFrame extends JFrame {
 				                }
 				                tfAnswerQuiz.setText(score + "");
 				                // 티어 정보 갱신
-				                ApiResponse getTierByScoreTierApiRes = HttpConnecter.instance.getTierByScore(score);
-				                if (getTierByScoreTierApiRes != null && getTierByScoreTierApiRes.isSuccess()) {
-				                    Tier tier = JSONManager.getJsonData(getTierByScoreTierApiRes.getContent(), Tier.class);
-				                    // 티어 정보 업데이트
-				                    player.setTier(tier.getName());
-				                    
-				          		  	// 유저 티어 갱신
-				                    byte[] tierImgData = HttpConnecter.instance.loadImage(player.getTier());
-				                    if (tierImgData != null) {
-				                        ByteArrayInputStream tierBais = new ByteArrayInputStream(tierImgData);
-				                        try {
-				                            BufferedImage tierImg = ImageIO.read(tierBais);
-				                            lblTier.setIcon(new ImageIcon(new ImageIcon(tierImg).getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH)));
-				                        } catch (IOException e1) {
-				                            e1.printStackTrace();
-				                            JOptionPane.showMessageDialog(contentPane, "티어 이미지 로드 실패", "오류", JOptionPane.ERROR_MESSAGE);
-				                        }
-				                    } else {
-				                        JOptionPane.showMessageDialog(contentPane, "티어 이미지 로드 실패", "오류", JOptionPane.ERROR_MESSAGE);
-				                    }
-				                } else {
-				                    JOptionPane.showMessageDialog(contentPane, "티어 정보 로드 실패: " + getTierByScoreTierApiRes.getMessage(), "오류", JOptionPane.ERROR_MESSAGE);
-				                }
+				                getTierByScore(score);
 				                score = 0; // 점수 리셋
 				                // 모든 유저 티어 갱신
 				                ApiResponse updateAllUserTierApiRes = HttpConnecter.instance.updateAllUserTier();
@@ -336,6 +314,7 @@ public class InGameFrame extends JFrame {
 		                    JOptionPane.showMessageDialog(contentPane, "게임 결과 전송 실패: " + resultApiRes.getMessage(), "오류", JOptionPane.ERROR_MESSAGE);
 		                }
 		                tfAnswerQuiz.setText(score + "");
+		                getTierByScore(score);
 		                score = 0; // 점수 리셋
 		                currentQuizCnt = 0; // 퀴즈 리셋
 		                // 모든 유저 티어 갱신
@@ -551,4 +530,29 @@ public class InGameFrame extends JFrame {
 	        IMGPanel.revalidate(); // 레이아웃 재계산
 	        IMGPanel.repaint(); // 다시 그리기
 	    }
+	 public void getTierByScore (int score) {
+		 ApiResponse getTierByScoreApiRes = HttpConnecter.instance.getTierByScore(score);
+         if (getTierByScoreApiRes != null && getTierByScoreApiRes.isSuccess()) {
+             Tier tier = JSONManager.getJsonData(getTierByScoreApiRes.getContent(), Tier.class);
+             // 티어 정보 업데이트
+             player.setTier(tier.getName());
+             
+   		  	// 유저 티어 갱신
+             byte[] tierImgData = HttpConnecter.instance.loadImage(player.getTier());
+             if (tierImgData != null) {
+                 ByteArrayInputStream tierBais = new ByteArrayInputStream(tierImgData);
+                 try {
+                     BufferedImage tierImg = ImageIO.read(tierBais);
+                     lblTier.setIcon(new ImageIcon(new ImageIcon(tierImg).getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH)));
+                 } catch (IOException e1) {
+                     e1.printStackTrace();
+                     JOptionPane.showMessageDialog(contentPane, "티어 이미지 로드 실패", "오류", JOptionPane.ERROR_MESSAGE);
+                 }
+             } else {
+                 JOptionPane.showMessageDialog(contentPane, "티어 이미지 로드 실패", "오류", JOptionPane.ERROR_MESSAGE);
+             }
+         } else {
+             JOptionPane.showMessageDialog(contentPane, "티어 정보 로드 실패: " + getTierByScoreApiRes.getMessage(), "오류", JOptionPane.ERROR_MESSAGE);
+         }
+	 }
 }
