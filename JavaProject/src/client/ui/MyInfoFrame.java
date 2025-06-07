@@ -672,7 +672,6 @@ public class MyInfoFrame extends JFrame {
 		            if (myStateApiRes != null && myStateApiRes.isSuccess()) {
 		                try {
 		                    String content = myStateApiRes.getContent();
-		                    // getRecordStats의 응답이 Record 클래스 객체로 매핑된다고 가정
 		                    Record statsRecord = JSONManager.getJsonData(content, Record.class);
 
 		                    if (statsRecord != null) {
@@ -698,7 +697,6 @@ public class MyInfoFrame extends JFrame {
 		                        	statsTableModel.setValueAt(tier.getName(), 1, 3);
 			                        
 		                        }
-		                        
 		                        
 		                        // 테이블 갱신
 		                        statsTableModel.fireTableDataChanged();

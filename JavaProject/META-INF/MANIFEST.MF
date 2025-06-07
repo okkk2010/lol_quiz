@@ -6,10 +6,8 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-21
 Automatic-Module-Name: JavaProject
 Export-Package: Font,
- client.Icon,
  client.ui,
  client.uiTool,
  dataSet.quiz,
  dataSet.user,
- database,
- main
+ database
