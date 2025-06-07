@@ -377,12 +377,12 @@ public class RankingFrame extends JFrame {
 	    } else {
 	        // API 호출 실패 시 에러 처리
 	        switch(top30ApiRes.getError().getCode()) {
-	            case "SERVER_ERROR":
-	                JOptionPane.showMessageDialog(contentPane, "서버 오류 발생");
-	                break;
-	            default:
-	                JOptionPane.showMessageDialog(contentPane, "알 수 없는 오류 발생: " + top30ApiRes.getError().getCode());
-	                break;
+//	            case "SERVER_ERROR":
+//	                JOptionPane.showMessageDialog(contentPane, "서버 오류 발생");
+//	                break;
+//	            default:
+//	                JOptionPane.showMessageDialog(contentPane, "알 수 없는 오류 발생: " + top30ApiRes.getError().getCode());
+//	                break;
 	        }
 	    }
 	}
