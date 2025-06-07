@@ -407,7 +407,10 @@ public class MyInfoFrame extends JFrame {
 					JOptionPane.showMessageDialog(contentPane, "아이디, 현재 비밀번호, 새 비밀번호를 모두 입력해주세요.");
 					return;
 				}
-
+				if (player.getId() == null || !player.getId().equals(id)) {
+					JOptionPane.showMessageDialog(contentPane, "아이디가 일치하지 않습니다.");
+					return;
+				}
 				int changePWConfirm = JOptionPane.showConfirmDialog(contentPane, "비밀번호를 '" + newPassword + "'(으)로 변경하시겠습니까?", "비밀번호 변경 확인", JOptionPane.YES_NO_OPTION);
 
 				if (changePWConfirm == JOptionPane.YES_OPTION) {
