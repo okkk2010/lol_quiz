@@ -157,33 +157,22 @@ public class RankingFrame extends JFrame {
 			}
 		};
 		rankingTable = new JTable(tableModel);
+		rankingTable.setEnabled(false);
 		rankingTable.setFont(new Font("CookieRun Regular", Font.PLAIN, 16));
 		rankingTable.setRowHeight(30); // 행 높이 설정
 		rankingTable.getTableHeader().setFont(new Font("CookieRun Regular", Font.BOLD, 16)); // 헤더 폰트 설정
 		rankingTable.setFillsViewportHeight(true); // JTable이 뷰포트 높이를 채우도록 설정
 
-		// 순위, 닉네임 가운데 정렬
+		// 순위, 닉네임, 점수 가운데 정렬
 		DefaultTableCellRenderer CenterRenderer = new DefaultTableCellRenderer();
 		CenterRenderer.setHorizontalAlignment(SwingConstants.CENTER);
-
-		// 최고 점수 오른쪽 정렬
-		DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();
-		rightRenderer.setHorizontalAlignment(SwingConstants.RIGHT);
-
 		// 정렬 적용
 		for (int i = 0; i < rankingTable.getColumnCount(); i++) {
-			if (i == 2) {
-				rankingTable.getColumnModel().getColumn(i).setCellRenderer(rightRenderer);
-			} else {
-				rankingTable.getColumnModel().getColumn(i).setCellRenderer(CenterRenderer);
-			}
+			rankingTable.getColumnModel().getColumn(i).setCellRenderer(CenterRenderer);
 		}
 
 		// JTable 꾸미기 (배경색, 그리드 색상, 선택 색상, 폰트 등)
-		rankingTable.setShowVerticalLines(false); // 세로줄 숨기기
-		rankingTable.setShowHorizontalLines(false); // 가로줄 숨기기
 		rankingTable.setGridColor(new Color(228, 235, 250)); // 그리드 색상 일치
-
 		rankingTable.setBackground(new Color(255, 255, 255)); // 배경 흰색
 		rankingTable.setForeground(Color.DARK_GRAY); // 텍스트 색상
 		rankingTable.setSelectionBackground(new Color(185, 215, 234)); // 선택된 행의 배경색

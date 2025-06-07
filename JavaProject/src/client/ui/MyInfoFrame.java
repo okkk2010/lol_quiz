@@ -14,6 +14,7 @@ import client.uiTool.RoundJTextField;
 import dataSet.user.User;
 import dataSet.*;
 import dataSet.Tier.Tier;
+import dataSet.record.Record;
 import database.ApiResponse;
 import database.DatabaseManager; // Unused, consider removing if not needed
 import database.HttpConnecter;
@@ -72,7 +73,7 @@ public class MyInfoFrame extends JFrame {
 	private RoundJPasswordField tfChangePW;
 	private JPanel myRecordsPanel;
 	private DefaultTableModel tableModel;
-	private JTable statisticsTable;
+	private JTable statsTable;
 
 	/**
 	 * Launch the application.
@@ -220,24 +221,27 @@ public class MyInfoFrame extends JFrame {
 		myInfoPanel.add(comboBox);
 		
 		// 통계 테이블
-		statisticsTable = new JTable();
-		statisticsTable.setBounds(300, 200, 500, 60);
-		statisticsTable.setFont(new Font("CookieRun Regular", Font.PLAIN, 16));
-		statisticsTable.setRowHeight(30); // 행 높이 설정
-		statisticsTable.getTableHeader().setFont(new Font("CookieRun Regular", Font.BOLD, 16)); // 헤더 폰트 설정
-		statisticsTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF); // 열 너비 자동 조정 비활성화
-		statisticsTable.setModel(new DefaultTableModel(
+		statsTable = new JTable();
+		statsTable.setEnabled(false);
+		statsTable.setBounds(300, 200, 500, 60);
+		statsTable.setFont(new Font("CookieRun Regular", Font.PLAIN, 16));
+		statsTable.setRowHeight(30); // 행 높이 설정
+		statsTable.getTableHeader().setFont(new Font("CookieRun Regular", Font.BOLD, 16)); // 헤더 폰트 설정
+		statsTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF); // 열 너비 자동 조정 비활성화
+		statsTable.setModel(new DefaultTableModel(
 			new Object[][] {
-				{"퀴즈이름", "판`수", "평균 맞춘 문제", "평균 티어"},
-				{"lol 챔피언 퀴즈", 0, 0, 0.0},
+				{"퀴즈이름", "판수", "평균 맞춘 문제", "평균 티어"},
+				{"lol 챔피언 퀴즈", 0, 0.0, ""},
 			},
 			new String[] {"게임수", "판수", "평균 맞춘 문제 수", "평균 티어"}
+			
 		));
-		statisticsTable.getTableHeader().setReorderingAllowed(false); // 열 순서 변경 막기
-		statisticsTable.getTableHeader().setResizingAllowed(false); // 열 크기 조절 막기
-		statisticsTable.getTableHeader().setOpaque(false); // 헤더 배경 투명하게 설정
+		statsTable.getTableHeader().setReorderingAllowed(false); // 열 순서 변경 막기
+		statsTable.getTableHeader().setResizingAllowed(false); // 열 크기 조절 막기
+		statsTable.getTableHeader().setOpaque(false); // 헤더 배경 투명하게 설정
 		
-		myInfoPanel.add(statisticsTable);
+		
+		myInfoPanel.add(statsTable);
 
 		// 3. 닉네임 변경 패널
 		changeNickNamepanel = new JPanel();
@@ -606,6 +610,7 @@ public class MyInfoFrame extends JFrame {
 
 		setLocationRelativeTo(null);
 		loadAndDisplayRecords();
+		loadMyStats();
 	}
 	 private void loadAndDisplayRecords() {
 	        // 백그라운드 스레드에서 네트워크 통신 수행
@@ -660,5 +665,63 @@ public class MyInfoFrame extends JFrame {
 	            });
 	        }).start();
 	    }
+	 private void loadMyStats() {
+		    new Thread(() -> {
+		        ApiResponse myStateApiRes = HttpConnecter.instance.getRecordStats(player.getId());
+		        SwingUtilities.invokeLater(() -> {
+		            if (myStateApiRes != null && myStateApiRes.isSuccess()) {
+		                try {
+		                    String content = myStateApiRes.getContent();
+		                    // getRecordStats의 응답이 Record 클래스 객체로 매핑된다고 가정
+		                    Record statsRecord = JSONManager.getJsonData(content, Record.class);
+
+		                    if (statsRecord != null) {
+		                        DefaultTableModel statsTableModel = (DefaultTableModel) statsTable.getModel();
+		                        
+		                        // 통계 테이블의 두 번째 행 (인덱스 1)에 데이터를 업데이트합니다.
+		                        // 퀴즈 이름은 "lol 챔피언 퀴즈"로 고정되어 있다고 가정하고
+		                        // Record 클래스의 필드를 '판수', '평균 맞춘 문제', '평균 티어'로 매핑합니다.
+		                        
+		                        // 판수: total_quiz 필드 사용
+		                        statsTableModel.setValueAt(statsRecord.getTotal_quiz(), 1, 1);
+		                        
+		                        // 평균 맞춘 문제: avg_answer_quiz 필드 사용
+		                        
+		                        int highTier = (int)statsRecord.getAvg_answer_quiz();
+		                      
+		                        statsTableModel.setValueAt(statsRecord.getAvg_answer_quiz(), 1, 2);
+		                        
+		                        ApiResponse tierApiRes = HttpConnecter.instance.getTierByScore(highTier);
+		                        if(tierApiRes.isSuccess()) {
+		                        	Tier tier = JSONManager.getJsonData(tierApiRes.getContent(), Tier.class);
+		                        	
+		                        	statsTableModel.setValueAt(tier.getName(), 1, 3);
+			                        
+		                        }
+		                        
+		                        
+		                        // 테이블 갱신
+		                        statsTableModel.fireTableDataChanged();
+
+		                    } else {
+		                        JOptionPane.showMessageDialog(null, "통계 데이터를 파싱할 수 없습니다. 서버 응답 형식을 확인하세요.", "오류", JOptionPane.ERROR_MESSAGE);
+		                        System.err.println("Failed to parse stats JSON with Record class: " + content);
+		                    }
+		                } catch (Exception e) {
+		                    e.printStackTrace();
+		                    JOptionPane.showMessageDialog(null, "통계 데이터를 처리하는 중 오류가 발생했습니다: " + e.getMessage(), "오류", JOptionPane.ERROR_MESSAGE);
+		                }
+
+		            } else {
+		                String errorMessage = "통계 데이터를 불러오는 데 실패했습니다.";
+		                if (myStateApiRes != null && myStateApiRes.getError() != null && myStateApiRes.getError().getMessage() != null) {
+		                    errorMessage = myStateApiRes.getError().getMessage();
+		                }
+		                JOptionPane.showMessageDialog(null, errorMessage, "오류", JOptionPane.ERROR_MESSAGE);
+		                System.err.println("API Response error: " + (myStateApiRes != null ? myStateApiRes.getError() : "null response"));
+		            }
+		        });
+		    }).start();
+		}
 }
 	

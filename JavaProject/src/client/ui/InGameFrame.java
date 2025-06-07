@@ -154,7 +154,7 @@ public class InGameFrame extends JFrame {
 				}
 				new Thread(() -> {
 					int i;
-				    for (i = 3; i >= 0; i--) {
+				    for (i = 119; i >= 0; i--) {
 				        try {
 				            Thread.sleep(1000);
 				        } catch (InterruptedException ex) {
