@@ -77,12 +77,12 @@ public class LoginFrame extends JFrame {
 		contentPane.add(LoginPanel);
 		LoginPanel.setLayout(null);
 
-		// 타이틀
+		// 타이틀 (퀴즈 테마 추가 시 변경 예정)
 		JLabel lblTitle = new JLabel("롤 챔피언 퀴즈");
 		lblTitle.setBounds(300, 100, 200, 40);
 		lblTitle.setVerticalAlignment(SwingConstants.TOP);
 		lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
-		lblTitle.setFont(new Font("CookieRun Bold", Font.BOLD, 28));
+		lblTitle.setFont(new Font("CookieRun Regular", Font.BOLD, 28));
 		LoginPanel.add(lblTitle);
 
 		JLabel lblID = new JLabel("아이디");
@@ -97,16 +97,16 @@ public class LoginFrame extends JFrame {
 		lblPW.setBounds(250, 280, 70, 20);
 		LoginPanel.add(lblPW);
 
-		// 아이디 입력 (RoundJTextField)
-		tfInputID = new RoundJTextField(10); // RoundJTextField 생성
+		// 아이디 입력
+		tfInputID = new RoundJTextField(10);
 		tfInputID.setBackground(new Color(202, 206, 213));
 		tfInputID.setFont(new Font("CookieRun Regular", Font.PLAIN, 20));
 		tfInputID.setBounds(250, 230, 300, 40);
-		tfInputID.setForeground(Color.DARK_GRAY); // 텍스트와 테두리 색상
+		tfInputID.setForeground(Color.DARK_GRAY);
 		LoginPanel.add(tfInputID);
 
-		// 비밀번호 입력 (RoundJPasswordField)
-		tfInputPW = new RoundJPasswordField(10); // RoundJPasswordField 생성
+		// 비밀번호 입력
+		tfInputPW = new RoundJPasswordField(10);
 		tfInputPW.setBackground(new Color(202, 206, 213));
 		tfInputPW.setFont(new Font("맑은 고딕", Font.PLAIN, 20));
 		tfInputPW.setBounds(250, 310, 300, 40);
@@ -115,7 +115,7 @@ public class LoginFrame extends JFrame {
 		tfInputPW.setEchoChar('*');
 		LoginPanel.add(tfInputPW);
 
-		// 로그인 버튼 (RoundButton)
+		// 로그인 버튼
 		JButton btnLogin = new RoundJButton();
 		btnLogin.addActionListener(new ActionListener() {
 			
@@ -161,7 +161,7 @@ public class LoginFrame extends JFrame {
 								homeframe.setResizable(false);
 								homeframe.setVisible(true);
 							} else {
-								// 이미 홈 프레임이 있다면 다시 보이게 합니다.
+								// 이미 홈 프레임 있음.
 								homeframe.setVisible(true);
 							}
 							setVisible(false); // 로그인 프레임 숨기기

@@ -80,7 +80,7 @@ public class RegisterFrame extends JFrame {
 		JLabel lblTitle = new JLabel("회원가입");
 		lblTitle.setVerticalAlignment(SwingConstants.TOP);
 		lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
-		lblTitle.setFont(new Font("CookieRun Bold", Font.BOLD, 28));
+		lblTitle.setFont(new Font("CookieRun Regular", Font.BOLD, 28));
 		lblTitle.setBounds(300, 60, 200, 40);
 		SignUpPanel.add(lblTitle);
 		
