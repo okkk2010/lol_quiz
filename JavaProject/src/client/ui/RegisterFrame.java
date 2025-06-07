@@ -96,6 +96,7 @@ public class RegisterFrame extends JFrame {
 		lblPW.setBounds(250, 320, 70, 20);
 		SignUpPanel.add(lblPW);
 		
+		// 아이디 입력
 		tfInputID = new RoundJTextField(10);
 		tfInputID.setForeground(Color.DARK_GRAY);
 		tfInputID.setFont(new Font("CookieRun Regular", Font.PLAIN, 20));
@@ -103,6 +104,7 @@ public class RegisterFrame extends JFrame {
 		tfInputID.setBounds(250, 190, 300, 40);
 		SignUpPanel.add(tfInputID);
 		
+		// 비밀번호 입력
 		tfInputPW = new RoundJPasswordField(10);
 		tfInputPW.setForeground(Color.DARK_GRAY);
 		tfInputPW.setFont(new Font("맑은 고딕", Font.PLAIN, 20));
@@ -111,6 +113,7 @@ public class RegisterFrame extends JFrame {
 		tfInputPW.setBounds(250, 350, 300, 40);
 		SignUpPanel.add(tfInputPW);
 		
+		// 회원가입 버튼
 		RoundJButton btnSignUp = new RoundJButton();
 		btnSignUp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -122,17 +125,17 @@ public class RegisterFrame extends JFrame {
 				if (id.isEmpty()) {
 					JOptionPane.showMessageDialog(SignUpPanel, "아이디를 입력해주세요.", "회원가입 오류", JOptionPane.WARNING_MESSAGE);
 					tfInputID.requestFocusInWindow(); // 아이디 입력 포커스
-					return; // 로그인 프로세스 중단
+					return;
 				}
-				if (nickName.isEmpty()) {
+				else if (nickName.isEmpty()) {
 					JOptionPane.showMessageDialog(SignUpPanel, "닉네임을 입력해주세요.", "회원가입 오류", JOptionPane.WARNING_MESSAGE);
 					tfInputNickname.requestFocusInWindow(); // 닉네임 입력 포커스
-					return; // 로그인 프로세스 중단
-				}	
-				if (password.isEmpty()) {
+					return;
+				}
+				else if (password.isEmpty()) {
 					JOptionPane.showMessageDialog(SignUpPanel, "비밀번호를 입력해주세요.", "회원가입 오류", JOptionPane.WARNING_MESSAGE);
 					tfInputPW.requestFocusInWindow(); // 비밀번호 입력 포커스
-					return; // 로그인 프로세스 중단
+					return;
 				}
 				ApiResponse apiRes = HttpConnecter.instance.signUpUser(id, nickName, password);
 				if(apiRes.isSuccess()) {
@@ -179,6 +182,7 @@ public class RegisterFrame extends JFrame {
 		btnSignUp.setBounds(250, 440, 120, 40);
 		SignUpPanel.add(btnSignUp);
 		
+		// 돌아가기 버튼
 		RoundJButton btnBack = new RoundJButton();
 		btnBack.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -191,6 +195,7 @@ public class RegisterFrame extends JFrame {
 				setVisible(false);
 			}
 		});
+		
 		btnBack.setText("돌아가기");
 		btnBack.setForeground(Color.BLACK);
 		btnBack.setFont(new Font("CookieRun Regular", Font.PLAIN, 18));

@@ -39,7 +39,7 @@ public class LoginFrame extends JFrame {
 	private JTextField tfInputID;
 	private RoundJPasswordField tfInputPW;
 	private HomeFrame homeframe;
-	private RegisterFrame Reframe;
+	private RegisterFrame registerframe;
 
 	/**
 	 * Launch the application.
@@ -153,18 +153,19 @@ public class LoginFrame extends JFrame {
 							JOptionPane.showMessageDialog(LoginPanel, "사용자 정보를 가져오는 데 실패했습니다.", "오류", JOptionPane.ERROR_MESSAGE);
 							return;
 						}
-
+						// 사용자 정보가 null이 아닌지 확인
 						if (user != null) {
-							// 사용자 정보를 성공적으로 가져왔으므로 HomeFrame 생성
+							// 로그인 후 HomeFrame으로 이동
 							if(homeframe == null) {
+								// HomeFrame이 아직 생성되지 않은 경우 새로 생성
 								homeframe = new HomeFrame(new Player(user));			
 								homeframe.setResizable(false);
 								homeframe.setVisible(true);
 							} else {
-								// 이미 홈 프레임 있음.
+								// HomeFrame이 이미 생성된 경우 기존 인스턴스를 사용
 								homeframe.setVisible(true);
 							}
-							setVisible(false); // 로그인 프레임 숨기기
+							setVisible(false);
 						} else {
 							// content 필드가 null이거나 파싱 후 user 객체가 null인 경우
 							JOptionPane.showMessageDialog(LoginPanel, "사용자 정보가 비어있습니다.", "오류", JOptionPane.ERROR_MESSAGE);
@@ -214,12 +215,12 @@ public class LoginFrame extends JFrame {
 		JButton btnSignUp = new RoundJButton();
 		btnSignUp.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-			
-				if(Reframe == null) {
-					Reframe = new RegisterFrame();				
-					Reframe.setVisible(true);
+				// 회원가입 버튼 클릭 시 RegisterFrame 열기
+				if(registerframe == null) {
+					registerframe = new RegisterFrame();				
+					registerframe.setVisible(true);
 				} else {
-					Reframe.setVisible(true);
+					registerframe.setVisible(true);
 				}
 				setVisible(false);
 			}

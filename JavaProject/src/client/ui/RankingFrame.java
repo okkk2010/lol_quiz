@@ -346,32 +346,26 @@ public class RankingFrame extends JFrame {
 		outLine2.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 
 		setLocationRelativeTo(null); 
-		top30UserRanking();
+		top30Ranking();
 	}
 	
-	public void top30UserRanking() {
-	    ApiResponse apiRes = HttpConnecter.instance.getRanking(); // 랭킹 정보 API 호출
-
-	    if(apiRes.isSuccess()) {
-	        String content = apiRes.getContent();
+	public void top30Ranking() {
+		// 랭킹 정보를 가져오는 API 호출
+	    ApiResponse top30ApiRes = HttpConnecter.instance.getRanking();
+	    
+	    if(top30ApiRes != null && top30ApiRes.isSuccess()) {
+	        String content = top30ApiRes.getContent();
 	        // JSONManager를 통해 Record 객체 리스트로 변환
 	        ArrayList<Record> records = JSONManager.getJsonDataList(content, Record.class);
-
-	        // 테이블 모델의 기존 데이터 모두 제거
-	        tableModel.setRowCount(0); // JTable을 비우는 가장 확실한 방법
+	        
+	        tableModel.setRowCount(0); // 기존 테이블 데이터 초기화
 
 	        if(records != null && !records.isEmpty()) {
-	            // 서버에서 rank_num을 제공하지 않거나, 클라이언트에서 순위를 다시 매기고 싶을 경우
-	            // int rank = 1;
-
 	            for(Record record : records) {
-	                // Record 객체의 데이터를 가져와 Object 배열로 만듭니다.
-	                // 컬럼 순서: "순위", "닉네임", "최고점수"
 	                Object[] rowData = {
-	                    record.getRank_num(), // Record 객체의 rank_num 사용 (서버에서 제공하는 순위)
-	                    // 만약 서버 rank_num이 없다면, 클라이언트에서 계산: rank++
-	                    record.getNickname(),
-	                    record.getAnswer_quiz() // 최고 점수 (answer_quiz)
+	                    record.getRank_num(), // 순위
+	                    record.getNickname(), // 닉네임
+	                    record.getAnswer_quiz() // 최고 점수
 	                };
 	                tableModel.addRow(rowData); // 테이블 모델에 행 추가
 	            }
@@ -382,12 +376,12 @@ public class RankingFrame extends JFrame {
 	        }
 	    } else {
 	        // API 호출 실패 시 에러 처리
-	        switch(apiRes.getError().getCode()) {
+	        switch(top30ApiRes.getError().getCode()) {
 	            case "SERVER_ERROR":
 	                JOptionPane.showMessageDialog(contentPane, "서버 오류 발생");
 	                break;
 	            default:
-	                JOptionPane.showMessageDialog(contentPane, "알 수 없는 오류 발생: " + apiRes.getError().getCode());
+	                JOptionPane.showMessageDialog(contentPane, "알 수 없는 오류 발생: " + top30ApiRes.getError().getCode());
 	                break;
 	        }
 	    }

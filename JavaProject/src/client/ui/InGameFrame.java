@@ -512,50 +512,53 @@ public class InGameFrame extends JFrame {
 
 		setLocationRelativeTo(null);
 	}
-	 public void hideRandomPanels(int numberOfPanelsToHide) {
-	        // 이미 생성된 overlayPanels 리스트를 사용
-	        // 먼저 모든 패널을 보이게 (또는 특정 색으로) 설정하여 초기화
-	        for (JPanel panel : overlayPanels) {
-	            panel.setVisible(true); // 기본적으로는 모든 패널이 이미지를 가리도록 설정
-	        }
+	// 램덤으로 패널을 숨기는 함수
+	public void hideRandomPanels(int numberOfPanelsToHide) {
+		// 모든 패널을 기본적으로 보이도록 설정
+		for (JPanel panel : overlayPanels) {
+			panel.setVisible(true);
+		}
 
-	        // 이제 랜덤으로 가릴 패널을 선택
-	        Random random = new Random();
-	        ArrayList<Integer> hiddenPanelIndices = new ArrayList<>(); // 이미 선택된 인덱스 저장
+		// 이제 랜덤으로 가릴 패널을 선택
+		Random random = new Random();
+		ArrayList<Integer> hiddenPanelIndices = new ArrayList<>(); // 이미 선택된 인덱스 저장
 
-	        while (hiddenPanelIndices.size() < numberOfPanelsToHide && hiddenPanelIndices.size() < overlayPanels.size()) {
-	            int randomIndex = random.nextInt(overlayPanels.size()); // 0부터 8까지의 랜덤 인덱스
-	            if (!hiddenPanelIndices.contains(randomIndex)) { // 중복 선택 방지
-	                overlayPanels.get(randomIndex).setVisible(false); // 해당 패널을 숨김 (투명하게)
-	                hiddenPanelIndices.add(randomIndex);
-	            }
-	        }
-	        IMGPanel.revalidate(); // 레이아웃 재계산
-	        IMGPanel.repaint(); // 다시 그리기
-	    }
-	 public void getTierByScore (int score) {
-		 ApiResponse getTierByScoreApiRes = HttpConnecter.instance.getTierByScore(score);
-         if (getTierByScoreApiRes != null && getTierByScoreApiRes.isSuccess()) {
-             Tier tier = JSONManager.getJsonData(getTierByScoreApiRes.getContent(), Tier.class);
-             // 티어 정보 업데이트
-             player.setTier(tier.getName());
-             
-   		  	// 유저 티어 갱신
-             byte[] tierImgData = HttpConnecter.instance.loadImage(player.getTier());
-             if (tierImgData != null) {
-                 ByteArrayInputStream tierBais = new ByteArrayInputStream(tierImgData);
-                 try {
-                     BufferedImage tierImg = ImageIO.read(tierBais);
-                     lblTier.setIcon(new ImageIcon(new ImageIcon(tierImg).getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH)));
-                 } catch (IOException e1) {
-                     e1.printStackTrace();
-                     JOptionPane.showMessageDialog(contentPane, "티어 이미지 로드 실패", "오류", JOptionPane.ERROR_MESSAGE);
-                 }
-             } else {
-                 JOptionPane.showMessageDialog(contentPane, "티어 이미지 로드 실패", "오류", JOptionPane.ERROR_MESSAGE);
-             }
-         } else {
-             JOptionPane.showMessageDialog(contentPane, "티어 정보 로드 실패: " + getTierByScoreApiRes.getMessage(), "오류", JOptionPane.ERROR_MESSAGE);
-         }
-	 }
+		while (hiddenPanelIndices.size() < numberOfPanelsToHide && hiddenPanelIndices.size() < overlayPanels.size()) {
+			int randomIndex = random.nextInt(overlayPanels.size()); // 0부터 8까지의 랜덤 인덱스
+			if (!hiddenPanelIndices.contains(randomIndex)) { // 중복 선택 방지
+				overlayPanels.get(randomIndex).setVisible(false); // 해당 패널을 숨김 (투명하게)
+				hiddenPanelIndices.add(randomIndex);
+			}
+		}
+		IMGPanel.revalidate(); // 레이아웃 재계산
+		IMGPanel.repaint(); // 다시 그리기
+	}
+	// 점수에 따라 티어를 가져오는 함수
+	public void getTierByScore(int score) {
+		ApiResponse getTierByScoreApiRes = HttpConnecter.instance.getTierByScore(score);
+		if (getTierByScoreApiRes != null && getTierByScoreApiRes.isSuccess()) {
+			Tier tier = JSONManager.getJsonData(getTierByScoreApiRes.getContent(), Tier.class);
+			// 티어 정보 업데이트
+			player.setTier(tier.getName());
+
+			// 유저 티어 갱신
+			byte[] tierImgData = HttpConnecter.instance.loadImage(player.getTier());
+			if (tierImgData != null) {
+				ByteArrayInputStream tierBais = new ByteArrayInputStream(tierImgData);
+				try {
+					BufferedImage tierImg = ImageIO.read(tierBais);
+					lblTier.setIcon(new ImageIcon(
+							new ImageIcon(tierImg).getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH)));
+				} catch (IOException e1) {
+					e1.printStackTrace();
+					JOptionPane.showMessageDialog(contentPane, "티어 이미지 로드 실패", "오류", JOptionPane.ERROR_MESSAGE);
+				}
+			} else {
+				JOptionPane.showMessageDialog(contentPane, "티어 이미지 로드 실패", "오류", JOptionPane.ERROR_MESSAGE);
+			}
+		} else {
+			JOptionPane.showMessageDialog(contentPane, "티어 정보 로드 실패: " + getTierByScoreApiRes.getMessage(), "오류",
+					JOptionPane.ERROR_MESSAGE);
+		}
+	}
 }

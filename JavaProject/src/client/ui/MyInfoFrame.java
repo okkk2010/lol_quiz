@@ -66,7 +66,7 @@ public class MyInfoFrame extends JFrame {
 	private Player player;
 	private JTextField tfCheckNickName;
 	private JTextField tfCheckId;
-	private JPanel myInfoPanel; // Added for explicit reference
+	private JPanel myInfoPanel;
 	private JPanel changeNickNamepanel;
 	private JPanel chagePWPanel;
 	private RoundJPasswordField tfCheckPW;
@@ -120,11 +120,10 @@ public class MyInfoFrame extends JFrame {
 		MainPanel.add(RecordPanel);
 		RecordPanel.setLayout(null);
 
-		// CardPane에 CardLayout 적용
+		// CardPane에 CardLayout을 적용하여 여러 패널을 전환할 수 있도록 설정
 		CardPanel = new JPanel();
 		CardPanel.setBounds(10, 10, 840, 460);
 		RecordPanel.add(CardPanel);
-
 		cl_cardPanel = new CardLayout(0, 0);
 		CardPanel.setLayout(cl_cardPanel);
 
@@ -136,9 +135,11 @@ public class MyInfoFrame extends JFrame {
 
 		// 테이블 데이터 및 컬럼 정의
 		String[] columnNames = {"날짜", "퀴즈 종류", "2분 동안 맞춘 문제", "티어"};
-		// 테이블 내의 어떤 셀도 사용자 인터페이스를 통해 직접 편집할 수 없게 됩니다. 즉, 모든 셀은 "읽기 전용"
+		
+		// 디폴트 테이블 모델 생성, 모든 셀 수정 불가능하게 설정
 		tableModel = new DefaultTableModel(new Object[][]{}, columnNames) {
 		    @Override
+		    
 		    public boolean isCellEditable(int row, int column) {
 		        return false;
 		    }
@@ -152,7 +153,6 @@ public class MyInfoFrame extends JFrame {
 
 		// JTable 꾸미기 (배경색, 그리드 색상, 선택 색상, 폰트 등)
 		recordsTable.setGridColor(new Color(0, 0, 0)); // 그리드 색상 일치
-
 		recordsTable.setBackground(new Color(255, 255, 255)); // 배경 흰색
 		recordsTable.setForeground(Color.black); // 텍스트 색상
 		recordsTable.setSelectionBackground(new Color(185, 215, 234)); // 선택된 행의 배경색
@@ -163,7 +163,7 @@ public class MyInfoFrame extends JFrame {
 		recordsTable.getTableHeader().setForeground(Color.BLACK); 
 		recordsTable.getTableHeader().setReorderingAllowed(false); // 열 순서 변경 막기
 		recordsTable.getTableHeader().setResizingAllowed(false); // 열 크기 조절 막기
-		recordsTable.getTableHeader().setOpaque(false); 
+		recordsTable.getTableHeader().setOpaque(false); // 헤더 배경 투명하게 설정
 
 		// JTable 테두리 제거
 		recordsTable.setBorder(null);
@@ -184,28 +184,31 @@ public class MyInfoFrame extends JFrame {
 		CardPanel.add(myRecordsPanel, "records");
 
 
-		//2. 내정보 패널 (myInfoPanel)
+		// 2. 내정보 패널
 		myInfoPanel = new JPanel(); // myInfoPanel 초기화
 		myInfoPanel.setBackground(new Color(255, 255, 255));
-		myInfoPanel.setLayout(null); // Use null layout for absolute positioning
+		myInfoPanel.setLayout(null);
 
-		// "닉네임 변경" 버튼 (myInfoPanel에 추가)
+		// 닉네임 변경 버튼
 		RoundJButton btnChangeNickname = new RoundJButton("닉네임 변경");
 		btnChangeNickname.setBackground(new Color(185, 215, 234));
 		btnChangeNickname.setFont(new Font("CookieRun Regular", Font.PLAIN, 20));
 		btnChangeNickname.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				cl_cardPanel.show(CardPanel, "changeNickName"); // newNickNamepanel 보이기
+				// 닉네임 변경 패널로 전환
+				cl_cardPanel.show(CardPanel, "changeNickName");
 			}
 		});
 		btnChangeNickname.setBounds(40, 115, 180, 80);
-		myInfoPanel.add(btnChangeNickname);
+		myInfoPanel.add(btnChangeNickname); 
 
-		CardPanel.add(myInfoPanel, "myInfo"); // myInfoPanel을 CardPanel에 추가
+		CardPanel.add(myInfoPanel, "myInfo");
 		
+		// 비밀번호 변경 버튼
 		RoundJButton btnChangePW = new RoundJButton("비밀번호 변경");
 		btnChangePW.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				// 비밀번호 변경 패널로 전환
 				cl_cardPanel.show(CardPanel, "changePW");
 			}
 		});
@@ -214,26 +217,28 @@ public class MyInfoFrame extends JFrame {
 		btnChangePW.setBounds(40, 250, 180, 80);
 		myInfoPanel.add(btnChangePW);
 		
-		JComboBox comboBox = new JComboBox();
-		comboBox.setFont(new Font("CookieRun Regular", Font.PLAIN, 18));
-		comboBox.setModel(new DefaultComboBoxModel(new String[] {"lol 챔피언 퀴즈"}));
-		comboBox.setBounds(300, 115, 160, 40);
-		myInfoPanel.add(comboBox);
+		// 퀴즈 종류 선택 (퀴즈 종류 추가 시 확장 기능)
+		JComboBox cbBoxQuiz = new JComboBox();
+		cbBoxQuiz.setFont(new Font("CookieRun Regular", Font.PLAIN, 18));
+		cbBoxQuiz.setModel(new DefaultComboBoxModel(new String[] {"lol 챔피언 퀴즈"}));
+		cbBoxQuiz.setBounds(300, 115, 160, 40);
+		myInfoPanel.add(cbBoxQuiz);
 		
 		// 통계 테이블
 		statsTable = new JTable();
 		statsTable.setEnabled(false);
 		statsTable.setBounds(300, 200, 500, 60);
 		statsTable.setFont(new Font("CookieRun Regular", Font.PLAIN, 16));
-		statsTable.setRowHeight(30); // 행 높이 설정
-		statsTable.getTableHeader().setFont(new Font("CookieRun Regular", Font.BOLD, 16)); // 헤더 폰트 설정
+		statsTable.setRowHeight(30);
+		statsTable.getTableHeader().setFont(new Font("CookieRun Regular", Font.BOLD, 16));
 		statsTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF); // 열 너비 자동 조정 비활성화
-		statsTable.setModel(new DefaultTableModel(
-			new Object[][] {
-				{"퀴즈이름", "판수", "평균 맞춘 문제", "평균 티어"},
-				{"lol 챔피언 퀴즈", 0, 0.0, ""},
-			},
-			new String[] {"게임수", "판수", "평균 맞춘 문제 수", "평균 티어"}
+		statsTable.setModel(new DefaultTableModel( // 테이블 모델 생성
+			
+			new Object[][] { 
+				{"퀴즈이름", "판수", "평균 맞춘 문제", "평균 티어"}, // 첫 번째 행 헤더 (스크롤에 안붙이면 헤더가 안보이는 경우가 발생함)
+				{"lol 챔피언 퀴즈", 0, 0.0, ""}, // 초기 데이터 설정
+			}, 
+			new String[] {"", "", "", ""} // 첫 번째 행을 헤더로 설정해서 빈 문자열로 설정
 			
 		));
 		statsTable.getTableHeader().setReorderingAllowed(false); // 열 순서 변경 막기
@@ -609,117 +614,120 @@ public class MyInfoFrame extends JFrame {
 		outLine2.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 
 		setLocationRelativeTo(null);
-		loadAndDisplayRecords();
+		loadMyRecords();
 		loadMyStats();
 	}
-	 private void loadAndDisplayRecords() {
-	        // 백그라운드 스레드에서 네트워크 통신 수행
-	        new Thread(() -> {
-	            // 수정된 getUserRecord 메서드 호출
-	            ApiResponse apiRes = HttpConnecter.instance.getUserRecord(player.getId());
-	            SwingUtilities.invokeLater(() -> { // UI 업데이트는 EDT에서 수행
-	                if (apiRes != null && apiRes.isSuccess()) {
-	                    // 기존 테이블 데이터 모두 삭제
-	                    tableModel.setRowCount(0);
+	private void loadMyRecords() {
+		// 백그라운드 스레드로 전적 데이터 호출
+		new Thread(() -> {
+			// API를 통해 사용자 전적 데이터 가져옴
+			ApiResponse MyRecordsApiRes = HttpConnecter.instance.getUserRecord(player.getId());
+			SwingUtilities.invokeLater(() -> { // UI 업데이트는 EDT에서 수행
+				if (MyRecordsApiRes != null && MyRecordsApiRes.isSuccess()) {
+					// 기존 테이블 데이터 모두 삭제
+					tableModel.setRowCount(0);
+					// JSON 문자열을 Record 객체 리스트로 변환
+					List<Record> records = JSONManager.getJsonDataList(MyRecordsApiRes.getContent(),Record.class);
 
-	                    // 서버에서 받은 데이터를 파싱하여 테이블에 추가
-	                    // 가정: ApiResponse의 content는 List<Record>의 JSON 문자열
-	                    // JSONManager.getJsonDataList는 JSON 배열을 객체 리스트로 파싱합니다.
-	                    List<dataSet.record.Record> records = JSONManager.getJsonDataList(apiRes.getContent(), dataSet.record.Record.class);
-	                    
-	                    // records가 null이 아니고 비어있지 않은 경우에만 테이블에 추가
-	                    if (records != null && !records.isEmpty()) {
-	                        for (dataSet.record.Record record : records) {
-	                        	ApiResponse recordApiRes = HttpConnecter.instance.getTierByScore(record.getAnswer_quiz());
-	                        	String tier = "정보 없음";
-	                        	if (recordApiRes != null && recordApiRes.isSuccess()) {
-	                        		// 티어 정보가 있다면 가져오기
-	                        		String content = recordApiRes.getContent(); // 티어 정보가 담긴 문자열
-	                        		Tier tierData = JSONManager.getJsonData(content, Tier.class);
-	                        		if (tierData != null) {
-	                        			tier = tierData.getName(); // 티어 이름 가져오기
-	                        		}
-	                        	}
+					// records가 null이 아니고 비어있지 않은 경우에만 테이블에 추가
+					if (records != null && !records.isEmpty()) {
+						for (Record record : records) {
+							// 티어 정보를 가져오기 위해 API 호출
+							ApiResponse recordApiRes = HttpConnecter.instance.getTierByScore(record.getAnswer_quiz());
+							String tier = "정보 없음";
+							
+							// 티어 정보가 있다면 가져오기
+							if (recordApiRes != null && recordApiRes.isSuccess()) {
+								String content = recordApiRes.getContent(); // 티어 정보가 담긴 문자열
+								// JSON 문자열을 Tier 객체로 변환
+								Tier tierData = JSONManager.getJsonData(content, Tier.class);
+								if (tierData != null) {
+									tier = tierData.getName(); // 티어 이름 가져오기
+								}
+							}
 
-	                            Object[] rowData = {
-	                                record.getPlay_date(),
-	                                record.getTitle(),
-	                                record.getAnswer_quiz(),
-	                                // record.getTier() // Record 클래스에 'tier' 필드가 있다면 사용하세요.
-	                                // 서버 응답에 티어 정보가 없다면 아래와 같이 기본값이나 공백으로 설정
-	                      		    tier                    
-	                            };
-	                            tableModel.addRow(rowData);
-	                        }
-	                    } else {
-	                        JOptionPane.showMessageDialog(this, "아직 전적이 없습니다.");
-	                    }
-	                } else {
-	                    // 전적 로드 실패
-	                    String errorMessage = "전적을 불러오는 데 실패했습니다.";
-	                    if (apiRes != null && apiRes.getError() != null && apiRes.getError().getMessage() != null) {
-	                        errorMessage = apiRes.getError().getMessage();
-	                    }
-	                    JOptionPane.showMessageDialog(this, errorMessage, "오류", JOptionPane.ERROR_MESSAGE);
-	                }
-	            });
-	        }).start();
-	    }
-	 private void loadMyStats() {
-		    new Thread(() -> {
-		        ApiResponse myStateApiRes = HttpConnecter.instance.getRecordStats(player.getId());
-		        SwingUtilities.invokeLater(() -> {
-		            if (myStateApiRes != null && myStateApiRes.isSuccess()) {
-		                try {
-		                    String content = myStateApiRes.getContent();
-		                    Record statsRecord = JSONManager.getJsonData(content, Record.class);
+							Object[] rowData = { 
+									record.getPlay_date(), 
+									record.getTitle(), 
+									record.getAnswer_quiz(),
+									tier 
+									};
+							// 테이블 모델에 행 추가
+							tableModel.addRow(rowData);
+						}
+					} else {
+						JOptionPane.showMessageDialog(this, "아직 전적이 없습니다.");
+					}
+				} else {
+					// 전적 로드 실패
+					String errorMessage = "전적을 불러오는 데 실패했습니다.";
+					if (MyRecordsApiRes != null && MyRecordsApiRes.getError() != null
+							&& MyRecordsApiRes.getError().getMessage() != null) {
+						errorMessage = MyRecordsApiRes.getError().getMessage();
+					}
+					JOptionPane.showMessageDialog(this, errorMessage, "오류", JOptionPane.ERROR_MESSAGE);
+				}
+			});
+		}).start();
+	}
 
-		                    if (statsRecord != null) {
-		                        DefaultTableModel statsTableModel = (DefaultTableModel) statsTable.getModel();
-		                        
-		                        // 통계 테이블의 두 번째 행 (인덱스 1)에 데이터를 업데이트합니다.
-		                        // 퀴즈 이름은 "lol 챔피언 퀴즈"로 고정되어 있다고 가정하고
-		                        // Record 클래스의 필드를 '판수', '평균 맞춘 문제', '평균 티어'로 매핑합니다.
-		                        
-		                        // 판수: total_quiz 필드 사용
-		                        statsTableModel.setValueAt(statsRecord.getTotal_quiz(), 1, 1);
-		                        
-		                        // 평균 맞춘 문제: avg_answer_quiz 필드 사용
-		                        
-		                        int highTier = (int)statsRecord.getAvg_answer_quiz();
-		                      
-		                        statsTableModel.setValueAt(statsRecord.getAvg_answer_quiz(), 1, 2);
-		                        
-		                        ApiResponse tierApiRes = HttpConnecter.instance.getTierByScore(highTier);
-		                        if(tierApiRes.isSuccess()) {
-		                        	Tier tier = JSONManager.getJsonData(tierApiRes.getContent(), Tier.class);
-		                        	
-		                        	statsTableModel.setValueAt(tier.getName(), 1, 3);
-			                        
-		                        }
-		                        
-		                        // 테이블 갱신
-		                        statsTableModel.fireTableDataChanged();
+	private void loadMyStats() {
+		// 백그라운드 스레드로 통계 데이터 호출
+		new Thread(() -> {
+			ApiResponse myStateApiRes = HttpConnecter.instance.getRecordStats(player.getId());
+			// UI 업데이트는 EDT에서 수행
+			SwingUtilities.invokeLater(() -> {
+				if (myStateApiRes != null && myStateApiRes.isSuccess()) {
+					try {
+						String content = myStateApiRes.getContent();
+						// JSON 문자열을 Record 객체로 변환
+						Record statsRecord = JSONManager.getJsonData(content, Record.class);
+						// statsRecord가 null이 아니면 통계 데이터를 테이블에 업데이트
+						if (statsRecord != null) {
+							DefaultTableModel statsTableModel = (DefaultTableModel) statsTable.getModel();
+							// 통계 테이블의 두 번째 행부터 업데이트
+							// 레코드 클래스의 필드를 "판수", "평균 맞춘 문제", "평균 티어"로 매핑
 
-		                    } else {
-		                        JOptionPane.showMessageDialog(null, "통계 데이터를 파싱할 수 없습니다. 서버 응답 형식을 확인하세요.", "오류", JOptionPane.ERROR_MESSAGE);
-		                        System.err.println("Failed to parse stats JSON with Record class: " + content);
-		                    }
-		                } catch (Exception e) {
-		                    e.printStackTrace();
-		                    JOptionPane.showMessageDialog(null, "통계 데이터를 처리하는 중 오류가 발생했습니다: " + e.getMessage(), "오류", JOptionPane.ERROR_MESSAGE);
-		                }
+							// 판수 total_quiz
+							statsTableModel.setValueAt(statsRecord.getTotal_quiz(), 1, 1);
+							// 평균 맞춘 문제 avg_answer_quiz
+							int highTier = (int) statsRecord.getAvg_answer_quiz();
+							statsTableModel.setValueAt(statsRecord.getAvg_answer_quiz(), 1, 2);
 
-		            } else {
-		                String errorMessage = "통계 데이터를 불러오는 데 실패했습니다.";
-		                if (myStateApiRes != null && myStateApiRes.getError() != null && myStateApiRes.getError().getMessage() != null) {
-		                    errorMessage = myStateApiRes.getError().getMessage();
-		                }
-		                JOptionPane.showMessageDialog(null, errorMessage, "오류", JOptionPane.ERROR_MESSAGE);
-		                System.err.println("API Response error: " + (myStateApiRes != null ? myStateApiRes.getError() : "null response"));
-		            }
-		        });
-		    }).start();
-		}
+							// 평균 맞춘 문제 highTier를 getTierByScore API로 가져옴
+							ApiResponse tierApiRes = HttpConnecter.instance.getTierByScore(highTier);
+							if (tierApiRes.isSuccess()) {
+								// 티어 정보가 있다면 Tier 객체로 변환
+								Tier tier = JSONManager.getJsonData(tierApiRes.getContent(), Tier.class);
+								// 티어 이름을 테이블에 설정
+								statsTableModel.setValueAt(tier.getName(), 1, 3);
+							}
+							// 테이블 갱신
+							statsTableModel.fireTableDataChanged();
+
+						} else {
+							JOptionPane.showMessageDialog(null, "통계 데이터를 파싱할 수 없습니다. 서버 응답 형식을 확인하세요.", "오류",
+									JOptionPane.ERROR_MESSAGE);
+							System.err.println("Failed to parse stats JSON with Record class: " + content);
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
+						JOptionPane.showMessageDialog(null, "통계 데이터를 처리하는 중 오류가 발생했습니다: " + e.getMessage(), "오류",
+								JOptionPane.ERROR_MESSAGE);
+					}
+
+				} else {
+					String errorMessage = "통계 데이터를 불러오는 데 실패했습니다.";
+					if (myStateApiRes != null && myStateApiRes.getError() != null
+							&& myStateApiRes.getError().getMessage() != null) {
+						errorMessage = myStateApiRes.getError().getMessage();
+					}
+					JOptionPane.showMessageDialog(null, errorMessage, "오류", JOptionPane.ERROR_MESSAGE);
+					System.err.println("API Response error: "
+							+ (myStateApiRes != null ? myStateApiRes.getError() : "null response"));
+				}
+			});
+		}).start();
+	}
 }
 	
