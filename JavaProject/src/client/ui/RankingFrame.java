@@ -244,14 +244,15 @@ public class RankingFrame extends JFrame {
 				JOptionPane.showMessageDialog(contentPane, "랭킹 정보가 올바르지 않습니다.");
 			}
 		} else {
-			switch(apiRes.getError().getCode()) {
-				case "NOT_FOUND_USER":
-					JOptionPane.showMessageDialog(contentPane, "사용자를 찾을 수 없습니다.");
-					break;
-				case "SERVER_ERROR":
-					JOptionPane.showMessageDialog(contentPane, "서버 오류 발생");
-					break;
-			}
+			tfRanking.setText("-");
+//			switch(apiRes.getError().getCode()) {
+//				case "NOT_FOUND_USER":
+//					JOptionPane.showMessageDialog(contentPane, "사용자를 찾을 수 없습니다.");
+//					break;
+//				case "SERVER_ERROR":
+//					JOptionPane.showMessageDialog(contentPane, "서버 오류 발생");
+//					break;
+//			}
 		}
 		
 		ResultPanel.add(tfRanking);
@@ -277,17 +278,18 @@ public class RankingFrame extends JFrame {
 		    }
 		} else {
 		    // 에러 처리 로직은 그대로 유지
-		    switch (MaxScoreApiRes.getError().getCode()) {
-		        case "NOT_FOUND_USER":
-		            JOptionPane.showMessageDialog(contentPane, "사용자를 찾을 수 없습니다.");
-		            break;
-		        case "SERVER_ERROR":
-		            JOptionPane.showMessageDialog(contentPane, "서버 오류 발생");
-		            break;
-		        default: // 예상치 못한 에러 코드 처리
-		            JOptionPane.showMessageDialog(contentPane, "알 수 없는 오류 발생: " + MaxScoreApiRes.getError().getCode());
-		            break;
-		    }
+			tfMaxScore.setText("-");
+//		    switch (MaxScoreApiRes.getError().getCode()) {
+//		        case "NOT_FOUND_USER":
+//		            JOptionPane.showMessageDialog(contentPane, "사용자를 찾을 수 없습니다.");
+//		            break;
+//		        case "SERVER_ERROR":
+//		            JOptionPane.showMessageDialog(contentPane, "서버 오류 발생");
+//		            break;
+//		        default: // 예상치 못한 에러 코드 처리
+//		            JOptionPane.showMessageDialog(contentPane, "알 수 없는 오류 발생: " + MaxScoreApiRes.getError().getCode());
+//		            break;
+//		    }
 		}
 		ResultPanel.add(tfMaxScore);
 

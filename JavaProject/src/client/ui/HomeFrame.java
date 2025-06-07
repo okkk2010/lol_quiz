@@ -14,11 +14,15 @@ import client.uiTool.RoundJButton;
 import client.uiTool.RoundJPanel;
 import dataSet.user.User;
 import database.DatabaseManager;
+import database.HttpConnecter;
 
 import java.awt.Font;
+import java.awt.Image;
+
 import javax.swing.JList;
 import javax.swing.JToggleButton;
 import javax.swing.JButton;
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JScrollBar;
 import javax.swing.JLabel;
@@ -32,6 +36,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 
 public class HomeFrame extends JFrame {
 
@@ -138,7 +145,20 @@ public class HomeFrame extends JFrame {
 		SPanel.add(LOLPanel);
 		
 		JButton btnLOLQuiz = new JButton("");
-		btnLOLQuiz.setIcon(new ImageIcon("C:\\자바팀플\\lol_quiz\\JavaProject\\src\\client\\Icon\\롤테마_이미지.png"));
+		
+		byte[] thumbnailImgData =  HttpConnecter.instance.loadImage("lol+quiz+thumbnail");
+		
+		ByteArrayInputStream thumbnailImgBais = new ByteArrayInputStream(thumbnailImgData);
+       
+		BufferedImage thumbnailImg = null;
+		try {
+			thumbnailImg = ImageIO.read(thumbnailImgBais);
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		//lblTier.setIcon(new ImageIcon(new ImageIcon(tierImg).getImage().getScaledInstance(200, 200, Image.SCALE_SMOOTH)));
+		btnLOLQuiz.setIcon(new ImageIcon(thumbnailImg));
 		btnLOLQuiz.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {

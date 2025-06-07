@@ -48,6 +48,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Random;
 
@@ -134,6 +136,7 @@ public class InGameFrame extends JFrame {
 					JOptionPane.showMessageDialog(contentPane, "퀴즈가 없습니다.");
 					return;
 				}
+				Collections.shuffle(quizs);
 				
 				byte[] imgData = HttpConnecter.instance.loadImage(Integer.toString(quizs.get(currentQuizCnt).getId()));
 				if(imgData == null) {
@@ -146,7 +149,7 @@ public class InGameFrame extends JFrame {
 				try {
 					BufferedImage img = ImageIO.read(bais);
 					lblQuizImg.setIcon(new ImageIcon(new ImageIcon(img).getImage().getScaledInstance(400, 400, Image.SCALE_SMOOTH)));
-					hideRandomPanels(2); // 시작부터 2개만 랜덤하게.
+					hideRandomPanels(3); // 시작부터 2개만 랜덤하게.
 					
 					
 				} catch (IOException e1) {
@@ -154,7 +157,7 @@ public class InGameFrame extends JFrame {
 				}
 				new Thread(() -> {
 					int i;
-				    for (i = 119; i >= 0; i--) {
+				    for (i = 1; i >= 0; i--) {
 				        try {
 				            Thread.sleep(1000);
 				        } catch (InterruptedException ex) {
@@ -335,7 +338,7 @@ public class InGameFrame extends JFrame {
 		                        BufferedImage img = ImageIO.read(bais);
 		                        lblQuizImg.setIcon(new ImageIcon(new ImageIcon(img).getImage().getScaledInstance(400, 400, Image.SCALE_SMOOTH)));
 		                        tfAnswer.setText(""); // 다음 퀴즈로 넘어갈 때 입력 필드 비우기
-		                        hideRandomPanels(2); // 2개만 랜덤하게 보여줌
+		                        hideRandomPanels(3); // 2개만 랜덤하게 보여줌
 		                        tfAnswer.requestFocusInWindow(); // 입력 필드에 포커스 주기
 		                    } catch (IOException e1) {
 		                        e1.printStackTrace();
