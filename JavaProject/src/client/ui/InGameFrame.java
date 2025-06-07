@@ -178,7 +178,7 @@ public class InGameFrame extends JFrame {
 				                // 게임 결과 전송
 				                ApiResponse resultApiRes = HttpConnecter.instance.recordGameHistory(player.getId(), "lol 챔피언 퀴즈", score, playDate);
 				                if (resultApiRes != null && resultApiRes.isSuccess()) {
-				                    JOptionPane.showMessageDialog(contentPane, "게임 결과가 성공적으로 전송되었습니다!");
+//				                    JOptionPane.showMessageDialog(contentPane, "게임 결과가 성공적으로 전송되었습니다!");
 				                } else {
 				                    JOptionPane.showMessageDialog(contentPane, "게임 결과 전송 실패: " + resultApiRes.getMessage(), "오류", JOptionPane.ERROR_MESSAGE);
 				                }
@@ -189,7 +189,7 @@ public class InGameFrame extends JFrame {
 				                // 모든 유저 티어 갱신
 				                ApiResponse updateAllUserTierApiRes = HttpConnecter.instance.updateAllUserTier();
 				                if (updateAllUserTierApiRes != null && updateAllUserTierApiRes.isSuccess()) {
-				                    JOptionPane.showMessageDialog(contentPane, "티어 업데이트가 성공적으로 전송되었습니다!");
+//				                    JOptionPane.showMessageDialog(contentPane, "티어 업데이트가 성공적으로 전송되었습니다!");
 				                } else {
 				                    JOptionPane.showMessageDialog(contentPane, "티어 업데이트 전송 실패: " + updateAllUserTierApiRes.getMessage(), "오류", JOptionPane.ERROR_MESSAGE);
 				                }
@@ -312,7 +312,7 @@ public class InGameFrame extends JFrame {
 		                // 게임 결과 전송
 		                ApiResponse resultApiRes = HttpConnecter.instance.recordGameHistory(player.getId(), "lol 챔피언 퀴즈", score, playDate);
 		                if (resultApiRes != null && resultApiRes.isSuccess()) {
-		                    JOptionPane.showMessageDialog(contentPane, "게임 결과가 성공적으로 전송되었습니다!");
+//		                    JOptionPane.showMessageDialog(contentPane, "게임 결과가 성공적으로 전송되었습니다!");
 		                } else {
 		                    JOptionPane.showMessageDialog(contentPane, "게임 결과 전송 실패: " + resultApiRes.getMessage(), "오류", JOptionPane.ERROR_MESSAGE);
 		                }
@@ -323,7 +323,7 @@ public class InGameFrame extends JFrame {
 		                // 모든 유저 티어 갱신
 		                ApiResponse updateAllUserTierApiRes = HttpConnecter.instance.updateAllUserTier();
 		                if (updateAllUserTierApiRes != null && updateAllUserTierApiRes.isSuccess()) {
-		                    JOptionPane.showMessageDialog(contentPane, "티어 업데이트가 성공적으로 전송되었습니다!");
+//		                    JOptionPane.showMessageDialog(contentPane, "티어 업데이트가 성공적으로 전송되었습니다!");
 		                } else {
 		                    JOptionPane.showMessageDialog(contentPane, "티어 업데이트 전송 실패: " + updateAllUserTierApiRes.getMessage(), "오류", JOptionPane.ERROR_MESSAGE);
 		                }

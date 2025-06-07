@@ -285,9 +285,14 @@ public class MyInfoFrame extends JFrame {
 
 				String id = tfCheckId.getText().trim();
 				String newNickname = tfCheckNickName.getText().trim();
-
+				
+				
 				if (id.isEmpty() || newNickname.isEmpty()) {
 					JOptionPane.showMessageDialog(contentPane, "아이디와 닉네임을 모두 입력해주세요.");
+					return;
+				}
+				if (player.getId() == null || !player.getId().equals(id)) {
+					JOptionPane.showMessageDialog(contentPane, "아이디가 일치하지 않습니다.");
 					return;
 				}
 				int newNick = JOptionPane.showConfirmDialog(contentPane, "닉네임을 '" + newNickname + "'(으)로 변경하시겠습니까?", "닉네임 변경 확인", JOptionPane.YES_NO_OPTION);
@@ -656,7 +661,7 @@ public class MyInfoFrame extends JFrame {
 							tableModel.addRow(rowData);
 						}
 					} else {
-						JOptionPane.showMessageDialog(this, "아직 전적이 없습니다.");
+						// JOptionPane.showMessageDialog(this, "아직 전적이 없습니다.");
 					}
 				} else {
 					// 전적 로드 실패
@@ -665,7 +670,7 @@ public class MyInfoFrame extends JFrame {
 							&& MyRecordsApiRes.getError().getMessage() != null) {
 						errorMessage = MyRecordsApiRes.getError().getMessage();
 					}
-					JOptionPane.showMessageDialog(this, errorMessage, "오류", JOptionPane.ERROR_MESSAGE);
+					// JOptionPane.showMessageDialog(this, errorMessage, "오류", JOptionPane.ERROR_MESSAGE);
 				}
 			});
 		}).start();
